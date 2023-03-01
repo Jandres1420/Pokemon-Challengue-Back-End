@@ -2,7 +2,7 @@ package com.endava.pokemonChallengue.services;
 
 import com.endava.pokemonChallengue.models.Role;
 import com.endava.pokemonChallengue.models.User;
-import com.endava.pokemonChallengue.repositories.UserRepository;
+import com.endava.pokemonChallengue.repositories.LogInRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,11 +14,11 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-class UserServiceTest {
+class LogInServiceTest {
     @Mock
-    private final UserRepository userRepository;
+    private final LogInRepository logInRepository;
     @InjectMocks
-    private UserService userService;
+    private LogInService logInService;
 
     private User user;
     @BeforeEach
@@ -32,13 +32,13 @@ class UserServiceTest {
         user.setRole(Role.ADMIN);
     }
 
-    public UserServiceTest(UserRepository userRepository){
-        this.userRepository=userRepository;
+    public LogInServiceTest(LogInRepository logInRepository){
+        this.logInRepository = logInRepository;
     }
     @Test
     void addNewValidUser() {
-        when(userRepository.findAll()).thenReturn(Arrays.asList(user));
-        assertNotNull(userService.addNewUser(user));
+        when(logInRepository.findAll()).thenReturn(Arrays.asList(user));
+        assertNotNull(logInService.addNewUser(user));
     }
 
     @Test

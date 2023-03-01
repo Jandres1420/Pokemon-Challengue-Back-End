@@ -1,6 +1,7 @@
 package com.endava.pokemonChallengue.exceptions;
 
 import com.endava.pokemonChallengue.exceptions.CustomException.DuplicateValue;
+import com.endava.pokemonChallengue.exceptions.CustomException.InvalidValue;
 import com.endava.pokemonChallengue.exceptions.CustomException.ParamsRequired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,4 +28,13 @@ public class ExceptionController {
         response.setMessage(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(InvalidValue.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidValue(InvalidValue exception,
+                                                                  WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setMessage(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 }
