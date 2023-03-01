@@ -21,7 +21,7 @@ public class LogInController {
     @PostMapping("/signIn")
     public ResponseEntity<Object> signUpUser(@RequestBody @NotNull @NotEmpty User user){
 
-        return new ResponseEntity<>(logInService.addNewUser(user), HttpStatus.CREATED);
+        return new ResponseEntity<>(logInService.signIn(user), HttpStatus.CREATED);
     }
 
     @PostMapping("/logIn")
@@ -31,6 +31,6 @@ public class LogInController {
 
     @PutMapping("/logOut")
     public ResponseEntity<Object> logOutUser(@RequestBody @NotNull @NotEmpty User user){
-        return new ResponseEntity<>(logInService.logInUser(user), HttpStatus.CREATED);
+        return new ResponseEntity<>(logInService.logOutUser(user), HttpStatus.CREATED);
     }
 }

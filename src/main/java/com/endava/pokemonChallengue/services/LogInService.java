@@ -23,7 +23,7 @@ public class LogInService {
         this.logInRepository = logInRepository;
     }
 
-    public Object addNewUser(User user) {
+    public Object signIn(User user) {
         Optional<User> optionalUserEmail = logInRepository.findUserByEmailAndUsername(user.getEmail(), user.getUsername());
         signInExceptions(optionalUserEmail,user);
         return getCorrectBody(user, user);
@@ -41,6 +41,19 @@ public class LogInService {
         }else{
             throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The credentials are incorrect");
         }
+    }
+
+    public Object logOutUser(User user) {
+        Optional<User> optionalUser = logInRepository.findByEmailAndPassword(user.getEmail(),user.getPassword());
+        if(optionalUser.isPresent()){
+            User userFound = logInRepository.findByEmail(user.getEmail());
+            if(Boolean.FALSE.equals(userFound.getConnect())){
+                throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "User already disconnected");
+            }
+            userFound.setConnect(false);
+            logInRepository.save(userFound);
+            return new HashMap<>(Map.of("status","ok"));
+        }throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "???");
     }
 
     private Object getCorrectBody(User user, User userFound) {
@@ -62,6 +75,7 @@ public class LogInService {
             throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Enter a valid email");
         }
     }
+
 
 
 }
