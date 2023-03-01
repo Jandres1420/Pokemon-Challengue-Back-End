@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//import jakarta.persistence.*;
 
 import javax.persistence.*;
 
@@ -29,7 +28,7 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private Long roleId;
+    private Role role;
 
     private Boolean connect;
 }

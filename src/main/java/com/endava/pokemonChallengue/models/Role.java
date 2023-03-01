@@ -1,5 +1,5 @@
 package com.endava.pokemonChallengue.models;
 
-public enum Rol {
+public enum Role {
     ADMIN,DOCTOR,OAK,TRAINER
 }

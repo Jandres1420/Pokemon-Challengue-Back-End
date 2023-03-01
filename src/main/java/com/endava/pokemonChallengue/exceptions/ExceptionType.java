@@ -1,4 +1,5 @@
 package com.endava.pokemonChallengue.exceptions;
 
-public class ExceptionType {
+public enum ExceptionType {
+    DUPLICATE_EMAIL,DUPLICATE_NICKNAME
 }
