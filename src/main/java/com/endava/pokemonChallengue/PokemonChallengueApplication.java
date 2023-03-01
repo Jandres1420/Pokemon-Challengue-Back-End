@@ -17,8 +17,8 @@ public class PokemonChallengueApplication {
 		EvolutionChain evolutionChain = new EvolutionChain();
 
 
-		singlePokemonDetails.findPokemon("pikachu");
-		evolutionChain.findEvolution("pikachu");
+		singlePokemonDetails.findPokemon("eevee");
+		evolutionChain.findEvolution("eevee");
 	}
 }
 
