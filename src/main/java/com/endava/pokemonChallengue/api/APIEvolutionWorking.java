@@ -5,18 +5,20 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedHashMap;
 
-public class EvolutionChain {
-    APIManager apiManager = new APIManager();
+public class APIEvolutionWorking {
+    APIConnectionURL apiConnectionURL = new APIConnectionURL();
 
     public void findEvolution(String name) {
+        LinkedHashMap<Integer, Object> evolution_body = new LinkedHashMap<>();
 
         try {
             URL species_url = new URL("https://pokeapi.co/api/v2/pokemon-species/" + name);
-            JSONObject pokemon_species = apiManager.getJSON(species_url);
+            JSONObject pokemon_species = apiConnectionURL.getJSON(species_url);
 
             String evolution_url = pokemon_species.getJSONObject("evolution_chain").getString("url");
-            JSONObject evolution_chain = apiManager.getJSON(new URL(evolution_url));
+            JSONObject evolution_chain = apiConnectionURL.getJSON(new URL(evolution_url));
             JSONObject chain = evolution_chain.getJSONObject("chain");
             int evolution_size = chain.getJSONArray("evolves_to").length();
 

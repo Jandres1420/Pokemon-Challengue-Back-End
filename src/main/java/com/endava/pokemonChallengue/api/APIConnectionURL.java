@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class APIManager {
+public class APIConnectionURL {
 
     public JSONObject getJSON(URL url) {
         try {
