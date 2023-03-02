@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class APIConnectionURL {
+public class ApiConnection {
 
     public JSONObject getJSON(URL url) {
         try {
@@ -28,10 +28,7 @@ public class APIConnectionURL {
             }
 
             connection.disconnect();
-
-            JSONObject json = new JSONObject(sb.toString());
-
-            return json;
+            return new JSONObject(sb.toString());
 
         } catch (Exception e) {
             e.printStackTrace();

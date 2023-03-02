@@ -7,13 +7,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-public class APIPokemon {
-    APIConnectionURL apiConnectionURL = new APIConnectionURL();
+public class ApiPokemon {
+    ApiConnection apiConnection = new ApiConnection();
 
     public JSONObject getJSON(String value) {
         try {
             URL pokemon_url = new URL("https://pokeapi.co/api/v2/pokemon/"+value);
-            JSONObject pokemon = apiConnectionURL.getJSON(pokemon_url);
+            JSONObject pokemon = apiConnection.getJSON(pokemon_url);
             return pokemon;
 
         }catch (NullPointerException e){
@@ -39,8 +39,8 @@ public class APIPokemon {
                     .getJSONObject("ability")
                     .getString("url"));
 
-            JSONArray ability_names = apiConnectionURL.getJSON(ability_url).getJSONArray("names");
-            JSONArray ability_effects = apiConnectionURL.getJSON(ability_url).getJSONArray("effect_entries");
+            JSONArray ability_names = apiConnection.getJSON(ability_url).getJSONArray("names");
+            JSONArray ability_effects = apiConnection.getJSON(ability_url).getJSONArray("effect_entries");
 
             for(int w=0; w<ability_names.length(); w++){
                 String name_language = ability_names
