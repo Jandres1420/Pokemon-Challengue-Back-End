@@ -9,6 +9,8 @@ import java.net.URL;
 
 public class ApiConnection {
 
+    //RESTTemplate
+
     public JSONObject getJSON(URL url) {
         try {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
