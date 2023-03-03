@@ -1,4 +1,4 @@
-package com.endava.pokemonChallengue.api;
+package com.endava.pokemonChallengue.controllers;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

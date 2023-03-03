@@ -1,4 +1,4 @@
-package com.endava.pokemonChallengue.controllers;
+package com.endava.pokemonChallengue.api;
 
 import com.endava.pokemonChallengue.services.PokemonApiService;
 import org.springframework.http.HttpStatus;
@@ -17,6 +17,7 @@ public class PokemonApiController {
         this.pokemonApiService = pokemonApiService;
     }
 
+    /*
     @GetMapping(path = "/pokemon")
     public ResponseEntity<Object> getDashboard(@RequestParam Integer quantity, @RequestParam Integer offset ){
         return new ResponseEntity<>(pokemonApiService.getDashboard(quantity, offset), HttpStatus.ACCEPTED);
@@ -33,5 +34,22 @@ public class PokemonApiController {
     public ResponseEntity<Object> getEvolution(@RequestParam String name){
         System.out.println(pokemonApiService.getEvolution(name));
         return new ResponseEntity<>(pokemonApiService.getEvolution(name), HttpStatus.ACCEPTED);
+    }*/
+
+
+    /*
+    public Object getDashboard(Integer quantity, Integer offset){
+        ApiDashboard apiDashboard = new ApiDashboard();
+        return apiDashboard.showDashBoard(quantity, offset);
     }
+
+    public Object getPokemonDetails(String value, String language) throws MalformedURLException {
+        ApiPokemonDetails apiPokemonDetails = new ApiPokemonDetails();
+        return apiPokemonDetails.getPokemonDetails(value, language);
+    }
+
+    public Object getEvolution(String value){
+        ApiEvolution apiEvolution = new ApiEvolution();
+        return apiEvolution.findEvolution(value);
+    }*/
 }
