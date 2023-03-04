@@ -7,27 +7,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 @RestController
 @ControllerAdvice
 public class ExceptionController {
-    @ExceptionHandler(DuplicateValue.class)
-    public ResponseEntity<ExceptionResponse> handleDuplicateEntityException(DuplicateValue exception,
+    @ExceptionHandler({DuplicateValue.class,ParamsRequired.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResponse handleDuplicateEntityException(DuplicateValue exception,
                                                                             WebRequest request) {
         ExceptionResponse response = new ExceptionResponse();
         response.setMessage(exception.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return response;
     }
 
-    @ExceptionHandler(ParamsRequired.class)
-    public ResponseEntity<ExceptionResponse> handleParamsRequired(ParamsRequired exception,
-                                                                  WebRequest request) {
-        ExceptionResponse response = new ExceptionResponse();
-        response.setMessage(exception.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
 
     @ExceptionHandler(InvalidValue.class)
     public ResponseEntity<ExceptionResponse> handleInvalidValue(InvalidValue exception,
