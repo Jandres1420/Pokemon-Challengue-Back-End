@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface PokemonRepository extends JpaRepository<Pokemon,Long> {
 
-    //public Optional<Pokemon> findByPokemon_id();
 }

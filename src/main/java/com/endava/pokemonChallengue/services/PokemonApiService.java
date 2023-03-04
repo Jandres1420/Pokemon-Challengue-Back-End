@@ -20,48 +20,43 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PokemonApiService {
     private final PokemonRepository  pokemonRepository;
-    private final StatRepository statRepository;
-    private final DescriptionRepository descriptionRepository;
 
     public void pokemonService(PokemonDTO pokemonDTO, PokemonSpeciesDTO pokemonSpeciesDTO){
 
         //todo CHEQUEAR SI EL POKEMON EXISTE
 
         Pokemon pokemon = getPokemon(pokemonDTO);
-        Stat stat = getStat(pokemonDTO);
 
+        Stat stat = getStat(pokemonDTO);
         stat.setPokemon(pokemon);
         pokemon.setStat(stat);
 
-        pokemonRepository.save(pokemon);
-        //statRepository.save(stat);
+        Description description = getDescription(pokemonSpeciesDTO);
+        description.setPokemon(pokemon);
+        pokemon.setDescription(description);
 
-//        //Create Description
-//
-//
-//
-//        return pokemon;
+        pokemonRepository.save(pokemon);
     }
 
     public Pokemon getPokemon(PokemonDTO pokemonDTO){
-
         String types = "";
         for(int i=0;i<pokemonDTO.getTypes().size();i++){
             types += pokemonDTO.getTypes().get(i).getType().getName()+", ";
         }
         pokemonDTO.setTypeString(types);
 
-        Pokemon pokemon = new Pokemon();
-        pokemon.setPokemon_id(pokemonDTO.getId());
-        pokemon.setName(pokemonDTO.getName());
-        pokemon.setType(pokemonDTO.getTypeString());
-        pokemon.setImg_path(pokemonDTO
+        String imagePath = pokemonDTO
                 .getSprites()
                 .getOther()
                 .getDream_world()
-                .getFront_default());
+                .getFront_default();
 
-        return pokemon;
+        return Pokemon.builder()
+                .pokemon_id(pokemonDTO.getId())
+                .name(pokemonDTO.getName())
+                .type(types)
+                .img_path(imagePath)
+                .build();
     }
 
     public Stat getStat(PokemonDTO pokemonDTO){
@@ -79,14 +74,27 @@ public class PokemonApiService {
 
     public Description getDescription(PokemonSpeciesDTO pokemonSpeciesDTO){
         int counter = 0;
+        int size = pokemonSpeciesDTO.getFlavor_text_entries().size();
+
         String englishDes = "";
         String spanishDes = "";
         String japaneseDes = "";
         String frenchDes = "";
 
-        while(englishDes.isEmpty() || spanishDes.isEmpty()  || japaneseDes.isEmpty() || frenchDes.isEmpty()){
-            String language = pokemonSpeciesDTO.getFlavor_text_entries().get(counter).getLanguage().getName();
-            String description = pokemonSpeciesDTO.getFlavor_text_entries().get(counter).getFlavor_text();
+        while(counter != size-1 && (englishDes.isEmpty() || spanishDes.isEmpty()  || japaneseDes.isEmpty() || frenchDes.isEmpty())){
+            String language = pokemonSpeciesDTO
+                    .getFlavor_text_entries()
+                    .get(counter)
+                    .getLanguage()
+                    .getName();
+
+            String description = pokemonSpeciesDTO
+                    .getFlavor_text_entries()
+                    .get(counter)
+                    .getFlavor_text()
+                    .replaceAll("\n"," ")
+                    .replaceAll("\r"," ");
+
             if(language.equals("en") && englishDes.isEmpty()){
                 englishDes = description;
             } else if (language.equals("es") && spanishDes.isEmpty()) {
@@ -99,14 +107,19 @@ public class PokemonApiService {
             counter++;
         }
 
-        return null;
-
-    }
-
-    public void noLanguage(String englishDes,String spanishDes, String japaneseDes, String frenchDes ){
-        if(spanishDes.isEmpty())spanishDes=englishDes;
-        if(japaneseDes.isEmpty())japaneseDes=englishDes;
-        if(frenchDes.isEmpty())frenchDes=englishDes;
+        if(spanishDes.isEmpty()){
+            spanishDes = englishDes;
+        } else if (japaneseDes.isEmpty()) {
+            japaneseDes = englishDes;
+        } else if (frenchDes.isEmpty()) {
+            frenchDes = englishDes;
         }
 
+        return Description.builder()
+                .d_english(englishDes)
+                .d_french(frenchDes)
+                .d_japanese(japaneseDes)
+                .d_spanish(spanishDes)
+                .build();
+    }
 }
