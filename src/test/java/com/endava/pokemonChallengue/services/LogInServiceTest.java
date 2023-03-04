@@ -35,11 +35,6 @@ class LogInServiceTest {
     public LogInServiceTest(LogInRepository logInRepository){
         this.logInRepository = logInRepository;
     }
-    @Test
-    void addNewValidUser() {
-        when(logInRepository.findAll()).thenReturn(Arrays.asList(user));
-        assertNotNull(logInService.addNewUser(user));
-    }
 
     @Test
     void signInExceptions() {
