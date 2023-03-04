@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Entity
 @Table(name = "_user")
-public class User {
+public class UserInfo {
     @Id
     @SequenceGenerator(
             name = "user_sequence",

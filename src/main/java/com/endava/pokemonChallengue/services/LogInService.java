@@ -2,7 +2,7 @@ package com.endava.pokemonChallengue.services;
 
 import com.endava.pokemonChallengue.exceptions.ExceptionGenerator;
 import com.endava.pokemonChallengue.exceptions.ExceptionType;
-import com.endava.pokemonChallengue.models.User;
+import com.endava.pokemonChallengue.models.UserInfo;
 import com.endava.pokemonChallengue.models.dto.login.LogInDto;
 import com.endava.pokemonChallengue.models.dto.login.LogOutDto;
 import com.endava.pokemonChallengue.models.dto.login.SignInDto;
@@ -24,48 +24,48 @@ public class LogInService {
         this.logInRepository = logInRepository;
     }
 
-    public SignInDto signIn(User user) {
-        Optional<User> optionalUserEmail = logInRepository.findUserByEmailAndUsername(user.getEmail(), user.getUsername());
-        signInExceptions(optionalUserEmail,user);
+    public SignInDto signIn(UserInfo userInfo) {
+        Optional<UserInfo> optionalUserEmail = logInRepository.findUserByEmailAndUsername(userInfo.getEmail(), userInfo.getUsername());
+        signInExceptions(optionalUserEmail, userInfo);
         SignInDto signInDto = null;
         if(!optionalUserEmail.isPresent()){
-            logInRepository.save(user);
+            logInRepository.save(userInfo);
             return SignInDto.builder()
-                    .id(user.getId())
-                    .email(user.getEmail())
-                    .username(user.getUsername())
+                    .id(userInfo.getId())
+                    .email(userInfo.getEmail())
+                    .username(userInfo.getUsername())
                     .build();
         }
         return signInDto;
     }
-    public LogInDto logInUser(User user) {
-        Optional<User> optionalUserEmail = logInRepository.findByEmailAndPassword(user.getEmail(),user.getPassword());
+    public LogInDto logInUser(UserInfo userInfo) {
+        Optional<UserInfo> optionalUserEmail = logInRepository.findByEmailAndPassword(userInfo.getEmail(), userInfo.getPassword());
         if(optionalUserEmail.isPresent() ){
-            User userFound = optionalUserEmail.get();
-            if(userFound.getConnect()==null || !userFound.getConnect()) userFound.setConnect(true);
-            else if(Boolean.TRUE.equals(userFound.getConnect())){
+            UserInfo userInfoFound = optionalUserEmail.get();
+            if(userInfoFound.getConnect()==null || !userInfoFound.getConnect()) userInfoFound.setConnect(true);
+            else if(Boolean.TRUE.equals(userInfoFound.getConnect())){
                 throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The user is already connected");
-            }logInRepository.save(userFound);
+            }logInRepository.save(userInfoFound);
             return LogInDto.builder()
-                    .id(userFound.getId())
-                    .email(userFound.getEmail())
-                    .username(userFound.getUsername())
+                    .id(userInfoFound.getId())
+                    .email(userInfoFound.getEmail())
+                    .username(userInfoFound.getUsername())
                     .build();
         }else{
             throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The credentials are incorrect");
         }
     }
 
-    public LogOutDto logOutUser(User user) {
-        Optional<User> optionalUser = logInRepository.findByEmailAndPassword(user.getEmail(),user.getPassword());
+    public LogOutDto logOutUser(UserInfo userInfo) {
+        Optional<UserInfo> optionalUser = logInRepository.findByEmailAndPassword(userInfo.getEmail(), userInfo.getPassword());
         if(optionalUser.isPresent()){
-            User userFound = logInRepository.findByEmail(user.getEmail());
-            if(Boolean.FALSE.equals(userFound.getConnect())){
+            UserInfo userInfoFound = logInRepository.findByEmail(userInfo.getEmail());
+            if(Boolean.FALSE.equals(userInfoFound.getConnect())){
                 throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "User already disconnected");
             }
-            userFound.setConnect(false);
-            logInRepository.save(userFound);
-            System.out.println("ROLE " + userFound.getRole());
+            userInfoFound.setConnect(false);
+            logInRepository.save(userInfoFound);
+            System.out.println("ROLE " + userInfoFound.getRole());
             return LogOutDto.builder()
                     .status("ok")
                     .build();
@@ -74,12 +74,12 @@ public class LogInService {
 
 
 
-    public void signInExceptions(Optional<User> optionalUserEmail,User user) {
-        if (user.getEmail() == null || user.getUsername() == null || user.getRole()==null) {
+    public void signInExceptions(Optional<UserInfo> optionalUserEmail, UserInfo userInfo) {
+        if (userInfo.getEmail() == null || userInfo.getUsername() == null || userInfo.getRole()==null) {
             throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Fields email or username or role not null");
         } else if (optionalUserEmail.isPresent()) {
             throw ExceptionGenerator.getException(ExceptionType.DUPLICATE_VALUE, "Email already in use or Username already in use");
-        } else if (!EmailValidator.getInstance().isValid(user.getEmail())) {
+        } else if (!EmailValidator.getInstance().isValid(userInfo.getEmail())) {
             throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Enter a valid email");
         }
     }
