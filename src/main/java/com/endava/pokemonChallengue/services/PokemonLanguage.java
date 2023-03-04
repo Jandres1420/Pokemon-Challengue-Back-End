@@ -5,6 +5,8 @@ import com.endava.pokemonChallengue.models.Description;
 import com.endava.pokemonChallengue.models.dto.AbilityDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
 
+import java.util.Locale;
+
 public class PokemonLanguage {
 
 
@@ -12,14 +14,51 @@ public class PokemonLanguage {
         //Get Ability Description
         int descriptionCounter = 0;
         int descriptionsSize = abilityDTO.getEffect_entries().size();
-
+        Description descriptionT = Description.builder().build();
         String englishDes = "";
         String spanishDes = "";
         String japaneseDes = "";
         String germanDes = "";
 
+        while(descriptionCounter != descriptionsSize && (englishDes.isEmpty() || spanishDes.isEmpty()  || japaneseDes.isEmpty() || germanDes.isEmpty())){
+            String language = abilityDTO
+                    .getEffect_entries()
+                    .get(descriptionCounter)
+                    .getLanguage()
+                    .getName();
 
 
+            String description = abilityDTO
+                    .getEffect_entries()
+                    .get(descriptionCounter)
+                    .getEffect()
+                    .replace("\n"," ")
+                    .replace("\r"," ");
+
+            if(language.equals("en") && englishDes.isEmpty()){
+                englishDes = description;
+            }
+            if (language.equals("es") && spanishDes.isEmpty()) {
+                spanishDes = description;
+            }
+            if (language.equals("ja") && japaneseDes.isEmpty()) {
+                japaneseDes = description;
+            }
+            if (language.equals("de") && germanDes.isEmpty()){
+                germanDes = description;
+            }
+            descriptionCounter++;
+        }
+
+        if(spanishDes.isEmpty()){
+            spanishDes = englishDes;
+        }
+        if (japaneseDes.isEmpty()) {
+            japaneseDes = englishDes;
+        }
+        if (germanDes.isEmpty()) {
+            germanDes = englishDes;
+        }
 
         //Get Ability Name
         int nameCounter = 0;

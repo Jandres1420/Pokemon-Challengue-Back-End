@@ -1,11 +1,10 @@
 package com.endava.pokemonChallengue.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -26,5 +25,11 @@ public class Pokemon {
 
     @OneToOne(mappedBy="pokemon", cascade = CascadeType.ALL)
     private Description description;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Pokemon_Ability",
+            joinColumns = {@JoinColumn(name="pokemon_id")},
+            inverseJoinColumns = {@JoinColumn (name = "ability_id")})
+    private List<Ability> abilities;
 
 }

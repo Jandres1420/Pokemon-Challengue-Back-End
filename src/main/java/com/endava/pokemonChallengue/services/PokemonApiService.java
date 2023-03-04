@@ -13,6 +13,7 @@ import com.endava.pokemonChallengue.repositories.PokemonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -39,10 +40,11 @@ public class PokemonApiService {
         description.setPokemon(pokemon);
         pokemon.setDescription(description);
 
+        pokemon.setAbilities(new ArrayList<>());
+
         for (int i = 0; i < abilitiesDTO.size(); i++) {
             Ability ability = getAbility(abilitiesDTO.get(i));
-            System.out.println(ability.toString());
-            abilityRepository.save(ability);
+            pokemon.getAbilities().add(ability);
         }
 
         pokemonRepository.save(pokemon);
