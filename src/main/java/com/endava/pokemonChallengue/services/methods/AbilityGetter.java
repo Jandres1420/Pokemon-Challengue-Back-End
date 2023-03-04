@@ -1,20 +1,17 @@
-package com.endava.pokemonChallengue.services;
+package com.endava.pokemonChallengue.services.methods;
 
 import com.endava.pokemonChallengue.models.Ability;
-import com.endava.pokemonChallengue.models.Description;
 import com.endava.pokemonChallengue.models.dto.AbilityDTO;
-import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
+import lombok.NoArgsConstructor;
 
-import java.util.Locale;
-
-public class PokemonLanguage {
-
+@NoArgsConstructor
+public class AbilityGetter {
 
     public Ability getAbility(AbilityDTO abilityDTO) {
         //Get Ability Description
         int descriptionCounter = 0;
         int descriptionsSize = abilityDTO.getEffect_entries().size();
-        Description descriptionT = Description.builder().build();
+
         String englishDes = "";
         String spanishDes = "";
         String japaneseDes = "";
@@ -119,55 +116,5 @@ public class PokemonLanguage {
                 .n_german(germanName)
                 .n_japanese(japaneseName)
                 .build();
-    }
-
-    public Description getDescription(PokemonSpeciesDTO pokemonSpeciesDTO) {
-        int counter = 0;
-        int size = pokemonSpeciesDTO.getFlavor_text_entries().size();
-
-        String englishDes = "";
-        String spanishDes = "";
-        String japaneseDes = "";
-        String germanDes = "";
-
-        while (counter != size && (englishDes.isEmpty() || spanishDes.isEmpty() || japaneseDes.isEmpty() || germanDes.isEmpty())) {
-            String language = pokemonSpeciesDTO
-                    .getFlavor_text_entries()
-                    .get(counter)
-                    .getLanguage()
-                    .getName();
-
-            String description = pokemonSpeciesDTO
-                    .getFlavor_text_entries()
-                    .get(counter)
-                    .getFlavor_text()
-                    .replace("\n", " ")
-                    .replace("\r", " ");
-
-            if (language.equals("en") && englishDes.isEmpty()) {
-                englishDes = description;
-            }
-            if (language.equals("es") && spanishDes.isEmpty()) {
-                spanishDes = description;
-            }
-            if (language.equals("ja") && japaneseDes.isEmpty()) {
-                japaneseDes = description;
-            }
-            if (language.equals("de") && germanDes.isEmpty()) {
-                germanDes = description;
-            }
-            counter++;
-        }
-
-        if (spanishDes.isEmpty()) {
-            spanishDes = englishDes;
-        }
-        if (japaneseDes.isEmpty()) {
-            japaneseDes = englishDes;
-        }
-        if (germanDes.isEmpty()) {
-            germanDes = englishDes;
-        }
-        return null;
     }
 }

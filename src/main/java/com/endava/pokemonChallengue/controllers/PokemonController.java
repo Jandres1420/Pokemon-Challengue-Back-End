@@ -40,6 +40,6 @@ public class PokemonController {
             abilities.add(restTemplate.getForObject(urlAbility, AbilityDTO.class));
         }
 
-        pokemonApiService.pokemonService(pokemonDTO, pokemonSpeciesDTO, abilities, name);
+        pokemonApiService.pokemonService(pokemonDTO, pokemonSpeciesDTO, abilities);
     }
 }
