@@ -12,18 +12,17 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "Stat")
-public class Stat {
+@Table(name = "Description")
+public class Description {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long stat_id;
+    private Long description_id;
 
-    private int health;
-    private int attack;
-    private int defense;
-    private int specialAttack;
-    private int specialDefense;
-    private int speed;
+    private String d_english;
+    private String d_spanish;
+    private String d_japanese;
+    private String d_french;
+
 
     @OneToOne()
     @JoinColumn(name = "pokemon_id")

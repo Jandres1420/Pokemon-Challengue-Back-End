@@ -11,12 +11,6 @@ import java.net.MalformedURLException;
 @RequestMapping(path="/pokedex")
 public class PokemonApiController {
 
-    private final PokemonApiService pokemonApiService;
-
-    public PokemonApiController(PokemonApiService pokemonApiService) {
-        this.pokemonApiService = pokemonApiService;
-    }
-
     /*
     @GetMapping(path = "/pokemon")
     public ResponseEntity<Object> getDashboard(@RequestParam Integer quantity, @RequestParam Integer offset ){

@@ -28,6 +28,6 @@ public class PokemonController {
         String urlSpecies = "https://pokeapi.co/api/v2/pokemon-species/"+name;
         PokemonSpeciesDTO pokemonSpeciesDTO = restTemplate.getForObject(urlSpecies, PokemonSpeciesDTO.class);
 
-        pokemonApiService.createPokemon(pokemonDTO, pokemonSpeciesDTO);
+        pokemonApiService.pokemonService(pokemonDTO, pokemonSpeciesDTO);
     }
 }

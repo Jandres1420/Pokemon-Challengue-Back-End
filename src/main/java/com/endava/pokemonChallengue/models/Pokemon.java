@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "Pokemon")
 public class Pokemon {
-
     @Id
     private int pokemon_id;
 
@@ -22,5 +21,8 @@ public class Pokemon {
     private String type;
     private String description;
     private String img_path;
+
+    @OneToOne(mappedBy="pokemon", cascade = CascadeType.ALL)
+    private Stat stat;
 
 }
