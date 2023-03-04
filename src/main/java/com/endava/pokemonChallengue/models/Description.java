@@ -21,7 +21,7 @@ public class Description {
     private String d_english;
     private String d_spanish;
     private String d_japanese;
-    private String d_french;
+    private String d_german;
 
     @OneToOne()
     @JoinColumn(name = "pokemon_id")

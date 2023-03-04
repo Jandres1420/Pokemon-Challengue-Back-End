@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AbilityDTO {
+    private int id;
     private List<NameDTO> names;
     private List<EffectDTO> effect_entries;
 }
