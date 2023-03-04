@@ -1,0 +1,26 @@
+package com.endava.pokemonChallengue.services.methods;
+
+import com.endava.pokemonChallengue.models.Stat;
+import com.endava.pokemonChallengue.models.dto.PokemonDTO;
+import com.endava.pokemonChallengue.models.dto.stat.StatsDTO;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@NoArgsConstructor
+public class StatGetter {
+
+    public Stat getStat(PokemonDTO pokemonDTO) {
+        List<StatsDTO> stats = pokemonDTO.getStats();
+
+        return Stat.builder()
+                .health(stats.get(0).getBase_stat())
+                .attack(stats.get(1).getBase_stat())
+                .defense(stats.get(2).getBase_stat())
+                .specialAttack(stats.get(3).getBase_stat())
+                .specialDefense(stats.get(4).getBase_stat())
+                .speed(stats.get(5).getBase_stat())
+                .build();
+    }
+
+}

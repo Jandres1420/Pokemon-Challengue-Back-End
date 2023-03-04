@@ -1,4 +1,5 @@
 package com.endava.pokemonChallengue.exceptions;
+import lombok.Data;
 
 import lombok.Data;
 
