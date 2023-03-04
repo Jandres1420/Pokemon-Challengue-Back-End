@@ -1,4 +1,4 @@
-package com.endava.pokemonChallengue.models.dto.description;
+package com.endava.pokemonChallengue.models.dto.ability;
 
 import com.endava.pokemonChallengue.models.dto.language.LanguageDTO;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FlavorTextDTO {
-    private String flavor_text;
+public class NameDTO {
+    private String name;
     private LanguageDTO language;
 }

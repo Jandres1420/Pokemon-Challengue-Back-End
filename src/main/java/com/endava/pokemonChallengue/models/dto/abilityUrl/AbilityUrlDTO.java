@@ -1,6 +1,5 @@
-package com.endava.pokemonChallengue.models.dto.description;
+package com.endava.pokemonChallengue.models.dto.abilityUrl;
 
-import com.endava.pokemonChallengue.models.dto.image.OtherDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LanguageDTO {
+public class AbilityUrlDTO {
     private String name;
+    private String url;
 }

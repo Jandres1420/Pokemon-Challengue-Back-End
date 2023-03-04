@@ -1,6 +1,7 @@
 package com.endava.pokemonChallengue.models.dto;
 
 
+import com.endava.pokemonChallengue.models.dto.abilityUrl.AbilitiesUrlDTO;
 import com.endava.pokemonChallengue.models.dto.image.SpritesDTO;
 import com.endava.pokemonChallengue.models.dto.stat.StatsDTO;
 import com.endava.pokemonChallengue.models.dto.type.TypesDTO;
@@ -17,7 +18,7 @@ public class PokemonDTO {
     private String name;
     private List<TypesDTO> types;
     private List<StatsDTO> stats;
-    private List<Object> abilities;
+    private List<AbilitiesUrlDTO> abilities;
     private String typeString;
     private SpritesDTO sprites;
 }

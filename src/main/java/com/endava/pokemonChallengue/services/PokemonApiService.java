@@ -1,11 +1,16 @@
 package com.endava.pokemonChallengue.services;
 
+import com.endava.pokemonChallengue.exceptions.ExceptionGenerator;
+import com.endava.pokemonChallengue.exceptions.ExceptionType;
+import com.endava.pokemonChallengue.models.Ability;
 import com.endava.pokemonChallengue.models.Description;
 import com.endava.pokemonChallengue.models.Pokemon;
 import com.endava.pokemonChallengue.models.Stat;
+import com.endava.pokemonChallengue.models.dto.AbilityDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
 import com.endava.pokemonChallengue.models.dto.stat.StatsDTO;
+import com.endava.pokemonChallengue.repositories.AbilityRepository;
 import com.endava.pokemonChallengue.repositories.DescriptionRepository;
 import com.endava.pokemonChallengue.repositories.PokemonRepository;
 import com.endava.pokemonChallengue.repositories.StatRepository;
@@ -14,16 +19,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PokemonApiService {
-    private final PokemonRepository  pokemonRepository;
+    private final PokemonRepository pokemonRepository;
+    private final AbilityRepository abilityRepository;
 
-    public void pokemonService(PokemonDTO pokemonDTO, PokemonSpeciesDTO pokemonSpeciesDTO){
+    public void pokemonService(PokemonDTO pokemonDTO, PokemonSpeciesDTO pokemonSpeciesDTO, List<AbilityDTO> abilitiesDTO, String name) {
 
         //todo CHEQUEAR SI EL POKEMON EXISTE
+//        if(pokemonRepository.findByPokemon_id(Integer.parseInt(name)).isPresent()){
+//            throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Enter a valid id");
+//        }
 
         Pokemon pokemon = getPokemon(pokemonDTO);
 
@@ -35,13 +45,18 @@ public class PokemonApiService {
         description.setPokemon(pokemon);
         pokemon.setDescription(description);
 
+        for (int i = 0; i < abilitiesDTO.size(); i++) {
+            Ability ability = getAbility(abilitiesDTO.get(i));
+            abilityRepository.save(ability);
+        }
+
         pokemonRepository.save(pokemon);
     }
 
-    public Pokemon getPokemon(PokemonDTO pokemonDTO){
+    public Pokemon getPokemon(PokemonDTO pokemonDTO) {
         String types = "";
-        for(int i=0;i<pokemonDTO.getTypes().size();i++){
-            types += pokemonDTO.getTypes().get(i).getType().getName()+", ";
+        for (int i = 0; i < pokemonDTO.getTypes().size(); i++) {
+            types += pokemonDTO.getTypes().get(i).getType().getName() + ", ";
         }
         pokemonDTO.setTypeString(types);
 
@@ -59,10 +74,10 @@ public class PokemonApiService {
                 .build();
     }
 
-    public Stat getStat(PokemonDTO pokemonDTO){
+    public Stat getStat(PokemonDTO pokemonDTO) {
         List<StatsDTO> stats = pokemonDTO.getStats();
 
-       return Stat.builder()
+        return Stat.builder()
                 .health(stats.get(0).getBase_stat())
                 .attack(stats.get(1).getBase_stat())
                 .defense(stats.get(2).getBase_stat())
@@ -72,7 +87,7 @@ public class PokemonApiService {
                 .build();
     }
 
-    public Description getDescription(PokemonSpeciesDTO pokemonSpeciesDTO){
+    public Description getDescription(PokemonSpeciesDTO pokemonSpeciesDTO) {
         int counter = 0;
         int size = pokemonSpeciesDTO.getFlavor_text_entries().size();
 
@@ -81,7 +96,7 @@ public class PokemonApiService {
         String japaneseDes = "";
         String frenchDes = "";
 
-        while(counter != size-1 && (englishDes.isEmpty() || spanishDes.isEmpty()  || japaneseDes.isEmpty() || frenchDes.isEmpty())){
+        while (counter != size && (englishDes.isEmpty() || spanishDes.isEmpty() || japaneseDes.isEmpty() || frenchDes.isEmpty())) {
             String language = pokemonSpeciesDTO
                     .getFlavor_text_entries()
                     .get(counter)
@@ -92,22 +107,22 @@ public class PokemonApiService {
                     .getFlavor_text_entries()
                     .get(counter)
                     .getFlavor_text()
-                    .replaceAll("\n"," ")
-                    .replaceAll("\r"," ");
+                    .replaceAll("\n", " ")
+                    .replaceAll("\r", " ");
 
-            if(language.equals("en") && englishDes.isEmpty()){
+            if (language.equals("en") && englishDes.isEmpty()) {
                 englishDes = description;
             } else if (language.equals("es") && spanishDes.isEmpty()) {
                 spanishDes = description;
             } else if (language.equals("ja") && japaneseDes.isEmpty()) {
                 japaneseDes = description;
-            } else if (language.equals("fr") && frenchDes.isEmpty()){
+            } else if (language.equals("fr") && frenchDes.isEmpty()) {
                 frenchDes = description;
             }
             counter++;
         }
 
-        if(spanishDes.isEmpty()){
+        if (spanishDes.isEmpty()) {
             spanishDes = englishDes;
         } else if (japaneseDes.isEmpty()) {
             japaneseDes = englishDes;
@@ -120,6 +135,107 @@ public class PokemonApiService {
                 .d_french(frenchDes)
                 .d_japanese(japaneseDes)
                 .d_spanish(spanishDes)
+                .build();
+    }
+
+    public Ability getAbility(AbilityDTO abilityDTO) {
+        //Get Ability Description
+        int description_counter = 0;
+        int description_size = abilityDTO.getEffect_entries().size();
+
+        String englishDes = "";
+        String spanishDes = "";
+        String japaneseDes = "";
+        String frenchDes = "";
+
+        while(description_counter != description_size && (englishDes.isEmpty() || spanishDes.isEmpty()  || japaneseDes.isEmpty() || frenchDes.isEmpty())){
+            String language = abilityDTO
+                    .getEffect_entries()
+                    .get(description_counter)
+                    .getLanguage()
+                    .getName();
+
+
+            String description = abilityDTO
+                    .getEffect_entries()
+                    .get(description_counter)
+                    .getEffect()
+                    .replaceAll("\n"," ")
+                    .replaceAll("\r"," ");
+
+            if(language.equals("en") && englishDes.isEmpty()){
+                englishDes = description;
+            } else if (language.equals("es") && spanishDes.isEmpty()) {
+                spanishDes = description;
+            } else if (language.equals("ja") && japaneseDes.isEmpty()) {
+                japaneseDes = description;
+            } else if (language.equals("fr") && frenchDes.isEmpty()){
+                frenchDes = description;
+            }
+            description_counter++;
+        }
+
+        if(spanishDes.isEmpty()){
+            spanishDes = englishDes;
+        } else if (japaneseDes.isEmpty()) {
+            japaneseDes = englishDes;
+        } else if (frenchDes.isEmpty()) {
+            frenchDes = englishDes;
+        }
+
+        //Get Ability Name
+        int name_counter = 0;
+        int name_size = abilityDTO.getNames().size();
+
+        String englishName = "";
+        String spanishName = "";
+        String japaneseName = "";
+        String frenchName = "";
+
+        while(name_counter != name_size && (englishName.isEmpty() || spanishName.isEmpty()  || japaneseName.isEmpty() || frenchName.isEmpty())){
+            String language = abilityDTO
+                    .getNames()
+                    .get(name_counter)
+                    .getLanguage()
+                    .getName();
+
+
+            String name = abilityDTO
+                    .getNames()
+                    .get(name_counter)
+                    .getName()
+                    .replaceAll("\n"," ")
+                    .replaceAll("\r"," ");
+
+            if(language.equals("en") && englishName.isEmpty()){
+                englishName = name;
+            } else if (language.equals("es") && spanishName.isEmpty()) {
+                spanishName = name;
+            } else if (language.equals("ja") && japaneseName.isEmpty()) {
+                japaneseName = name;
+            } else if (language.equals("fr") && frenchName.isEmpty()){
+                frenchName = name;
+            }
+            name_counter++;
+        }
+
+        if(spanishName.isEmpty()){
+            spanishName = englishName;
+        } else if (japaneseName.isEmpty()) {
+            japaneseName = englishName;
+        } else if (frenchName.isEmpty()) {
+            frenchName = englishName;
+        }
+
+        return Ability.builder()
+                .d_english(englishDes)
+                .d_french(frenchDes)
+                .d_japanese(japaneseDes)
+                .d_spanish(spanishDes)
+                .n_english(englishName)
+                .n_spanish(spanishName)
+                .n_french(frenchName)
+                .n_japanese(japaneseName)
                 .build();
     }
 }
