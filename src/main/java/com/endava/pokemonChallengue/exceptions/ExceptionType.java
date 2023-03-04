@@ -1,4 +1,5 @@
 package com.endava.pokemonChallengue.exceptions;
 
-public class ExceptionType {
+public enum ExceptionType {
+    DUPLICATE_VALUE,PARAMS_REQUIRED,INVALID_VALUE
 }
