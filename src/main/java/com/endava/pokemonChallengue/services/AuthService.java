@@ -3,9 +3,9 @@ package com.endava.pokemonChallengue.services;
 import com.endava.pokemonChallengue.exceptions.ExceptionGenerator;
 import com.endava.pokemonChallengue.exceptions.ExceptionType;
 import com.endava.pokemonChallengue.models.UserInfo;
-import com.endava.pokemonChallengue.models.dto.login.LogInDto;
-import com.endava.pokemonChallengue.models.dto.login.LogOutDto;
-import com.endava.pokemonChallengue.models.dto.login.SignInDto;
+import com.endava.pokemonChallengue.models.dto.responseBody.LogInResponse;
+import com.endava.pokemonChallengue.models.dto.responseBody.LogOutResponse;
+import com.endava.pokemonChallengue.models.dto.responseBody.SignInResponse;
 import com.endava.pokemonChallengue.repositories.UserRepository;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +24,21 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    public SignInDto signIn(UserInfo userInfo) {
+    public SignInResponse signIn(UserInfo userInfo) {
         Optional<UserInfo> optionalUserEmail = userRepository.findUserByEmailAndUsername(userInfo.getEmail(), userInfo.getUsername());
         signInExceptions(optionalUserEmail, userInfo);
-        SignInDto signInDto = null;
+        SignInResponse signInResponse = null;
         if(!optionalUserEmail.isPresent()){
             userRepository.save(userInfo);
-            return SignInDto.builder()
+            return SignInResponse.builder()
                     .id(userInfo.getUser_id())
                     .email(userInfo.getEmail())
                     .username(userInfo.getUsername())
                     .build();
         }
-        return signInDto;
+        return signInResponse;
     }
-    public LogInDto logInUser(UserInfo userInfo) {
+    public LogInResponse logInUser(UserInfo userInfo) {
         Optional<UserInfo> optionalUserEmail = userRepository.findByEmailAndPassword(userInfo.getEmail(), userInfo.getPassword());
         if(optionalUserEmail.isPresent()){
             UserInfo userInfoFound = optionalUserEmail.get();
@@ -48,7 +48,7 @@ public class AuthService {
                 throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The user is already connected");
             }
             userRepository.save(userInfoFound);
-            return LogInDto.builder()
+            return LogInResponse.builder()
                     .id(userInfoFound.getUser_id())
                     .email(userInfoFound.getEmail())
                     .username(userInfoFound.getUsername())
@@ -58,7 +58,7 @@ public class AuthService {
         }
     }
 
-    public LogOutDto logOutUser(UserInfo userInfo) {
+    public LogOutResponse logOutUser(UserInfo userInfo) {
         Optional<UserInfo> optionalUser = userRepository.findByEmailAndPassword(userInfo.getEmail(), userInfo.getPassword());
         if(optionalUser.isPresent()){
             UserInfo userInfoFound = userRepository.findByEmail(userInfo.getEmail());
@@ -68,7 +68,7 @@ public class AuthService {
             userInfoFound.setConnect(false);
             userRepository.save(userInfoFound);
             System.out.println("ROLE " + userInfoFound.getRole());
-            return LogOutDto.builder()
+            return LogOutResponse.builder()
                     .status("ok")
                     .build();
         }throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Service unavailable");

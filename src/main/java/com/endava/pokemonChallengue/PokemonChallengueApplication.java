@@ -17,5 +17,3 @@ public class PokemonChallengueApplication {
 		return new RestTemplate();
 	}
 }
-
-
