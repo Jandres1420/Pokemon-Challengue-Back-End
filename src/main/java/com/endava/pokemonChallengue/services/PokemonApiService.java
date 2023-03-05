@@ -67,7 +67,7 @@ public class PokemonApiService {
 
         Capture capture = Capture.builder()
                 .pokemon(pokemonRepository.findPokemon(pokemonId, pokemonName).get())
-                .user(userRepository.findByUsername(username))
+                .user(userRepository.findByUsername(username).get())
                 .health_status(pokemonDTO.getStats().get(0).getBase_stat())
                 .nickname(pokemonNickname)
                 .build();
