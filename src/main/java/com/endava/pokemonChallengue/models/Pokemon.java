@@ -19,6 +19,7 @@ public class Pokemon {
     private String name;
     private String type;
     private String img_path;
+    private String evolution_url;
 
     @OneToOne(mappedBy="pokemon", cascade = CascadeType.ALL)
     private Stat stat;

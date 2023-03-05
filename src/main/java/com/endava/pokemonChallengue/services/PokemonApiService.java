@@ -31,7 +31,7 @@ public class PokemonApiService {
         AbilityGetter abilityGetter = new AbilityGetter();
         StatGetter statGetter = new StatGetter();
 
-        Pokemon pokemon = pokemonGetter.getPokemon(pokemonDTO);
+        Pokemon pokemon = pokemonGetter.getPokemon(pokemonDTO, pokemonSpeciesDTO);
         Optional<Pokemon> foundPokemon = pokemonRepository.findPokemon(pokemon.getPokemon_id(),pokemon.getName());
 
         if(!foundPokemon.isPresent()) {
