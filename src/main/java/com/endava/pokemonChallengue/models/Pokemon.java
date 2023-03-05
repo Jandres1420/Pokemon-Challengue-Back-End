@@ -19,6 +19,7 @@ public class Pokemon {
     private String name;
     private String type;
     private String img_path;
+    private String evolution_url;
 
     @OneToOne(mappedBy="pokemon", cascade = CascadeType.ALL)
     private Stat stat;
@@ -31,5 +32,8 @@ public class Pokemon {
             joinColumns = {@JoinColumn(name="pokemon_id")},
             inverseJoinColumns = {@JoinColumn (name = "ability_id")})
     private List<Ability> abilities;
+
+    @OneToMany(mappedBy = "pokemon", cascade = CascadeType.ALL)
+    private List<Capture> captures;
 
 }

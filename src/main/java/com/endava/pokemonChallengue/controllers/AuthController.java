@@ -4,7 +4,7 @@ import com.endava.pokemonChallengue.models.UserInfo;
 import com.endava.pokemonChallengue.models.dto.login.LogInDto;
 import com.endava.pokemonChallengue.models.dto.login.LogOutDto;
 import com.endava.pokemonChallengue.models.dto.login.SignInDto;
-import com.endava.pokemonChallengue.services.LogInService;
+import com.endava.pokemonChallengue.services.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,26 +15,27 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping(path = "/pokedex/auth")
-public class LogInController {
+public class AuthController {
 
-    private final LogInService logInService;
+    private final AuthService authService;
 
-    public LogInController(LogInService logInService){this.logInService = logInService;}
+    public AuthController(AuthService authService){this.authService = authService;}
 
 
-    @PostMapping("/signIn")
+    @PostMapping("/signUp")
     public ResponseEntity<SignInDto> signUpUser(@RequestBody @Valid @NotNull @NotEmpty UserInfo userInfo){
-        return new ResponseEntity<>(logInService.signIn(userInfo), HttpStatus.CREATED);
+        return new ResponseEntity<>(authService.signIn(userInfo), HttpStatus.CREATED);
     }
 
     @PostMapping("/logIn")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<LogInDto> logInUser(@RequestBody @Valid @NotNull @NotEmpty UserInfo userInfo){
-        return new ResponseEntity<>(logInService.logInUser(userInfo), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(authService.logInUser(userInfo), HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/logOut")
     public ResponseEntity<LogOutDto> logOutUser(@RequestBody @Valid @NotNull @NotEmpty UserInfo userInfo){
-        return new ResponseEntity<>(logInService.logOutUser(userInfo), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(authService.logOutUser(userInfo), HttpStatus.ACCEPTED);
     }
 }
+

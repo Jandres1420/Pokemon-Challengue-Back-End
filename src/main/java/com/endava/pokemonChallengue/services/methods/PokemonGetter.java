@@ -2,13 +2,13 @@ package com.endava.pokemonChallengue.services.methods;
 
 import com.endava.pokemonChallengue.models.Pokemon;
 import com.endava.pokemonChallengue.models.dto.PokemonDTO;
-import lombok.Builder;
+import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class PokemonGetter {
 
-    public Pokemon getPokemon(PokemonDTO pokemonDTO) {
+    public Pokemon getPokemon(PokemonDTO pokemonDTO, PokemonSpeciesDTO pokemonSpeciesDTO) {
         String types = "";
         for (int i = 0; i < pokemonDTO.getTypes().size(); i++) {
             types += pokemonDTO.getTypes().get(i).getType().getName() + ", ";
@@ -26,6 +26,7 @@ public class PokemonGetter {
                 .name(pokemonDTO.getName())
                 .type(types)
                 .img_path(imagePath)
+                .evolution_url(pokemonSpeciesDTO.getEvolution_chain().getUrl())
                 .build();
     }
 }
