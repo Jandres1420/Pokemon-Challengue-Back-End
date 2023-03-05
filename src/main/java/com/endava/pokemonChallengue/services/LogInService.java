@@ -2,6 +2,7 @@ package com.endava.pokemonChallengue.services;
 
 import com.endava.pokemonChallengue.exceptions.ExceptionGenerator;
 import com.endava.pokemonChallengue.exceptions.ExceptionType;
+import com.endava.pokemonChallengue.models.Capture;
 import com.endava.pokemonChallengue.models.UserInfo;
 import com.endava.pokemonChallengue.models.dto.login.LogInDto;
 import com.endava.pokemonChallengue.models.dto.login.LogOutDto;
@@ -12,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,7 +35,7 @@ public class LogInService {
         if(!optionalUserEmail.isPresent()){
             logInRepository.save(userInfo);
             return SignInDto.builder()
-                    .id(userInfo.getId())
+                    .id(userInfo.getUser_id())
                     .email(userInfo.getEmail())
                     .username(userInfo.getUsername())
                     .build();
@@ -40,14 +44,15 @@ public class LogInService {
     }
     public LogInDto logInUser(UserInfo userInfo) {
         Optional<UserInfo> optionalUserEmail = logInRepository.findByEmailAndPassword(userInfo.getEmail(), userInfo.getPassword());
-        if(optionalUserEmail.isPresent() ){
+        if(optionalUserEmail.isPresent()){
             UserInfo userInfoFound = optionalUserEmail.get();
+
             if(userInfoFound.getConnect()==null || !userInfoFound.getConnect()) userInfoFound.setConnect(true);
             else if(Boolean.TRUE.equals(userInfoFound.getConnect())){
                 throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The user is already connected");
             }logInRepository.save(userInfoFound);
             return LogInDto.builder()
-                    .id(userInfoFound.getId())
+                    .id(userInfoFound.getUser_id())
                     .email(userInfoFound.getEmail())
                     .username(userInfoFound.getUsername())
                     .build();
@@ -72,8 +77,6 @@ public class LogInService {
         }throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Service unavailable");
     }
 
-
-
     public void signInExceptions(Optional<UserInfo> optionalUserEmail, UserInfo userInfo) {
         if (userInfo.getEmail() == null || userInfo.getUsername() == null || userInfo.getRole()==null) {
             throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Fields email or username or role not null");
@@ -83,7 +86,4 @@ public class LogInService {
             throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Enter a valid email");
         }
     }
-
-
-
 }

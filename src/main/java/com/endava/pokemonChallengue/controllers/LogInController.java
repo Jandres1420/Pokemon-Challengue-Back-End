@@ -22,7 +22,7 @@ public class LogInController {
     public LogInController(LogInService logInService){this.logInService = logInService;}
 
 
-    @PostMapping("/signIn")
+    @PostMapping("/signUp")
     public ResponseEntity<SignInDto> signUpUser(@RequestBody @Valid @NotNull @NotEmpty UserInfo userInfo){
         return new ResponseEntity<>(logInService.signIn(userInfo), HttpStatus.CREATED);
     }
@@ -38,3 +38,4 @@ public class LogInController {
         return new ResponseEntity<>(logInService.logOutUser(userInfo), HttpStatus.ACCEPTED);
     }
 }
+

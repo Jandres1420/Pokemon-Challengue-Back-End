@@ -16,16 +16,9 @@ import javax.validation.constraints.NotNull;
 @Table(name = "_user")
 public class UserInfo {
     @Id
-    @SequenceGenerator(
-            name = "user_sequence",
-            sequenceName = "user_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "user_sequence"
-    )
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int user_id;
+
     @NotEmpty
     @NotNull
     private String username;

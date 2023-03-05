@@ -3,6 +3,7 @@ package com.endava.pokemonChallengue.controllers;
 import com.endava.pokemonChallengue.models.dto.PokemonDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
 import com.endava.pokemonChallengue.models.dto.AbilityDTO;
+import com.endava.pokemonChallengue.models.dto.requestBody.CaptureForm;
 import com.endava.pokemonChallengue.services.PokemonApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +24,17 @@ public class PokemonController {
         this.pokemonApiService = pokemonApiService;
     }
 
-    @RequestMapping(path = "{language}/pokemon")
+    @RequestMapping(path = "/pokedex/pokemon-trainer/{username}/pokemon")
     @GetMapping()
-    public void getPokemon(@PathVariable(name = "language") String language, @RequestParam String name) {
-        String urlPokemon = "https://pokeapi.co/api/v2/pokemon/"+name;
+    public void capturePokemon(@PathVariable(name = "username") String username, @RequestBody CaptureForm captureForm) {
+        String pokemonName = captureForm.getName();
+        int pokemonId = captureForm.getId();
+        String pokemonNickname = captureForm.getNickname();
+
+        String urlPokemon = "https://pokeapi.co/api/v2/pokemon/"+pokemonName;
         PokemonDTO pokemonDTO = restTemplate.getForObject(urlPokemon, PokemonDTO.class);
 
-        String urlSpecies = "https://pokeapi.co/api/v2/pokemon-species/"+name;
+        String urlSpecies = "https://pokeapi.co/api/v2/pokemon-species/"+pokemonName;
         PokemonSpeciesDTO pokemonSpeciesDTO = restTemplate.getForObject(urlSpecies, PokemonSpeciesDTO.class);
 
         int abilitiesSize = pokemonDTO.getAbilities().size();
@@ -40,6 +45,13 @@ public class PokemonController {
             abilities.add(restTemplate.getForObject(urlAbility, AbilityDTO.class));
         }
 
-        pokemonApiService.pokemonService(pokemonDTO, pokemonSpeciesDTO, abilities);
+        pokemonApiService.pokemonCapture(username,
+                pokemonName,
+                pokemonId,
+                pokemonNickname,
+                pokemonDTO,
+                pokemonSpeciesDTO,
+                abilities);
     }
+
 }

@@ -1,13 +1,11 @@
 package com.endava.pokemonChallengue.services;
 
-import com.endava.pokemonChallengue.models.Ability;
-import com.endava.pokemonChallengue.models.Description;
-import com.endava.pokemonChallengue.models.Pokemon;
-import com.endava.pokemonChallengue.models.Stat;
+import com.endava.pokemonChallengue.models.*;
 import com.endava.pokemonChallengue.models.dto.AbilityDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
 import com.endava.pokemonChallengue.models.dto.stat.StatsDTO;
+import com.endava.pokemonChallengue.repositories.CaptureRepository;
 import com.endava.pokemonChallengue.repositories.PokemonRepository;
 import com.endava.pokemonChallengue.services.methods.AbilityGetter;
 import com.endava.pokemonChallengue.services.methods.DescriptionGetter;
@@ -24,17 +22,26 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PokemonApiService {
     private final PokemonRepository pokemonRepository;
+    private final CaptureRepository captureRepository;
 
-    public void pokemonService(PokemonDTO pokemonDTO, PokemonSpeciesDTO pokemonSpeciesDTO, List<AbilityDTO> abilitiesDTO) {
+    public void pokemonCapture(String username,
+                               String pokemonName,
+                               int pokemonId,
+                               String pokemonNickname,
+                               PokemonDTO pokemonDTO,
+                               PokemonSpeciesDTO pokemonSpeciesDTO,
+                               List<AbilityDTO> abilitiesDTO) {
+
         PokemonGetter pokemonGetter = new PokemonGetter();
         DescriptionGetter descriptionGetter = new DescriptionGetter();
         AbilityGetter abilityGetter = new AbilityGetter();
         StatGetter statGetter = new StatGetter();
 
-        Pokemon pokemon = pokemonGetter.getPokemon(pokemonDTO, pokemonSpeciesDTO);
-        Optional<Pokemon> foundPokemon = pokemonRepository.findPokemon(pokemon.getPokemon_id(),pokemon.getName());
+        if(!pokemonRepository.findPokemon(pokemonId, pokemonName).isPresent()) {
+            System.out.println("Pokemon nuevo");
 
-        if(!foundPokemon.isPresent()) {
+            Pokemon pokemon = pokemonGetter.getPokemon(pokemonDTO, pokemonSpeciesDTO);
+
             Stat stat = statGetter.getStat(pokemonDTO);
             stat.setPokemon(pokemon);
             pokemon.setStat(stat);
@@ -50,6 +57,18 @@ public class PokemonApiService {
                 pokemon.getAbilities().add(ability);
             }
             pokemonRepository.save(pokemon);
+
+        }else{
+            System.out.println("Pokemon encontrado en la base de datos");
         }
+
+        Capture capture = Capture.builder()
+                .username(username)
+                .pokemon_id(pokemonId)
+                .health_status(pokemonDTO.getStats().get(0).getBase_stat())
+                .nickname(pokemonNickname)
+                .build();
+
+        captureRepository.save(capture);
     }
 }
