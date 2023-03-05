@@ -33,4 +33,7 @@ public class Pokemon {
             inverseJoinColumns = {@JoinColumn (name = "ability_id")})
     private List<Ability> abilities;
 
+    @OneToMany(mappedBy = "pokemon", cascade = CascadeType.ALL)
+    private List<Capture> captures;
+
 }

@@ -4,9 +4,11 @@ import com.endava.pokemonChallengue.models.*;
 import com.endava.pokemonChallengue.models.dto.AbilityDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
+import com.endava.pokemonChallengue.models.dto.responseBody.AddPokemonForm;
 import com.endava.pokemonChallengue.models.dto.stat.StatsDTO;
 import com.endava.pokemonChallengue.repositories.CaptureRepository;
 import com.endava.pokemonChallengue.repositories.PokemonRepository;
+import com.endava.pokemonChallengue.repositories.UserRepository;
 import com.endava.pokemonChallengue.services.methods.AbilityGetter;
 import com.endava.pokemonChallengue.services.methods.DescriptionGetter;
 import com.endava.pokemonChallengue.services.methods.PokemonGetter;
@@ -22,15 +24,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PokemonApiService {
     private final PokemonRepository pokemonRepository;
+    private final UserRepository userRepository;
     private final CaptureRepository captureRepository;
 
-    public void pokemonCapture(String username,
-                               String pokemonName,
-                               int pokemonId,
-                               String pokemonNickname,
-                               PokemonDTO pokemonDTO,
-                               PokemonSpeciesDTO pokemonSpeciesDTO,
-                               List<AbilityDTO> abilitiesDTO) {
+    public AddPokemonForm pokemonCapture(String username,
+                                         String pokemonName,
+                                         int pokemonId,
+                                         String pokemonNickname,
+                                         PokemonDTO pokemonDTO,
+                                         PokemonSpeciesDTO pokemonSpeciesDTO,
+                                         List<AbilityDTO> abilitiesDTO) {
 
         PokemonGetter pokemonGetter = new PokemonGetter();
         DescriptionGetter descriptionGetter = new DescriptionGetter();
@@ -63,12 +66,17 @@ public class PokemonApiService {
         }
 
         Capture capture = Capture.builder()
-                .username(username)
-                .pokemon_id(pokemonId)
+                .pokemon(pokemonRepository.findPokemon(pokemonId, pokemonName).get())
+                .user(userRepository.findByUsername(username))
                 .health_status(pokemonDTO.getStats().get(0).getBase_stat())
                 .nickname(pokemonNickname)
                 .build();
 
         captureRepository.save(capture);
+
+        return AddPokemonForm.builder()
+                .responseCode("Ok")
+                .responseMessage("Pokemon "+pokemonName+" added to "+ username)
+                .build();
     }
 }

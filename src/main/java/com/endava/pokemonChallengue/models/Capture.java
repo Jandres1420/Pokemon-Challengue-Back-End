@@ -17,10 +17,16 @@ public class Capture {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long capture_id;
 
-    private String username;
-    private int pokemon_id;
     private String nickname;
     private int health_status;
+
+    @ManyToOne(targetEntity = UserInfo.class,  cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private UserInfo user;
+
+    @ManyToOne(targetEntity = Pokemon.class,  cascade = CascadeType.ALL)
+    @JoinColumn(name = "pokemon_id")
+    private Pokemon pokemon;
 
 
 }

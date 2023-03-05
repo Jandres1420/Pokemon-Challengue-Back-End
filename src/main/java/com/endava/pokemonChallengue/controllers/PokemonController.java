@@ -4,6 +4,7 @@ import com.endava.pokemonChallengue.models.dto.PokemonDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
 import com.endava.pokemonChallengue.models.dto.AbilityDTO;
 import com.endava.pokemonChallengue.models.dto.requestBody.CaptureForm;
+import com.endava.pokemonChallengue.models.dto.responseBody.AddPokemonForm;
 import com.endava.pokemonChallengue.services.PokemonApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,10 @@ public class PokemonController {
     }
 
     @RequestMapping(path = "/pokedex/pokemon-trainer/{username}/pokemon")
-    @GetMapping()
-    public void capturePokemon(@PathVariable(name = "username") String username, @RequestBody CaptureForm captureForm) {
+    @PostMapping()
+    public AddPokemonForm capturePokemon(@PathVariable(name = "username") String username,
+                                         @RequestBody CaptureForm captureForm) {
+
         String pokemonName = captureForm.getName();
         int pokemonId = captureForm.getId();
         String pokemonNickname = captureForm.getNickname();
@@ -45,7 +48,7 @@ public class PokemonController {
             abilities.add(restTemplate.getForObject(urlAbility, AbilityDTO.class));
         }
 
-        pokemonApiService.pokemonCapture(username,
+        return  pokemonApiService.pokemonCapture(username,
                 pokemonName,
                 pokemonId,
                 pokemonNickname,

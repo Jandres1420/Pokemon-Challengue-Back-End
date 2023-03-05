@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,15 +23,22 @@ public class UserInfo {
     @NotEmpty
     @NotNull
     private String username;
+
     private String name;
     private String lastName;
+
     @NotEmpty
     @NotNull
     private String email;
+
     @NotEmpty
     @NotNull
     private String password;
+
     private Role role;
     private Boolean connect;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Capture> captures;
 
 }
