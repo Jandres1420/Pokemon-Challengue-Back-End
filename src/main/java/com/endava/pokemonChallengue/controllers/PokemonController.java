@@ -29,7 +29,7 @@ public class PokemonController {
     @PostMapping()
     public AddPokemonForm capturePokemon(@PathVariable(name = "username") String username,
                                          @RequestBody CaptureForm captureForm) {
-
+        System.out.println("HOLAAA");
         String pokemonName = captureForm.getName();
         int pokemonId = captureForm.getId();
         String pokemonNickname = captureForm.getNickname();

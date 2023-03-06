@@ -44,7 +44,7 @@ public class ExceptionController {
                                                                 WebRequest request) {
         ExceptionResponse response = new ExceptionResponse();
         response.setMessage(exception.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
 }

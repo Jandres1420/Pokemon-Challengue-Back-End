@@ -11,4 +11,9 @@ public interface PokemonRepository extends JpaRepository<Pokemon,Long> {
 
     @Query("SELECT p FROM Pokemon p WHERE p.pokemon_id=?1 OR p.name=?2")
     Optional<Pokemon> findPokemon(int pokemon, String name);
+
+    @Query("SELECT p FROM Pokemon p WHERE p.pokemon_id=?1")
+    Optional<Pokemon> findPokemonByPokemon_id(int pokemon_id);
+
+
 }
