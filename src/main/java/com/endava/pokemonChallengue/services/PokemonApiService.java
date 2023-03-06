@@ -8,7 +8,7 @@ import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
 import com.endava.pokemonChallengue.models.dto.ability.AbilityResponseDTO;
 import com.endava.pokemonChallengue.models.dto.evolution.EvolvesToDTO;
 import com.endava.pokemonChallengue.models.dto.evolution.SpeciesDTO;
-import com.endava.pokemonChallengue.models.dto.responseBody.AddPokemonResponse;
+import com.endava.pokemonChallengue.models.dto.responseBody.CRUDResponse;
 import com.endava.pokemonChallengue.models.dto.responseBody.EvolutionChainResponse;
 import com.endava.pokemonChallengue.models.dto.responseBody.EvolutionResponse;
 import com.endava.pokemonChallengue.models.dto.responseBody.SinglePokemonDetailsResponse;
@@ -21,7 +21,6 @@ import com.endava.pokemonChallengue.services.methods.DescriptionGetter;
 import com.endava.pokemonChallengue.services.methods.PokemonGetter;
 import com.endava.pokemonChallengue.services.methods.StatGetter;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -61,15 +60,15 @@ public class PokemonApiService {
         pokemonRepository.save(pokemon);
     }
 
-    public AddPokemonResponse pokemonCapture(String username,
-                                             String pokemonName,
-                                             int pokemonId,
-                                             String pokemonNickname,
-                                             PokemonDTO pokemonDTO,
-                                             PokemonSpeciesDTO pokemonSpeciesDTO,
-                                             List<AbilityDTO> abilitiesDTO) {
+    public CRUDResponse pokemonCapture(String username,
+                                       String pokemonName,
+                                       int pokemonId,
+                                       String pokemonNickname,
+                                       PokemonDTO pokemonDTO,
+                                       PokemonSpeciesDTO pokemonSpeciesDTO,
+                                       List<AbilityDTO> abilitiesDTO) {
 
-        if(!pokemonRepository.findPokemon(pokemonId, pokemonName).isPresent()) {
+        if(!pokemonRepository.findPokemonByNameOrId(pokemonId, pokemonName).isPresent()) {
             System.out.println("Pokemon nuevo");
             addPokemonDB(pokemonDTO, pokemonSpeciesDTO, abilitiesDTO);
         }else{
@@ -77,7 +76,7 @@ public class PokemonApiService {
         }
 
         Capture capture = Capture.builder()
-                .pokemon(pokemonRepository.findPokemon(pokemonId, pokemonName).get())
+                .pokemon(pokemonRepository.findPokemonByName(pokemonName).get())
                 .user(userRepository.findByUsername(username).get())
                 .health_status(pokemonDTO.getStats().get(0).getBase_stat())
                 .nickname(pokemonNickname)
@@ -85,13 +84,11 @@ public class PokemonApiService {
 
         captureRepository.save(capture);
 
-        return AddPokemonResponse.builder()
+        return CRUDResponse.builder()
                 .responseCode("Ok")
                 .responseMessage("Pokemon "+pokemonName+" added to "+ username)
                 .build();
     }
-
-}
 
 
     public SinglePokemonDetailsResponse pokemonDetails(
@@ -224,5 +221,28 @@ public class PokemonApiService {
                 .build();
     }
 
+    public CRUDResponse releasePokemon(Long capture_id, String username){
+        CRUDResponse crudResponse = new CRUDResponse();
+        Optional<UserInfo> userInfo = userRepository.findByUsername(username);
+
+        if(userInfo.isPresent()){
+            int user_id = userInfo.get().getUser_id();
+            Optional<Capture> capture = captureRepository.findCaptureByIdAndUsername(capture_id, user_id);
+            if(capture.isPresent()){
+                String pokemonNickname = capture.get().getNickname();
+                captureRepository.deleteById(capture_id);
+                return CRUDResponse
+                        .builder()
+                        .responseCode("Ok")
+                        .responseMessage("Pokemon "+pokemonNickname+" deleted.")
+                        .build();
+            }
+        }
+        return CRUDResponse
+                .builder()
+                .responseCode("Error")
+                .responseMessage("That trainer does not have that pokemon")
+                .build();
+    }
 }
 

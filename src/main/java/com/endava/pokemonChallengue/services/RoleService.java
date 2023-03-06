@@ -25,9 +25,9 @@ public class RoleService {
     private final UserRepository userRepository;
     private final CaptureRepository captureRepository;
     private final PokemonRepository pokemonRepository;
-
     private final StatRepository statRepository;
-    public SeePokemonOakResponseDto seeAllPokemonsProfessorOakAllParams(String trainerUsername,  int quantity,
+
+    /*public SeePokemonOakResponseDto seeAllPokemonsProfessorOakAllParams(String trainerUsername,  int quantity,
                                                                int offset,  String usernameRol){
         exceptionRole(usernameRol);
         if(userRepository.findByUsername(usernameRol).get().getRole().equals(Role.OAK)){
@@ -39,7 +39,12 @@ public class RoleService {
                         .build();
                 List<ResultOakResponseDto> resultOakResponseDtos = new ArrayList<>();
                 for (int i = offset-1 ; i<captureList.size();i++) {
-                    List<String> types = new ArrayList<>(Arrays.asList(captureList.get(i).getPokemon().getType().split(",")));types.remove(types.size()-1);
+                    List<String> types = new ArrayList<>(Arrays.asList(captureList.get(i)
+                            .getPokemon()
+                            .getType()
+                            .split(",")));
+                    types.remove(types.size()-1);
+
                     resultOakResponseDtos.add(ResultOakResponseDto.builder()
                             .name(captureList.get(i).getPokemon().getName())
                             .id(captureList.get(i).getPokemon().getPokemon_id())
@@ -49,10 +54,9 @@ public class RoleService {
                 return seePokemonOakResponseDto;
             }
         }throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "User with insufficient privileges");
-    }
+    }*/
 
-    public SeePokemonOakResponseDto seeAllPokemonsProfessorOakQuantity(String trainerUsername,  int quantity
-                                                               ,String usernameRol){
+    public SeePokemonOakResponseDto seeAllPokemonsProfessorOakQuantity(String trainerUsername, int quantity ,String usernameRol){
         exceptionRole(usernameRol);
         if(userRepository.findByUsername(usernameRol).get().getRole().equals(Role.OAK)){
             Optional<UserInfo> optionalUserInfo = userRepository.findByUsername(trainerUsername);
@@ -89,7 +93,7 @@ public class RoleService {
             Optional<UserInfo> optionalUserInfo = userRepository.findByUsername(trainerUsername);
             System.out.println("ES UN DOCTOR " + usernameRole);
             if(optionalUserInfo.isPresent() && (cure.getAction().equals("cure"))){
-                    Optional<Pokemon> pokemon = pokemonRepository.findPokemonByPokemon_id(pokemonId);
+                    Optional<Pokemon> pokemon = pokemonRepository.findPokemonById(pokemonId);
                     if(pokemon.isPresent()){
                         Optional<Capture> optionalCapture = captureRepository.findCaptureByPokemon(pokemon.get());
                         Optional<Stat> optionalStat = statRepository.findByHealth(pokemon.get());
@@ -113,7 +117,7 @@ public class RoleService {
             Optional<UserInfo> optionalUserInfo = userRepository.findByUsername(trainerUsername);
             if(optionalUserInfo.isPresent()){
                 UserInfo userInfo = optionalUserInfo.get();
-                Optional<Pokemon> pokemon = pokemonRepository.findPokemonByPokemon_id(pokemonId);
+                Optional<Pokemon> pokemon = pokemonRepository.findPokemonById(pokemonId);
                 if(pokemon.isPresent()){
                     Optional<Capture> optionalCapture = captureRepository.findCaptureByPokemon(pokemon.get());
                     if(optionalCapture.isPresent()){

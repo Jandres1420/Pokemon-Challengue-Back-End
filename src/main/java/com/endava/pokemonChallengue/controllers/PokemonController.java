@@ -5,8 +5,8 @@ import com.endava.pokemonChallengue.models.dto.PokemonDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
 import com.endava.pokemonChallengue.models.dto.AbilityDTO;
 import com.endava.pokemonChallengue.models.dto.requestBody.AddPokemonRequest;
-import com.endava.pokemonChallengue.models.dto.responseBody.AddPokemonResponse;
-import com.endava.pokemonChallengue.models.dto.responseBody.EvolutionChainResponse;
+import com.endava.pokemonChallengue.models.dto.requestBody.DeletePokemonRequest;
+import com.endava.pokemonChallengue.models.dto.responseBody.CRUDResponse;
 import com.endava.pokemonChallengue.models.dto.responseBody.EvolutionResponse;
 import com.endava.pokemonChallengue.models.dto.responseBody.SinglePokemonDetailsResponse;
 import com.endava.pokemonChallengue.services.PokemonApiService;
@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequestMapping("/pokedex")
 @RestController
 public class PokemonController {
 
@@ -29,11 +31,9 @@ public class PokemonController {
         this.pokemonApiService = pokemonApiService;
     }
 
-    @RequestMapping(path = "/pokedex/pokemon-trainer/{username}/pokemon")
-    @PostMapping()
-
-    public AddPokemonResponse capturePokemon(@PathVariable(name = "username") String username,
-                                             @RequestBody AddPokemonRequest addPokemonRequest) {
+    @PostMapping("/pokemon-trainer/{username}/pokemon")
+    public CRUDResponse capturePokemon(@PathVariable(name = "username") String username,
+                                       @RequestBody AddPokemonRequest addPokemonRequest) {
 
         String pokemonName = addPokemonRequest.getName();
         int pokemonId = addPokemonRequest.getId();
@@ -53,8 +53,14 @@ public class PokemonController {
                 abilities);
     }
 
-    @RequestMapping(path = "/pokedex/{language}/pokemon")
-    @GetMapping()
+    @DeleteMapping("/pokemon-trainer/{username}/pokemon")
+    public CRUDResponse releasePokemon(@PathVariable(name = "username") String username,
+                               @RequestBody DeletePokemonRequest deletePokemonRequest) {
+
+        return pokemonApiService.releasePokemon(deletePokemonRequest.getId(), username);
+    }
+
+    @GetMapping("/{language}/pokemon")
     public SinglePokemonDetailsResponse getPokemonDetails(@PathVariable(name = "language") String language,
                                                           @RequestParam String name) {
 
@@ -65,8 +71,7 @@ public class PokemonController {
         return pokemonApiService.pokemonDetails(pokemonDTO, pokemonSpeciesDTO, abilities, language);
     }
 
-    @RequestMapping(path = "/pokedex/{language}/pokemon/evolution-chain")
-    @GetMapping()
+    @GetMapping("/{language}/pokemon/evolution-chain")
     public EvolutionResponse getPokemonEvolution(@PathVariable(name = "language") String language,
                                                  @RequestParam String name) {
 
@@ -85,6 +90,7 @@ public class PokemonController {
             return pokemonApiService.pokemonBranchEvolution(evolutionDTO, language);
         }
     }
+
 
     public PokemonDTO getPokemonDTO(String pokemonName){
         String urlPokemon = "https://pokeapi.co/api/v2/pokemon/"+pokemonName;
