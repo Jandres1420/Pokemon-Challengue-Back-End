@@ -1,4 +1,4 @@
-package com.endava.pokemonChallengue.models.dto.login;
+package com.endava.pokemonChallengue.models.dto.responseBody;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class LogInDto {
+public class SignInResponse {
     private int id;
     private String email;
     private String username;
