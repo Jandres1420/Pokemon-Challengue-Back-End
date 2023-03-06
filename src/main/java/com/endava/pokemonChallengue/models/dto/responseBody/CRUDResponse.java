@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddPokemonResponse {
+public class CRUDResponse {
     private String responseCode;
     private String responseMessage;
 }

@@ -16,23 +16,29 @@ public class RoleController {
     public RoleController(RoleService roleService){
         this.roleService = roleService;
     }
+
+    /*
     @GetMapping("/pokemon-trainer/{trainerUsername}/pokemon")
     @ResponseStatus(HttpStatus.OK)
-    public SeePokemonOakResponseDto seeAllPokemonsProfessorOakAllParams(@PathVariable String trainerUsername, @RequestParam int quantity,
-                                                               @RequestParam int offset, @RequestHeader(value = "usernameRole") String usernameRole){
+    public SeePokemonOakResponseDto seeAllPokemonsProfessorOakAllParams(@PathVariable String trainerUsername,
+                                                                        @RequestParam int quantity,
+                                                                        @RequestParam int offset,
+                                                                        @RequestHeader(value = "usernameRole") String usernameRole){
         return roleService.seeAllPokemonsProfessorOakAllParams(trainerUsername,quantity,offset,usernameRole);
     }
 
-//    @GetMapping("/pokemon-trainer/{trainerUsername}/pokemon")
-//    public SeePokemonOakResponseDto seeAllPokemonsProfessorOakQuantity(@PathVariable String trainerUsername,
-//                                                               @RequestParam int quantity,
-//                                                               @RequestHeader(value = "usernameRole") String usernameRole){
-//        return roleService.seeAllPokemonsProfessorOakQuantity(trainerUsername,quantity,usernameRole);
-//    }
+    @GetMapping("/pokemon-trainer/{trainerUsername}/pokemon")
+    public SeePokemonOakResponseDto seeAllPokemonsProfessorOakQuantity(
+            @PathVariable String trainerUsername,
+            @RequestParam int quantity,
+            @RequestHeader(value = "usernameRole") String usernameRole){
+        return roleService.seeAllPokemonsProfessorOakQuantity(trainerUsername,quantity,usernameRole);
+    }
 
-    @PostMapping("/pokemon-trainer/{trainerUsername}/pokemon")
+    @PostMapping("/pokemon/cure/{capture_id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDoctorDto curePokemonDoctor(@PathVariable String trainerUsername, @RequestParam int pokemonId,
+    public ResponseDoctorDto curePokemonDoctor(@PathVariable String trainerUsername,
+                                               @RequestParam int pokemonId,
                                                @RequestHeader(value = "usernameRole") String usernameRole,
                                                @RequestBody Cure cure){
         return roleService.curePokemonDoctor(trainerUsername,pokemonId,usernameRole,cure);
@@ -41,8 +47,8 @@ public class RoleController {
     @PostMapping("/pokemon-trainer/{trainerUsername}/zero-health")
     @ResponseStatus(HttpStatus.OK)
     public void zeroHealth(@PathVariable String trainerUsername, @RequestParam int pokemonId,
-                                               @RequestHeader(value = "usernameRole") String usernameRole){
+                           @RequestHeader(value = "usernameRole") String usernameRole){
         roleService.reducePokemonHealth(trainerUsername,pokemonId,usernameRole);
-    }
+    }*/
 
 }

@@ -20,13 +20,12 @@ public class Capture {
     private String nickname;
     private int health_status;
 
-    @ManyToOne(targetEntity = UserInfo.class,  cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = UserInfo.class)
     @JoinColumn(name = "user_id")
     private UserInfo user;
 
-    @ManyToOne(targetEntity = Pokemon.class,  cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Pokemon.class)
     @JoinColumn(name = "pokemon_id")
     private Pokemon pokemon;
-
 
 }
