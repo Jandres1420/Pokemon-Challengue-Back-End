@@ -1,15 +1,17 @@
 package com.endava.pokemonChallengue.controllers;
 
+import com.endava.pokemonChallengue.models.dto.EvolutionDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
 import com.endava.pokemonChallengue.models.dto.AbilityDTO;
 import com.endava.pokemonChallengue.models.dto.requestBody.AddPokemonRequest;
 import com.endava.pokemonChallengue.models.dto.responseBody.AddPokemonResponse;
+import com.endava.pokemonChallengue.models.dto.responseBody.EvolutionChainResponse;
+import com.endava.pokemonChallengue.models.dto.responseBody.EvolutionResponse;
 import com.endava.pokemonChallengue.models.dto.responseBody.SinglePokemonDetailsResponse;
 import com.endava.pokemonChallengue.services.PokemonApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -61,6 +63,27 @@ public class PokemonController {
         return pokemonApiService.pokemonDetails(pokemonDTO, pokemonSpeciesDTO, abilities, language);
     }
 
+    @RequestMapping(path = "/pokedex/{language}/pokemon/evolution-chain")
+    @GetMapping()
+    public EvolutionResponse getPokemonEvolution(@PathVariable(name = "language") String language,
+                                                 @RequestParam String name) {
+
+        String evolutionUrl = pokemonApiService.findEvolutionUrl(name);
+
+        if(evolutionUrl.equals("")){
+            PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(name);
+            evolutionUrl = pokemonSpeciesDTO.getEvolution_chain().getUrl();
+        }
+
+        EvolutionDTO evolutionDTO = restTemplate.getForObject(evolutionUrl, EvolutionDTO.class);
+
+        if(evolutionDTO.getChain().getEvolves_to().size() == 1) {
+            return pokemonApiService.pokemonSequenceEvolution(evolutionDTO, language, name);
+        }else{
+            return pokemonApiService.pokemonBranchEvolution(evolutionDTO, language);
+        }
+    }
+
     public PokemonDTO getPokemonDTO(String pokemonName){
         String urlPokemon = "https://pokeapi.co/api/v2/pokemon/"+pokemonName;
         return restTemplate.getForObject(urlPokemon, PokemonDTO.class);
@@ -81,4 +104,5 @@ public class PokemonController {
         }
         return abilities;
     }
+
 }
