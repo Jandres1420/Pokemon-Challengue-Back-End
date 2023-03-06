@@ -1,6 +1,7 @@
 package com.endava.pokemonChallengue.exceptions;
 
 import com.endava.pokemonChallengue.exceptions.CustomException.DuplicateValue;
+import com.endava.pokemonChallengue.exceptions.CustomException.InvalidRole;
 import com.endava.pokemonChallengue.exceptions.CustomException.InvalidValue;
 import com.endava.pokemonChallengue.exceptions.CustomException.ParamsRequired;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,8 @@ public class ExceptionGenerator {
                 return new ParamsRequired(message);
             case INVALID_VALUE:
                 return new InvalidValue(message);
+            case INVALID_ROLE:
+                return new InvalidRole(message);
             default:
                 return new RuntimeException(message);
         }

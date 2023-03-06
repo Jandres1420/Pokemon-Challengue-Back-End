@@ -31,12 +31,14 @@ public class PokemonController {
 
     @RequestMapping(path = "/pokedex/pokemon-trainer/{username}/pokemon")
     @PostMapping()
+
     public AddPokemonResponse capturePokemon(@PathVariable(name = "username") String username,
                                              @RequestBody AddPokemonRequest addPokemonRequest) {
 
         String pokemonName = addPokemonRequest.getName();
         int pokemonId = addPokemonRequest.getId();
         String pokemonNickname = addPokemonRequest.getNickname();
+
 
         PokemonDTO pokemonDTO = getPokemonDTO(pokemonName);
         PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(pokemonName);
