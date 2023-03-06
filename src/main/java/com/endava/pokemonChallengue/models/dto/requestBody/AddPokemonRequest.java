@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CaptureForm {
+public class AddPokemonRequest {
     private String nickname;
     private String name;
     private int id;

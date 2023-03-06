@@ -1,4 +1,4 @@
-package com.endava.pokemonChallengue.models.dto.login;
+package com.endava.pokemonChallengue.models.dto.responseBody;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LogOutDto {
+public class LogOutResponse {
     private String status;
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddPokemonForm {
-    private String responseCode;
-    private String responseMessage;
+public class EvolutionChainResponse {
+    private String name;
+    private String detailed_url;
 }

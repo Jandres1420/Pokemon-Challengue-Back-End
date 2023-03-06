@@ -33,5 +33,4 @@ public class Ability {
 
     @ManyToMany(mappedBy = "abilities")
     private List<Pokemon> pokemons;
-
 }
