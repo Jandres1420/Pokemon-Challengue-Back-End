@@ -4,9 +4,11 @@ import com.endava.pokemonChallengue.models.Description;
 import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Builder
 @NoArgsConstructor
+@Service
 public class DescriptionGetter {
     public Description getDescription(PokemonSpeciesDTO pokemonSpeciesDTO) {
         int counter = 0;

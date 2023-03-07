@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDoctorDto {
+public class GeneralResponse {
     private String responseCode;
     private String responseMessage;
 

@@ -4,10 +4,12 @@ import com.endava.pokemonChallengue.models.Stat;
 import com.endava.pokemonChallengue.models.dto.PokemonDTO;
 import com.endava.pokemonChallengue.models.dto.stat.StatsDTO;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @NoArgsConstructor
+@Service
 public class StatGetter {
 
     public Stat getStat(PokemonDTO pokemonDTO) {

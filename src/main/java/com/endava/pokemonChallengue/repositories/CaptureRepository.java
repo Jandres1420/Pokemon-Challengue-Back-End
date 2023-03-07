@@ -17,7 +17,6 @@ public interface CaptureRepository extends JpaRepository<Capture, Long> {
     @Query("SELECT c FROM Capture c WHERE c.user.user_id= :user_id AND c.capture_id = :capture_id")
     Optional<Capture> findCaptureByIdAndUsername(@Param("capture_id") Long capture_id,
                                                  @Param("user_id") int user_id);
-
-    /*@Query("SELECT c FROM Capture c WHERE c.pokemon=?1")
-    Optional<Capture> findCaptureByPokemon(Pokemon pokemon);*/
+    @Query("SELECT c FROM Capture c WHERE c.capture_id = :capture_id")
+    Optional<Capture> findCaptureByCaptureId(@Param("capture_id") Long capture_id);
 }
