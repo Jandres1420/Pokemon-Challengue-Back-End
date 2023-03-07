@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
 import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SeePokemonOakResponseDto {
+public class SeePokemonFromTrainerDto {
     private int quantity;
     private int index;
-    private List<ResultOakResponseDto> result;
+    private Collection<IndividualPokemonFromTrainerDto> result;
 }

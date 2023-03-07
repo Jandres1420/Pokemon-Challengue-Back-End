@@ -3,7 +3,7 @@ package com.endava.pokemonChallengue.controllers;
 import com.endava.pokemonChallengue.models.UserInfo;
 import com.endava.pokemonChallengue.models.dto.responseBody.LogInResponse;
 import com.endava.pokemonChallengue.models.dto.responseBody.LogOutResponse;
-import com.endava.pokemonChallengue.models.dto.responseBody.SignInResponse;
+import com.endava.pokemonChallengue.models.dto.responseBody.SignUpResponse;
 import com.endava.pokemonChallengue.services.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +23,8 @@ public class AuthController {
 
 
     @PostMapping("/signUp")
-    public ResponseEntity<SignInResponse> signUpUser(@RequestBody @Valid @NotNull @NotEmpty UserInfo userInfo){
-        return new ResponseEntity<>(authService.signIn(userInfo), HttpStatus.CREATED);
+    public ResponseEntity<SignUpResponse> signUpUser(@RequestBody @Valid @NotNull @NotEmpty UserInfo userInfo){
+        return new ResponseEntity<>(authService.signUp(userInfo), HttpStatus.CREATED);
     }
 
     @PostMapping("/logIn")

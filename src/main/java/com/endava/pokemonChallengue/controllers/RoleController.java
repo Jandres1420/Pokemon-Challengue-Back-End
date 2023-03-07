@@ -1,47 +1,49 @@
 package com.endava.pokemonChallengue.controllers;
 
-import com.endava.pokemonChallengue.models.Cure;
+import com.endava.pokemonChallengue.models.UserInfo;
 import com.endava.pokemonChallengue.models.dto.responseBody.ResponseDoctorDto;
-import com.endava.pokemonChallengue.models.dto.responseBody.SeePokemonOakResponseDto;
+import com.endava.pokemonChallengue.models.dto.responseBody.SeePokemonFromTrainerDto;
+import com.endava.pokemonChallengue.repositories.UserRepository;
 import com.endava.pokemonChallengue.services.RoleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/pokedex")
 public class RoleController {
 
     private final RoleService roleService;
+    private final UserRepository userRepository;
 
-    public RoleController(RoleService roleService){
-        this.roleService = roleService;
-    }
 
-    /*
-    @GetMapping("/pokemon-trainer/{trainerUsername}/pokemon")
+    @GetMapping("/pokemon-trainer/{username}/pokemon")
     @ResponseStatus(HttpStatus.OK)
-    public SeePokemonOakResponseDto seeAllPokemonsProfessorOakAllParams(@PathVariable String trainerUsername,
-                                                                        @RequestParam int quantity,
-                                                                        @RequestParam int offset,
-                                                                        @RequestHeader(value = "usernameRole") String usernameRole){
-        return roleService.seeAllPokemonsProfessorOakAllParams(trainerUsername,quantity,offset,usernameRole);
-    }
+    public SeePokemonFromTrainerDto seePokemonsFromTrainer(@PathVariable String username,
+                                                           @RequestParam int quantity,
+                                                           @RequestParam int offset,
+                                                           @RequestHeader(value = "usernameAsking") String usernameAsking,
+                                                           @RequestHeader(value = "sortBy", defaultValue = "default value") String sortBy,
+                                                           @RequestHeader(value = "filterByType",  defaultValue = "default value") String type){
 
-    @GetMapping("/pokemon-trainer/{trainerUsername}/pokemon")
-    public SeePokemonOakResponseDto seeAllPokemonsProfessorOakQuantity(
-            @PathVariable String trainerUsername,
-            @RequestParam int quantity,
-            @RequestHeader(value = "usernameRole") String usernameRole){
-        return roleService.seeAllPokemonsProfessorOakQuantity(trainerUsername,quantity,usernameRole);
+        return roleService.seePokemonFromTrainer(username,quantity,offset,usernameAsking,type,sortBy);
     }
 
     @PostMapping("/pokemon/cure/{capture_id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDoctorDto curePokemonDoctor(@PathVariable String trainerUsername,
-                                               @RequestParam int pokemonId,
-                                               @RequestHeader(value = "usernameRole") String usernameRole,
-                                               @RequestBody Cure cure){
-        return roleService.curePokemonDoctor(trainerUsername,pokemonId,usernameRole,cure);
+    public ResponseDoctorDto curePokemonDoctor(@PathVariable Long capture_id,
+                                               @RequestHeader(value = "usernameRole") String usernameRole){
+        return roleService.curePokemonDoctor(capture_id,usernameRole);
+    }
+
+    @PostMapping("/hola")
+    @ResponseStatus(HttpStatus.OK)
+    public UserInfo test(){
+        UserInfo userInfo = userRepository.findByUsername("camilo").get();
+        // userInfo.getFollowers().add(userRepository.findByUsername("gsagsa").get());
+//        userRepository.save(userInfo);
+        return userInfo;
     }
 
     @PostMapping("/pokemon-trainer/{trainerUsername}/zero-health")
@@ -49,6 +51,6 @@ public class RoleController {
     public void zeroHealth(@PathVariable String trainerUsername, @RequestParam int pokemonId,
                            @RequestHeader(value = "usernameRole") String usernameRole){
         roleService.reducePokemonHealth(trainerUsername,pokemonId,usernameRole);
-    }*/
+    }
 
 }
