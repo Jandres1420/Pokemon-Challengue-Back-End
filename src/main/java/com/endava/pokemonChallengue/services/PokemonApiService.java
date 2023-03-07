@@ -23,6 +23,7 @@ import com.endava.pokemonChallengue.services.methods.DescriptionGetter;
 import com.endava.pokemonChallengue.services.methods.PokemonGetter;
 import com.endava.pokemonChallengue.services.methods.StatGetter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -34,10 +35,10 @@ public class PokemonApiService {
     private final UserRepository userRepository;
     private final CaptureRepository captureRepository;
 
-    PokemonGetter pokemonGetter = new PokemonGetter();
-    DescriptionGetter descriptionGetter = new DescriptionGetter();
-    AbilityGetter abilityGetter = new AbilityGetter();
-    StatGetter statGetter = new StatGetter();
+    private final PokemonGetter pokemonGetter;
+    private final DescriptionGetter descriptionGetter;
+    private final AbilityGetter abilityGetter;
+    private final StatGetter statGetter;
 
 
     public void addPokemonDB(PokemonDTO pokemonDTO,

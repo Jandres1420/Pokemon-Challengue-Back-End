@@ -3,8 +3,10 @@ package com.endava.pokemonChallengue.services.methods;
 import com.endava.pokemonChallengue.models.Ability;
 import com.endava.pokemonChallengue.models.dto.AbilityDTO;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @NoArgsConstructor
+@Service
 public class AbilityGetter {
 
     public Ability getAbility(AbilityDTO abilityDTO) {

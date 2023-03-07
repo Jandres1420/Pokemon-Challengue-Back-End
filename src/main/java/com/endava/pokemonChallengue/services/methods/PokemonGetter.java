@@ -4,8 +4,10 @@ import com.endava.pokemonChallengue.models.Pokemon;
 import com.endava.pokemonChallengue.models.dto.PokemonDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @NoArgsConstructor
+@Service
 public class PokemonGetter {
 
     public Pokemon getPokemon(PokemonDTO pokemonDTO, PokemonSpeciesDTO pokemonSpeciesDTO) {

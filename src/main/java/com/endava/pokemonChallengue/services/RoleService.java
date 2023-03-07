@@ -3,6 +3,11 @@ package com.endava.pokemonChallengue.services;
 import com.endava.pokemonChallengue.exceptions.ExceptionGenerator;
 import com.endava.pokemonChallengue.exceptions.ExceptionType;
 import com.endava.pokemonChallengue.models.*;
+import com.endava.pokemonChallengue.models.dto.requestBody.AdminRoleChange;
+import com.endava.pokemonChallengue.models.dto.requestBody.FollowRequest;
+import com.endava.pokemonChallengue.models.dto.responseBody.GeneralResponse;
+import com.endava.pokemonChallengue.models.dto.responseBody.ResultOakResponseDto;
+import com.endava.pokemonChallengue.models.dto.responseBody.SeePokemonOakResponseDto;
 import com.endava.pokemonChallengue.models.dto.responseBody.ResponseDoctorDto;
 import com.endava.pokemonChallengue.models.dto.responseBody.IndividualPokemonFromTrainerDto;
 import com.endava.pokemonChallengue.models.dto.responseBody.SeePokemonFromTrainerDto;
@@ -11,9 +16,9 @@ import com.endava.pokemonChallengue.repositories.PokemonRepository;
 import com.endava.pokemonChallengue.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -86,11 +91,12 @@ public class RoleService {
         return null;
     }
 
+
     public void exceptionRole(String usernameRol){
         Optional<UserInfo> optionalUserInfo = userRepository.findByUsername(usernameRol);
         if(optionalUserInfo.isPresent()){
             UserInfo userInfo = optionalUserInfo.get();
-            if (!userInfo.getConnect()|| userInfo.getConnect() == null)
+            if (!userInfo.getConnect())
                 throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User disconnected");
         }ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User not found");
     }
@@ -114,23 +120,103 @@ public class RoleService {
         }throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "You have not provided adequate credentials to access this resource");
     }
 
-    public ResponseDoctorDto curePokemonDoctor(Long captureId, String usernameRole) {
+    public GeneralResponse curePokemonDoctor(Long captureId, String usernameRole) {
         exceptionRole(usernameRole);
-        System.out.println("ENTRO");
-
         Optional<Capture> optionalCapture = captureRepository.findCaptureByCaptureId(captureId);
         if(userRepository.findByUsername(usernameRole).get().getRole().equals(Role.DOCTOR)){
             if(optionalCapture.isPresent()){
                 Capture capture = optionalCapture.get();
                 capture.setHealth_status(capture.getPokemon().getStat().getHealth());
                 captureRepository.save(capture);
-                return ResponseDoctorDto.builder()
+                return GeneralResponse.builder()
                         .responseCode("Ok")
                         .responseMessage("Yo have cured the " +capture.getPokemon().getName() + " of "+ capture.getUser().getUsername())
                         .build();
             }throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "Pokemon not found");}
         throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "You have not provided adequate credentials to access this resource");
     }
+
+  
+
+    public GeneralResponse followAndUnfollowTrainer(String trainerToFollow, FollowRequest followRequest, String trainer) {
+        exceptionRole(trainer);
+        Optional<UserInfo>optionalUserInfo = userRepository.findByUsername(trainer);
+        Optional<UserInfo>optionalUserInfo2 = userRepository.findByUsername(trainerToFollow);
+        if(followRequest.getAction().equals("follow")){
+            if (optionalUserInfo2.isPresent() && optionalUserInfo.isPresent()){
+                UserInfo userInfo = userRepository.findByUsername(trainer).get();
+                UserInfo userToFollow = userRepository.findByUsername(trainerToFollow).get();
+                if(userInfo.getRole().equals(Role.TRAINER) && userToFollow.getRole().equals(Role.TRAINER)){
+                    Set<UserInfo> userInfoSet = userInfo.getFollowing();
+                    userInfoSet.add(userToFollow);
+                    userInfo.setFollowing(userInfoSet);
+                    userRepository.save(userInfo);
+                    return GeneralResponse.builder().responseCode("Ok").responseMessage("Following " +userToFollow.getUsername())
+                            .build();
+                }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User is not a trainer");
+            }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User not found");
+        }else if (followRequest.getAction().equals("unfollow")){
+            if (optionalUserInfo2.isPresent() && optionalUserInfo.isPresent()){
+                UserInfo userInfo = userRepository.findByUsername(trainer).get();
+                UserInfo userToFollow = userRepository.findByUsername(trainerToFollow).get();
+                if(userInfo.getRole().equals(Role.TRAINER) && userToFollow.getRole().equals(Role.TRAINER)){
+                    Set<UserInfo> userInfoSet = userInfo.getFollowing();
+                    if(!userInfoSet.contains(userToFollow))
+                        throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE,"User is not following " +userToFollow.getName());
+                    userInfoSet.remove(userToFollow);
+                    userInfo.setFollowing(userInfoSet);
+                    userRepository.save(userInfo);
+                    return GeneralResponse.builder().responseCode("Ok").responseMessage("Unfollowing " +userToFollow.getUsername())
+                            .build();
+
+                }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User is not a trainer");
+            }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User not found");
+        }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "Action not found");
+    }
+
+    public GeneralResponse administrateProfiles(AdminRoleChange followRequest, String admin) {
+        userExist(followRequest.getUsername());
+        userExist(admin);
+        exceptionRole(admin);
+        if(userRepository.findByUsername(admin).get().getRole().equals(Role.ADMIN)){
+            UserInfo userInfo = userRepository.findByUsername(followRequest.getUsername()).get();
+            if(followRequest.getRole().equals("admin")){
+                userInfo.setRole(Role.ADMIN);
+                userRepository.save(userInfo);
+            } else if (followRequest.getRole().equals("doctor")) {
+                userInfo.setRole(Role.DOCTOR);
+                userRepository.save(userInfo);
+            }else if (followRequest.getRole().equals("professor")) {
+                userInfo.setRole(Role.OAK);
+                userRepository.save(userInfo);
+            }else if (followRequest.getRole().equals("trainer")) {
+                userInfo.setRole(Role.TRAINER);
+                userRepository.save(userInfo);
+            }else{
+                throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "You have not provided an adequate role");
+            }return GeneralResponse.builder().responseCode("Ok").responseMessage("Role updated successfully.").build();
+        }throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "You have not provided adequate credentials to access this resource");
+    }
+
+    public void userExist(String name){
+        Optional<UserInfo> optionalUserInfo = userRepository.findByUsername(name);
+        if(!optionalUserInfo.isPresent()){
+            throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User " +name+ " not found");
+        }
+    }
+
+    public void userConnected(String name){
+        Optional<UserInfo> optionalUserInfo = userRepository.findByUsername(name);
+        if(optionalUserInfo.isPresent()){
+            UserInfo userInfo = optionalUserInfo.get();
+            if(!userInfo.getConnect()) {
+                throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User " + name + " not connected");
+            }
+        }
+
+    }
+
+    
 
     public Collection<IndividualPokemonFromTrainerDto> sortBy(String sortBy,
                                                               Collection<IndividualPokemonFromTrainerDto> pokemonsFromTrainer) {

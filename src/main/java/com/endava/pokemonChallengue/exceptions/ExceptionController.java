@@ -4,6 +4,7 @@ import com.endava.pokemonChallengue.exceptions.CustomException.DuplicateValue;
 import com.endava.pokemonChallengue.exceptions.CustomException.InvalidRole;
 import com.endava.pokemonChallengue.exceptions.CustomException.InvalidValue;
 import com.endava.pokemonChallengue.exceptions.CustomException.ParamsRequired;
+import com.endava.pokemonChallengue.exceptions.Response.UnauthorizedResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -38,12 +39,12 @@ public class ExceptionController {
         response.setMessage(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-
+    //cambiar
     @ExceptionHandler(InvalidRole.class)
-    public ResponseEntity<ExceptionResponse> handleInvalidRole(InvalidRole exception,
-                                                                WebRequest request) {
-        ExceptionResponse response = new ExceptionResponse();
-        response.setMessage(exception.getMessage());
+    public ResponseEntity<UnauthorizedResponse> handleInvalidRole(InvalidRole exception,
+                                                                  WebRequest request) {
+        UnauthorizedResponse response = new UnauthorizedResponse();
+        response.setResponseMessage(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
