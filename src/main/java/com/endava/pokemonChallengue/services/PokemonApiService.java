@@ -1,5 +1,7 @@
 package com.endava.pokemonChallengue.services;
 
+import com.endava.pokemonChallengue.exceptions.ExceptionGenerator;
+import com.endava.pokemonChallengue.exceptions.ExceptionType;
 import com.endava.pokemonChallengue.models.*;
 import com.endava.pokemonChallengue.models.dto.AbilityDTO;
 import com.endava.pokemonChallengue.models.dto.EvolutionDTO;
@@ -70,27 +72,80 @@ public class PokemonApiService {
                                        List<AbilityDTO> abilitiesDTO) {
 
         if(!pokemonRepository.findPokemonByNameOrId(pokemonId, pokemonName).isPresent()) {
-            System.out.println("Pokemon nuevo");
             addPokemonDB(pokemonDTO, pokemonSpeciesDTO, abilitiesDTO);
-        }else{
-            System.out.println("Pokemon encontrado en la base de datos");
         }
 
-        Capture capture = Capture.builder()
-                .pokemon(pokemonRepository.findPokemonByName(pokemonName).get())
-                .user(userRepository.findByUsername(username).get())
-                .health_status(pokemonDTO.getStats().get(0).getBase_stat())
-                .nickname(pokemonNickname)
-                .build();
+        if(userRepository.findByUsername(username).isPresent()){
+            if(userRepository.findByUsername(username).get().getConnect().booleanValue()){
+                Capture capture = Capture.builder()
+                        .pokemon(pokemonRepository.findPokemonByName(pokemonName).get())
+                        .user(userRepository.findByUsername(username).get())
+                        .health_status(pokemonDTO.getStats().get(0).getBase_stat())
+                        .nickname(pokemonNickname)
+                        .build();
+                captureRepository.save(capture);
 
-        captureRepository.save(capture);
+                return CRUDResponse.builder()
+                        .responseCode("Ok")
+                        .responseMessage("Pokemon "+pokemonName+" added to "+ username)
+                        .build();
+            }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User disconnected");
+        }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "This user does not exist");
+    }
 
-        return CRUDResponse.builder()
-                .responseCode("Ok")
-                .responseMessage("Pokemon "+pokemonName+" added to "+ username)
+    public void readPokemon(){
+
+    }
+
+    public CRUDResponse releasePokemon(Long capture_id, String username){
+        CRUDResponse crudResponse = new CRUDResponse();
+        Optional<UserInfo> userInfo = userRepository.findByUsername(username);
+
+        if(userInfo.isPresent()){
+            int user_id = userInfo.get().getUser_id();
+            Optional<Capture> capture = captureRepository.findCaptureByIdAndUsername(capture_id, user_id);
+            if(capture.isPresent()){
+                String pokemonNickname = capture.get().getNickname();
+                captureRepository.deleteById(capture_id);
+                return CRUDResponse
+                        .builder()
+                        .responseCode("Ok")
+                        .responseMessage("Pokemon "+pokemonNickname+" deleted.")
+                        .build();
+            }
+        }
+        return CRUDResponse
+                .builder()
+                .responseCode("Error")
+                .responseMessage("That trainer does not have that pokemon")
                 .build();
     }
 
+    public CRUDResponse updatePokemon(Long capture_id, String newNickname, String username){
+        Optional<UserInfo> userInfo = userRepository.findByUsername(username);
+
+        if(userInfo.isPresent()) {
+            int user_id = userInfo.get().getUser_id();
+            Optional<Capture> capture = captureRepository.findCaptureByIdAndUsername(capture_id, user_id);
+            if (capture.isPresent()) {
+                String oldNickname = capture.get().getNickname();
+                Capture updatedCapture = capture.get();
+                updatedCapture.setNickname(newNickname);
+                captureRepository.save(updatedCapture);
+
+                return CRUDResponse
+                        .builder()
+                        .responseCode("Ok")
+                        .responseMessage("Pokemon "+oldNickname+" updated to "+newNickname)
+                        .build();
+            }
+        }
+        return CRUDResponse
+                .builder()
+                .responseCode("Error")
+                .responseMessage("That trainer does not have that pokemon")
+                .build();
+    }
 
     public SinglePokemonDetailsResponse pokemonDetails(
                                              PokemonDTO pokemonDTO,
@@ -222,28 +277,6 @@ public class PokemonApiService {
                 .build();
     }
 
-    public CRUDResponse releasePokemon(Long capture_id, String username){
-        CRUDResponse crudResponse = new CRUDResponse();
-        Optional<UserInfo> userInfo = userRepository.findByUsername(username);
 
-        if(userInfo.isPresent()){
-            int user_id = userInfo.get().getUser_id();
-            Optional<Capture> capture = captureRepository.findCaptureByIdAndUsername(capture_id, user_id);
-            if(capture.isPresent()){
-                String pokemonNickname = capture.get().getNickname();
-                captureRepository.deleteById(capture_id);
-                return CRUDResponse
-                        .builder()
-                        .responseCode("Ok")
-                        .responseMessage("Pokemon "+pokemonNickname+" deleted.")
-                        .build();
-            }
-        }
-        return CRUDResponse
-                .builder()
-                .responseCode("Error")
-                .responseMessage("That trainer does not have that pokemon")
-                .build();
-    }
 }
 

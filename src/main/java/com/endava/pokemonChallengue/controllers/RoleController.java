@@ -1,10 +1,13 @@
 package com.endava.pokemonChallengue.controllers;
 
 import com.endava.pokemonChallengue.models.UserInfo;
+
 import com.endava.pokemonChallengue.models.dto.requestBody.AdminRoleChange;
 import com.endava.pokemonChallengue.models.dto.requestBody.FollowRequest;
 import com.endava.pokemonChallengue.models.dto.responseBody.GeneralResponse;
 import com.endava.pokemonChallengue.models.dto.responseBody.SeePokemonOakResponseDto;
+import com.endava.pokemonChallengue.models.dto.responseBody.ResponseDoctorDto;
+import com.endava.pokemonChallengue.models.dto.responseBody.SeePokemonFromTrainerDto;
 import com.endava.pokemonChallengue.repositories.UserRepository;
 import com.endava.pokemonChallengue.services.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -19,20 +22,30 @@ import java.util.Set;
 public class RoleController {
 
     private final RoleService roleService;
+    private final UserRepository userRepository;
 
 
-    @GetMapping("/pokemon-trainer/{trainerUsername}/pokemon")
+
+    @GetMapping("/pokemon-trainer/{username}/pokemon")
     @ResponseStatus(HttpStatus.OK)
-    public SeePokemonOakResponseDto seeAllPokemonsProfessorOakAllParams(@PathVariable String trainerUsername,
-                                                                        @RequestParam int quantity,
-                                                                        @RequestParam int offset,
-                                                                        @RequestHeader(value = "usernameRole") String usernameRole,
-                                                                        @RequestHeader(value = "filter",  defaultValue = "default value") String filter,
-                                                                        @RequestHeader(value = "sort", defaultValue = "default value") String sort ){
-        return roleService.seeAllPokemonsProfessorOakAllParams(trainerUsername,quantity,offset,usernameRole,filter,sort);
+    public SeePokemonFromTrainerDto seePokemonsFromTrainer(@PathVariable String username,
+                                                           @RequestParam int quantity,
+                                                           @RequestParam int offset,
+                                                           @RequestHeader(value = "usernameAsking") String usernameAsking,
+                                                           @RequestHeader(value = "sortBy", defaultValue = "default value") String sortBy,
+                                                           @RequestHeader(value = "filterByType",  defaultValue = "default value") String type){
+
+        return roleService.seePokemonFromTrainer(username,quantity,offset,usernameAsking,type,sortBy);
     }
 
     @PostMapping("/pokemon/cure/{capture_id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDoctorDto curePokemonDoctor(@PathVariable Long capture_id,
+                                               @RequestHeader(value = "usernameRole") String usernameRole){
+        return roleService.curePokemonDoctor(capture_id,usernameRole);
+    }
+
+    @PostMapping("/hola")
     @ResponseStatus(HttpStatus.OK)
     public GeneralResponse curePokemonDoctor(@PathVariable Long capture_id,
                                              @RequestHeader(value = "usernameRole") String usernameRole){

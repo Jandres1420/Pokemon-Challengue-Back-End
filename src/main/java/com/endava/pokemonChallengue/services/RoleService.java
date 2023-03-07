@@ -8,14 +8,16 @@ import com.endava.pokemonChallengue.models.dto.requestBody.FollowRequest;
 import com.endava.pokemonChallengue.models.dto.responseBody.GeneralResponse;
 import com.endava.pokemonChallengue.models.dto.responseBody.ResultOakResponseDto;
 import com.endava.pokemonChallengue.models.dto.responseBody.SeePokemonOakResponseDto;
+import com.endava.pokemonChallengue.models.dto.responseBody.ResponseDoctorDto;
+import com.endava.pokemonChallengue.models.dto.responseBody.IndividualPokemonFromTrainerDto;
+import com.endava.pokemonChallengue.models.dto.responseBody.SeePokemonFromTrainerDto;
 import com.endava.pokemonChallengue.repositories.CaptureRepository;
 import com.endava.pokemonChallengue.repositories.PokemonRepository;
-import com.endava.pokemonChallengue.repositories.StatRepository;
 import com.endava.pokemonChallengue.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -24,45 +26,69 @@ public class RoleService {
     private final UserRepository userRepository;
     private final CaptureRepository captureRepository;
     private final PokemonRepository pokemonRepository;
-    private final StatRepository statRepository;
 
-    public SeePokemonOakResponseDto seeAllPokemonsProfessorOakAllParams(String trainerUsername,  int quantity,
-                                                                        int offset,  String usernameRol,String filter, String sort){
-        exceptionRole(usernameRol);
-        if(offset<=0) offset=1;
-        else if (offset>=quantity) offset = quantity;
-        else if(offset+1==quantity) offset--;
-        else if(offset>=1) offset++;
 
-        if(userRepository.findByUsername(usernameRol).get().getRole().equals(Role.OAK)){
-            Optional<UserInfo> optionalUserInfo = userRepository.findByUsername(trainerUsername);
-            if(optionalUserInfo.isPresent()){
-                List<Capture> captureList =optionalUserInfo.get().getCaptures();
-                SeePokemonOakResponseDto seePokemonOakResponseDto = SeePokemonOakResponseDto.builder().quantity(quantity)
-                        .index(offset)
-                        .build();
-                List<ResultOakResponseDto> resultOakResponseDtos = new ArrayList<>();
-                if(offset>=captureList.size()){
-                }else{
-                    for (int i = offset-1 ; i<=quantity;i++) {
-                        if(i==captureList.size())break;
-                        List<String> types = new ArrayList<>(Arrays.asList(captureList.get(i)
-                                .getPokemon()
-                                .getType()
-                                .split(",")));
-                        types.remove(types.size()-1);
+    public SeePokemonFromTrainerDto seePokemonFromTrainer(String username,
+                                                          int quantity,
+                                                          int offset,
+                                                          String usernameAsking,
+                                                          String type,
+                                                          String sortBy) {
+        exceptionRole(usernameAsking);
+        Optional<UserInfo> userAsking = userRepository.findByUsername(usernameAsking);
+        Optional<UserInfo> userInfo = userRepository.findByUsername(username);
 
-                        resultOakResponseDtos.add(ResultOakResponseDto.builder()
-                                .name(captureList.get(i).getPokemon().getName())
-                                .id(captureList.get(i).getPokemon().getPokemon_id())
-                                .result(types).build());
-                        seePokemonOakResponseDto.setResult(resultOakResponseDtos);
-                    }
-                    seePokemonOakResponseDto = orderAlphabetic(sort,seePokemonOakResponseDto);
+
+        if (userAsking.isPresent() && userInfo.isPresent()) {
+            if (userAsking.get().getRole().equals(Role.OAK)) {
+                return getPokemonFromTrainer(username,quantity,offset,type,sortBy);
+            } else if (userAsking.get().getUsername().equals(userInfo.get().getUsername())) {
+                return getPokemonFromTrainer(username,quantity,offset,type,sortBy);
+            } else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "You are not following this Trainer");
+
+        } throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The Trainer you are looking for does not exist");
+    }
+
+
+
+    public SeePokemonFromTrainerDto getPokemonFromTrainer(String username,
+                                                          int quantity,
+                                                          int offset,
+                                                          String type,
+                                                          String sortBy) {
+
+        Optional<UserInfo> foundUser = userRepository.findByUsername(username);
+        if (foundUser.isPresent()) {
+            List<Capture> captureList = foundUser.get().getCaptures();
+            Collection<IndividualPokemonFromTrainerDto> pokemonsFromTrainer = new ArrayList<>();
+            for (int i = offset; i < quantity; i++) {
+                if (i == captureList.size()) {
+                    break;
                 }
-                return seePokemonOakResponseDto;
+
+                ArrayList<String> types = new ArrayList<>(Arrays.asList(captureList
+                        .get(i)
+                        .getPokemon()
+                        .getType()
+                        .replaceAll("\\s+","")
+                        .split(",")));
+
+                pokemonsFromTrainer.add(IndividualPokemonFromTrainerDto
+                        .builder()
+                        .name(captureList.get(i).getPokemon().getName())
+                        .id(captureList.get(i).getPokemon().getPokemon_id())
+                        .type(types)
+                        .build());
             }
-        }throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "User with insufficient privileges");
+
+            return SeePokemonFromTrainerDto
+                    .builder()
+                    .index(offset)
+                    .quantity(quantity)
+                    .result(filterType(type, sortBy(sortBy, pokemonsFromTrainer)))
+                    .build();
+        }
+        return null;
     }
 
 
@@ -110,12 +136,7 @@ public class RoleService {
         throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "You have not provided adequate credentials to access this resource");
     }
 
-    public SeePokemonOakResponseDto orderAlphabetic(String order,SeePokemonOakResponseDto seePokemonOakResponseDto){
-        if(order.equals("alphabetical")){
-            Collections.sort(seePokemonOakResponseDto.getResult(), Comparator.comparing(ResultOakResponseDto::getName));
-            return seePokemonOakResponseDto;
-        }else return seePokemonOakResponseDto;
-    }
+  
 
     public GeneralResponse followAndUnfollowTrainer(String trainerToFollow, FollowRequest followRequest, String trainer) {
         exceptionRole(trainer);
@@ -192,5 +213,38 @@ public class RoleService {
                 throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User " + name + " not connected");
             }
         }
+
     }
+
+    
+
+    public Collection<IndividualPokemonFromTrainerDto> sortBy(String sortBy,
+                                                              Collection<IndividualPokemonFromTrainerDto> pokemonsFromTrainer) {
+        switch (sortBy) {
+            case "name":
+                return pokemonsFromTrainer
+                        .stream()
+                        .sorted(Comparator.comparing(IndividualPokemonFromTrainerDto::getName))
+                        .collect(Collectors.toList());
+            case "id":
+                return pokemonsFromTrainer
+                        .stream()
+                        .sorted(Comparator.comparing(IndividualPokemonFromTrainerDto::getId))
+                        .collect(Collectors.toList());
+        }
+        return pokemonsFromTrainer;
+    }
+
+    public Collection<IndividualPokemonFromTrainerDto> filterType(String type,
+                                                                  Collection<IndividualPokemonFromTrainerDto> pokemonsFromTrainer){
+        if(!type.equals("default value")){
+            return pokemonsFromTrainer
+                    .stream()
+                    .filter(p -> p.getType().contains(type))
+                    .collect(Collectors.toList());
+        }
+        return pokemonsFromTrainer;
+    }
+
+
 }

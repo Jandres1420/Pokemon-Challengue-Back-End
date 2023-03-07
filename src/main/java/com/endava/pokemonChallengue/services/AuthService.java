@@ -5,7 +5,7 @@ import com.endava.pokemonChallengue.exceptions.ExceptionType;
 import com.endava.pokemonChallengue.models.UserInfo;
 import com.endava.pokemonChallengue.models.dto.responseBody.LogInResponse;
 import com.endava.pokemonChallengue.models.dto.responseBody.LogOutResponse;
-import com.endava.pokemonChallengue.models.dto.responseBody.SignInResponse;
+import com.endava.pokemonChallengue.models.dto.responseBody.SignUpResponse;
 import com.endava.pokemonChallengue.repositories.UserRepository;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +24,19 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    public SignInResponse signIn(UserInfo userInfo) {
+    public SignUpResponse signUp(UserInfo userInfo) {
         Optional<UserInfo> optionalUserEmail = userRepository.findUserByEmailAndUsername(userInfo.getEmail(), userInfo.getUsername());
-        signInExceptions(optionalUserEmail, userInfo);
-        SignInResponse signInResponse = null;
+        signUpExceptions(optionalUserEmail, userInfo);
         if(!optionalUserEmail.isPresent()){
+            userInfo.setConnect(false);
             userRepository.save(userInfo);
-            return SignInResponse.builder()
+            return SignUpResponse.builder()
                     .id(userInfo.getUser_id())
                     .email(userInfo.getEmail())
                     .username(userInfo.getUsername())
                     .build();
         }
-        return signInResponse;
+        return null;
     }
     public LogInResponse logInUser(UserInfo userInfo) {
         Optional<UserInfo> optionalUserEmail = userRepository.findByEmailAndPassword(userInfo.getEmail(), userInfo.getPassword());
@@ -74,7 +74,7 @@ public class AuthService {
         }throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Service unavailable");
     }
 
-    public void signInExceptions(Optional<UserInfo> optionalUserEmail, UserInfo userInfo) {
+    public void signUpExceptions(Optional<UserInfo> optionalUserEmail, UserInfo userInfo) {
         if (userInfo.getEmail() == null || userInfo.getUsername() == null || userInfo.getRole()==null) {
             throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Fields email or username or role not null");
         } else if (optionalUserEmail.isPresent()) {

@@ -4,9 +4,13 @@ import com.endava.pokemonChallengue.models.dto.EvolutionDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
 import com.endava.pokemonChallengue.models.dto.AbilityDTO;
+import com.endava.pokemonChallengue.models.dto.dashboard.PokemonResponseDTO;
+import com.endava.pokemonChallengue.models.dto.dashboard.ResultsDTO;
 import com.endava.pokemonChallengue.models.dto.requestBody.AddPokemonRequest;
 import com.endava.pokemonChallengue.models.dto.requestBody.DeletePokemonRequest;
+import com.endava.pokemonChallengue.models.dto.requestBody.UpdatePokemonRequest;
 import com.endava.pokemonChallengue.models.dto.responseBody.CRUDResponse;
+import com.endava.pokemonChallengue.models.dto.responseBody.DashboardResponseDTO;
 import com.endava.pokemonChallengue.models.dto.responseBody.EvolutionResponse;
 import com.endava.pokemonChallengue.models.dto.responseBody.SinglePokemonDetailsResponse;
 import com.endava.pokemonChallengue.services.PokemonApiService;
@@ -14,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,11 +56,28 @@ public class PokemonController {
                 abilities);
     }
 
+    @PutMapping("/pokemon-trainer/{username}/pokemon")
+    public CRUDResponse updatePokemon(@PathVariable(name = "username") String username,
+                                      @RequestBody UpdatePokemonRequest updatePokemonRequest) {
+        Long capture_id = updatePokemonRequest.getId();
+        String newNickname = updatePokemonRequest.getNickname();
+        return pokemonApiService.updatePokemon(capture_id, newNickname, username);
+    }
+
     @DeleteMapping("/pokemon-trainer/{username}/pokemon")
     public CRUDResponse releasePokemon(@PathVariable(name = "username") String username,
-                               @RequestBody DeletePokemonRequest deletePokemonRequest) {
+                                       @RequestBody DeletePokemonRequest deletePokemonRequest) {
 
         return pokemonApiService.releasePokemon(deletePokemonRequest.getId(), username);
+    }
+
+    @GetMapping("/pokemon")
+    public DashboardResponseDTO getDashboard(@RequestParam int quantity, @RequestParam int offset) {
+        return DashboardResponseDTO
+                .builder()
+                .quantity(quantity)
+                .results(getDashboardResults(quantity, offset))
+                .build();
     }
 
     @GetMapping("/{language}/pokemon")
@@ -91,7 +111,6 @@ public class PokemonController {
         }
     }
 
-
     public PokemonDTO getPokemonDTO(String pokemonName){
         String urlPokemon = "https://pokeapi.co/api/v2/pokemon/"+pokemonName;
         return restTemplate.getForObject(urlPokemon, PokemonDTO.class);
@@ -111,6 +130,29 @@ public class PokemonController {
                 abilities.add(restTemplate.getForObject(urlAbility, AbilityDTO.class));
         }
         return abilities;
+    }
+
+    public List<PokemonResponseDTO> getDashboardResults(int quantity, int offset){
+        String pokemonDashboardUrl = "https://pokeapi.co/api/v2/pokemon?limit="+quantity+"&offset="+offset;
+        ResultsDTO resultsDTO = restTemplate.getForObject(pokemonDashboardUrl, ResultsDTO.class);
+        List<PokemonResponseDTO> pokemons = new ArrayList<>();
+
+        for(int i=0;i<resultsDTO.getResults().size();i++){
+            PokemonDTO pokemonDTO = getPokemonDTO(resultsDTO.getResults().get(i).getName());
+            List<String> types = new ArrayList<>();
+
+            for(int w=0; w<pokemonDTO.getTypes().size();w++){
+                types.add(pokemonDTO.getTypes().get(w).getType().getName());
+            }
+            pokemons.add(PokemonResponseDTO
+                    .builder()
+                    .id(pokemonDTO.getId())
+                    .name(pokemonDTO.getName())
+                    .img_path(pokemonDTO.getSprites().getOther().getDream_world().getFront_default())
+                    .types(types)
+                    .build());
+        }
+        return pokemons;
     }
 
 }
