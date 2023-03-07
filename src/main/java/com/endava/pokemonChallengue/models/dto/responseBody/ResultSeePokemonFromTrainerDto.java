@@ -1,16 +1,17 @@
 package com.endava.pokemonChallengue.models.dto.responseBody;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class SignInResponse {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ResultSeePokemonFromTrainerDto {
+    private String name;
     private int id;
-    private String email;
-    private String username;
+    private List<String> type;
 }

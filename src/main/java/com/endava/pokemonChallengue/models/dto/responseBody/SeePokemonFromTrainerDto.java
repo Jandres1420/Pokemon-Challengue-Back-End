@@ -1,4 +1,5 @@
 package com.endava.pokemonChallengue.models.dto.responseBody;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +11,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResultOakResponseDto {
-    private String name;
-    private int id;
-    private List<String> result;
+public class SeePokemonFromTrainerDto {
+    private int quantity;
+    private int index;
+    private List<ResultSeePokemonFromTrainerDto> result;
 }

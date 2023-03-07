@@ -1,6 +1,5 @@
 package com.endava.pokemonChallengue.controllers;
 
-import com.endava.pokemonChallengue.models.Pokemon;
 import com.endava.pokemonChallengue.models.dto.EvolutionDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonDTO;
 import com.endava.pokemonChallengue.models.dto.PokemonSpeciesDTO;
@@ -19,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RequestMapping("/pokedex")
@@ -59,18 +56,6 @@ public class PokemonController {
                 abilities);
     }
 
-    //ESTO ES UN PUT SEGUN LAS HISTORIAS DE USUARIO
-    @GetMapping("/pokemon-trainer/{username}/pokemon")
-    public void readPokemon(@PathVariable(name = "username") String username,
-                            @RequestParam int quantity,
-                            @RequestParam int offset){
-
-        System.out.println(username);
-        System.out.println(quantity);
-        System.out.println(offset);
-
-    }
-
     @PutMapping("/pokemon-trainer/{username}/pokemon")
     public CRUDResponse updatePokemon(@PathVariable(name = "username") String username,
                                       @RequestBody UpdatePokemonRequest updatePokemonRequest) {
@@ -91,7 +76,7 @@ public class PokemonController {
         return DashboardResponseDTO
                 .builder()
                 .quantity(quantity)
-                .results(getResults(quantity, offset))
+                .results(getDashboardResults(quantity, offset))
                 .build();
     }
 
@@ -126,7 +111,6 @@ public class PokemonController {
         }
     }
 
-
     public PokemonDTO getPokemonDTO(String pokemonName){
         String urlPokemon = "https://pokeapi.co/api/v2/pokemon/"+pokemonName;
         return restTemplate.getForObject(urlPokemon, PokemonDTO.class);
@@ -148,7 +132,7 @@ public class PokemonController {
         return abilities;
     }
 
-    public List<PokemonResponseDTO> getResults(int quantity, int offset){
+    public List<PokemonResponseDTO> getDashboardResults(int quantity, int offset){
         String pokemonDashboardUrl = "https://pokeapi.co/api/v2/pokemon?limit="+quantity+"&offset="+offset;
         ResultsDTO resultsDTO = restTemplate.getForObject(pokemonDashboardUrl, ResultsDTO.class);
         List<PokemonResponseDTO> pokemons = new ArrayList<>();
