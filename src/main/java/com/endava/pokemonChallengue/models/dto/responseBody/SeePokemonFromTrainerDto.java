@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -14,5 +15,5 @@ import java.util.List;
 public class SeePokemonFromTrainerDto {
     private int quantity;
     private int index;
-    private List<ResultSeePokemonFromTrainerDto> result;
+    private Collection<IndividualPokemonFromTrainerDto> result;
 }

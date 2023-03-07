@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResultSeePokemonFromTrainerDto {
+public class IndividualPokemonFromTrainerDto {
     private String name;
     private int id;
     private List<String> type;

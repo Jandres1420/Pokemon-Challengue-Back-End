@@ -24,10 +24,10 @@ public class RoleController {
                                                            @RequestParam int quantity,
                                                            @RequestParam int offset,
                                                            @RequestHeader(value = "usernameAsking") String usernameAsking,
-                                                           @RequestHeader(value = "filter",  defaultValue = "default value") String filter,
-                                                           @RequestHeader(value = "sort", defaultValue = "default value") String sort ){
+                                                           @RequestHeader(value = "sortBy", defaultValue = "default value") String sortBy,
+                                                           @RequestHeader(value = "filterByType",  defaultValue = "default value") String type){
 
-        return roleService.seePokemonFromTrainer(username,quantity,offset,usernameAsking,filter,sort);
+        return roleService.seePokemonFromTrainer(username,quantity,offset,usernameAsking,type,sortBy);
     }
 
     @PostMapping("/pokemon/cure/{capture_id}")
