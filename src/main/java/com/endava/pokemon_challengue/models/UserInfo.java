@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLInsert;
 
 
 import javax.persistence.*;

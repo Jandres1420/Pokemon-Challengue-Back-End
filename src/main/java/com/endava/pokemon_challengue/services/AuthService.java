@@ -2,20 +2,27 @@ package com.endava.pokemon_challengue.services;
 
 import com.endava.pokemon_challengue.exceptions.ExceptionGenerator;
 import com.endava.pokemon_challengue.exceptions.ExceptionType;
+import com.endava.pokemon_challengue.models.Role;
 import com.endava.pokemon_challengue.models.UserInfo;
+import com.endava.pokemon_challengue.models.dto.requestBody.SignUpDto;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogInResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogOutResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.SignUpResponse;
 import com.endava.pokemon_challengue.repositories.UserRepository;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @Service
 public class AuthService {
+
     @Autowired
     private final UserRepository userRepository;
 
@@ -23,17 +30,24 @@ public class AuthService {
     public AuthService(UserRepository userRepository){
         this.userRepository = userRepository;
     }
-
-    public SignUpResponse signUp(UserInfo userInfo) {
-        Optional<UserInfo> optionalUserEmail = userRepository.findUserByEmailAndUsername(userInfo.getEmail(), userInfo.getUsername());
-        signUpExceptions(optionalUserEmail, userInfo);
+    public SignUpResponse signUp(@Valid @NotNull @NotEmpty SignUpDto signUpDto) {
+        Optional<UserInfo> optionalUserEmail = userRepository.findUserByEmailAndUsername(signUpDto.getEmail(), signUpDto.getUsername());
+        signUpExceptions(optionalUserEmail, signUpDto);
         if(!optionalUserEmail.isPresent()){
-            userInfo.setConnect(false);
+            UserInfo userInfo = UserInfo.builder()
+                    .name(signUpDto.getName())
+                    .lastName(signUpDto.getLastName())
+                    .role(Role.TRAINER)
+                    .connect(false)
+                    .email(signUpDto.getEmail())
+                    .username(signUpDto.getUsername())
+                    .password(signUpDto.getPassword())
+                    .build();
             userRepository.save(userInfo);
             return SignUpResponse.builder()
                     .id(userInfo.getUser_id())
-                    .email(userInfo.getEmail())
-                    .username(userInfo.getUsername())
+                    .email(signUpDto.getEmail())
+                    .username(signUpDto.getUsername())
                     .build();
         }
         return null;
@@ -73,8 +87,8 @@ public class AuthService {
         }throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Service unavailable");
     }
 
-    public void signUpExceptions(Optional<UserInfo> optionalUserEmail, UserInfo userInfo) {
-        if (userInfo.getEmail() == null || userInfo.getUsername() == null || userInfo.getRole()==null) {
+    public void signUpExceptions(Optional<UserInfo> optionalUserEmail, SignUpDto userInfo) {
+        if (userInfo.getEmail() == null || userInfo.getUsername() == null) {
             throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Fields email or username or role not null");
         } else if (optionalUserEmail.isPresent()) {
             throw ExceptionGenerator.getException(ExceptionType.DUPLICATE_VALUE, "Email already in use or Username already in use");

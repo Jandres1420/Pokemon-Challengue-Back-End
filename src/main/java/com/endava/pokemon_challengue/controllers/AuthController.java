@@ -1,6 +1,7 @@
 package com.endava.pokemon_challengue.controllers;
 
 import com.endava.pokemon_challengue.models.UserInfo;
+import com.endava.pokemon_challengue.models.dto.requestBody.SignUpDto;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogInResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogOutResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.SignUpResponse;
@@ -23,8 +24,8 @@ public class AuthController {
 
 
     @PostMapping("/signUp")
-    public ResponseEntity<SignUpResponse> signUpUser(@RequestBody @Valid @NotNull @NotEmpty UserInfo userInfo){
-        return new ResponseEntity<>(authService.signUp(userInfo), HttpStatus.CREATED);
+    public ResponseEntity<SignUpResponse> signUpUser(@RequestBody @Valid @NotNull @NotEmpty SignUpDto signUpDto){
+        return new ResponseEntity<>(authService.signUp(signUpDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/logIn")
