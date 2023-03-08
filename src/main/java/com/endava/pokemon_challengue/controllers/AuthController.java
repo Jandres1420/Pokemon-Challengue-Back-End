@@ -7,6 +7,11 @@ import com.endava.pokemon_challengue.models.dto.responseBody.LogInResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogOutResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.SignUpResponse;
 import com.endava.pokemon_challengue.services.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +29,15 @@ public class AuthController {
     public AuthController(AuthService authService){this.authService = authService;}
 
 
+    @Operation(summary = "Get a book by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The user was correctly register",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SignUpDto.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Book not found",
+                    content = @Content) })
     @PostMapping("/signUp")
     public ResponseEntity<SignUpResponse> signUpUser(@RequestBody @Valid @NotNull @NotEmpty SignUpDto signUpDto){
         return new ResponseEntity<>(authService.signUp(signUpDto), HttpStatus.CREATED);
