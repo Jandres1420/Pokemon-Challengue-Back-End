@@ -1,5 +1,6 @@
 package com.endava.pokemon_challengue.controllers;
 
+import com.endava.pokemon_challengue.models.UserProfile;
 import com.endava.pokemon_challengue.models.dto.requestBody.LogInDto;
 import com.endava.pokemon_challengue.models.dto.requestBody.SignUpDto;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogInResponse;

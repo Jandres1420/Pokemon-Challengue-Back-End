@@ -22,18 +22,17 @@ import java.util.stream.Collectors;
 public class RoleService {
     private final UserProfileRepository userProfileRepository;
     private final CaptureRepository captureRepository;
-    private final PokemonRepository pokemonRepository;
 
     private static  String userNotFound = "User not found";
 
     public SeePokemonFromTrainerDto seePokemonFromTrainer(String username,
                                                           int quantity,
                                                           int offset,
-                                                          String usernameAsking,
+                                                          String connected,
                                                           String type,
                                                           String sortBy) {
-        exceptionRole(usernameAsking);
-        Optional<UserProfile> userAsking = userProfileRepository.findByUsername(usernameAsking);
+        exceptionRole(connected);
+        Optional<UserProfile> userAsking = userProfileRepository.findByUsername(connected);
         Optional<UserProfile> userInfo = userProfileRepository.findByUsername(username);
 
         if (userAsking.isPresent() && userInfo.isPresent()) {
@@ -43,7 +42,7 @@ public class RoleService {
                 return getPokemonFromTrainer(username,quantity,offset,type,sortBy);
             } else if (userAsking.get().getUsername().equals(userInfo.get().getUsername()) || following.contains(userInfo.get())) {
                 return getPokemonFromTrainer(username,quantity,offset,type,sortBy);
-            } else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "You are not following this Trainer");
+            } else throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "You don't follow this pokémon trainer");
 
         } throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The Trainer you are looking for does not exist");
     }
@@ -91,8 +90,8 @@ public class RoleService {
     }
 
 
-    public void exceptionRole(String usernameRol){
-        Optional<UserProfile> optionalUserInfo = userProfileRepository.findByUsername(usernameRol);
+    public void exceptionRole(String connected){
+        Optional<UserProfile> optionalUserInfo = userProfileRepository.findByUsername(connected);
         if(optionalUserInfo.isPresent()){
             UserProfile userProfile = optionalUserInfo.get();
             if (!userProfile.getConnect())
@@ -102,10 +101,10 @@ public class RoleService {
         }
     }
 
-    public GeneralResponse curePokemonDoctor(Long captureId, String usernameRole) {
-        exceptionRole(usernameRole);
+    public GeneralResponse curePokemonDoctor(Long captureId, String connected) {
+        exceptionRole(connected);
         Optional<Capture> optionalCapture = captureRepository.findCaptureByCaptureId(captureId);
-        Optional<UserProfile> userInfo = userProfileRepository.findByUsername(usernameRole);
+        Optional<UserProfile> userInfo = userProfileRepository.findByUsername(connected);
         if(userInfo.get().getRole().equals(Role.DOCTOR) || userInfo.get().getRole().equals(Role.ADMIN)){
             if(optionalCapture.isPresent()){
                 Capture capture = optionalCapture.get();
@@ -119,13 +118,13 @@ public class RoleService {
         throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "You have not provided adequate credentials to access this resource");
     }
 
-    public GeneralResponse followAndUnfollowTrainer(String trainerToFollow, FollowRequest followRequest, String trainer) {
-        exceptionRole(trainer);
-        Optional<UserProfile>optionalUserInfo = userProfileRepository.findByUsername(trainer);
+    public GeneralResponse followAndUnfollowTrainer(String trainerToFollow, FollowRequest followRequest, String connected) {
+        exceptionRole(connected);
+        Optional<UserProfile>optionalUserInfo = userProfileRepository.findByUsername(connected);
         Optional<UserProfile>optionalUserInfo2 = userProfileRepository.findByUsername(trainerToFollow);
         if(followRequest.getAction().equals("follow")){
             if (optionalUserInfo2.isPresent() && optionalUserInfo.isPresent()){
-                UserProfile userProfile = userProfileRepository.findByUsername(trainer).get();
+                UserProfile userProfile = userProfileRepository.findByUsername(connected).get();
                 UserProfile userToFollow = userProfileRepository.findByUsername(trainerToFollow).get();
                 if(userProfile.equals(userToFollow)) throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "User cannot follow himself");
                 if(userProfile.getRole().equals(Role.TRAINER) && userToFollow.getRole().equals(Role.TRAINER)){
@@ -137,9 +136,10 @@ public class RoleService {
                             .build();
                 }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User is not a trainer");
             }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, userNotFound);
+
         }else if (followRequest.getAction().equals("unfollow")){
             if (optionalUserInfo2.isPresent() && optionalUserInfo.isPresent()){
-                UserProfile userProfile = userProfileRepository.findByUsername(trainer).get();
+                UserProfile userProfile = userProfileRepository.findByUsername(connected).get();
                 UserProfile userToFollow = userProfileRepository.findByUsername(trainerToFollow).get();
                 if(userProfile.getRole().equals(Role.TRAINER) && userToFollow.getRole().equals(Role.TRAINER)){
                     Set<UserProfile> userProfileSet = userProfile.getFollowing();
@@ -156,16 +156,16 @@ public class RoleService {
         }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "Action not found");
     }
 
-    public GeneralResponse administrateProfiles(AdminRoleChange followRequest, String admin) {
+    public GeneralResponse administrateProfiles(AdminRoleChange followRequest, String connected) {
         userExist(followRequest.getUsername());
-        userExist(admin);
-        exceptionRole(admin);
-        if(userProfileRepository.findByUsername(admin).get().getRole().equals(Role.ADMIN)){
+        userExist(connected);
+        exceptionRole(connected);
+        if(userProfileRepository.findByUsername(connected).get().getRole().equals(Role.ADMIN)){
             UserProfile userProfile = userProfileRepository.findByUsername(followRequest.getUsername()).get();
             if(followRequest.getRole().equals("admin")){
                 userProfile.setRole(Role.ADMIN);
                 userProfileRepository.save(userProfile);
-            }else if (followRequest.getRole().equals("doctor")) {
+            } else if (followRequest.getRole().equals("doctor")) {
                 userProfile.setRole(Role.DOCTOR);
                 userProfileRepository.save(userProfile);
             }else if (followRequest.getRole().equals("professor")) {

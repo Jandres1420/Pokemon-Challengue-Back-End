@@ -2,6 +2,7 @@ package com.endava.pokemon_challengue.services;
 
 import com.endava.pokemon_challengue.exceptions.ExceptionGenerator;
 import com.endava.pokemon_challengue.exceptions.ExceptionType;
+import com.endava.pokemon_challengue.models.UserProfile;
 import com.endava.pokemon_challengue.models.Role;
 import com.endava.pokemon_challengue.models.UserProfile;
 import com.endava.pokemon_challengue.models.dto.requestBody.LogInDto;
@@ -30,13 +31,14 @@ public class AuthService {
     public AuthService(UserProfileRepository userProfileRepository){
         this.userProfileRepository = userProfileRepository;
     }
+
     public SignUpResponse signUp(@Valid @NotNull @NotEmpty SignUpDto signUpDto) {
         Optional<UserProfile> optionalUserEmail = userProfileRepository.findUserByEmailAndUsername(signUpDto.getEmail(), signUpDto.getUsername());
         signUpExceptions(optionalUserEmail, signUpDto);
         if(!optionalUserEmail.isPresent()){
             UserProfile userProfile = UserProfile.builder()
                     .name(signUpDto.getName())
-                    .lastName(signUpDto.getLastName())
+                    .lastName(signUpDto.getLastname())
                     .role(Role.TRAINER)
                     .connect(false)
                     .email(signUpDto.getEmail())
@@ -52,6 +54,7 @@ public class AuthService {
         }
         return null;
     }
+
     public LogInResponse logInUser(@Valid @NotNull @NotEmpty LogInDto logInDto) {
         Optional<UserProfile> optionalUserEmail = userProfileRepository.findByEmailAndPassword(logInDto.getEmail(), logInDto.getPassword());
         if(optionalUserEmail.isPresent()){

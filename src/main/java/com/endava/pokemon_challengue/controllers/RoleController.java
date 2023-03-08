@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/pokedex")
 public class RoleController {
     private final RoleService roleService;
+
     private final UserProfileRepository userProfileRepository;
 
     @GetMapping("/pokemon-trainer/{username}/pokemon")
@@ -22,30 +23,34 @@ public class RoleController {
     public SeePokemonFromTrainerDto seePokemonsFromTrainer(@PathVariable String username,
                                                            @RequestParam int quantity,
                                                            @RequestParam int offset,
-                                                           @RequestHeader(value = "usernameAsking") String usernameAsking,
+                                                           @RequestHeader(value = "connected") String connected,
                                                            @RequestHeader(value = "sortBy", defaultValue = "default value") String sortBy,
                                                            @RequestHeader(value = "filterByType",  defaultValue = "default value") String type){
 
-        return roleService.seePokemonFromTrainer(username,quantity,offset,usernameAsking,type,sortBy);
+        return roleService.seePokemonFromTrainer(username,quantity,offset,connected,type,sortBy);
     }
 
     @PostMapping("/pokemon/cure/{captureId}")
     @ResponseStatus(HttpStatus.OK)
     public GeneralResponse curePokemonDoctor(@PathVariable Long captureId,
-                                               @RequestHeader(value = "usernameRole") String usernameRole){
-        return roleService.curePokemonDoctor(captureId,usernameRole);
+                                               @RequestHeader(value = "connected") String connected){
+        return roleService.curePokemonDoctor(captureId,connected);
     }
+
     @PostMapping("/pokemon-trainer/{trainerToFollow}/relationship")
     @ResponseStatus(HttpStatus.OK)
-    public GeneralResponse followAndUnfollowTrainer(@PathVariable String trainerToFollow, @RequestBody FollowRequest followRequest,
-                            @RequestHeader(value = "trainer") String trainer){
-        return roleService.followAndUnfollowTrainer(trainerToFollow,followRequest,trainer);
+    public GeneralResponse followAndUnfollowTrainer(@PathVariable String trainerToFollow,
+                                                    @RequestBody FollowRequest followRequest,
+                                                    @RequestHeader(value = "connected") String connected){
+
+        return roleService.followAndUnfollowTrainer(trainerToFollow,followRequest,connected);
     }
+
     @PostMapping("/admin/changeRole")
     @ResponseStatus(HttpStatus.OK)
     public GeneralResponse administrateProfiles(@RequestBody AdminRoleChange adminRoleChange,
-                            @RequestHeader(value = "admin") String admin){
+                            @RequestHeader(value = "connected") String connected){
 
-        return roleService.administrateProfiles(adminRoleChange,admin);
+        return roleService.administrateProfiles(adminRoleChange, connected);
     }
 }

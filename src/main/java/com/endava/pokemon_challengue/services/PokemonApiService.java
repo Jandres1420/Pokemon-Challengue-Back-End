@@ -64,13 +64,12 @@ public class PokemonApiService {
 
     public CRUDResponse pokemonCapture(String username,
                                        String pokemonName,
-                                       int pokemonId,
                                        String pokemonNickname,
                                        PokemonDTO pokemonDTO,
                                        PokemonSpeciesDTO pokemonSpeciesDTO,
                                        List<AbilityDTO> abilitiesDTO) {
 
-        if(!pokemonRepository.findPokemonByNameOrId(pokemonId, pokemonName).isPresent()) {
+        if(!pokemonRepository.findPokemonByName(pokemonName).isPresent()) {
             addPokemonDB(pokemonDTO, pokemonSpeciesDTO, abilitiesDTO);
         }
 
@@ -91,6 +90,7 @@ public class PokemonApiService {
             }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User disconnected");
         }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "This user does not exist");
     }
+
     public CRUDResponse releasePokemon(Long captureId, String username){
         Optional<UserProfile> userInfo = userProfileRepository.findByUsername(username);
 
@@ -216,13 +216,13 @@ public class PokemonApiService {
         sequenceEvolution.add(buildSpecies(evolutionDTO.getChain().getSpecies(), language));
 
         while(exit>0){
-            sequenceEvolution.add(buildSpecies(chain.getSpecies(), language));
-            chain = chain.getEvolves_to().get(0);
-
             if(chain.getEvolves_to().size() == 0){
                 sequenceEvolution.add(buildSpecies(chain.getSpecies(), language));
                 exit--;
+                break;
             }
+            sequenceEvolution.add(buildSpecies(chain.getSpecies(), language));
+            chain = chain.getEvolves_to().get(0);
         }
 
         List<EvolutionChainResponse> nextEvolution = new ArrayList<>();
@@ -249,6 +249,14 @@ public class PokemonApiService {
 
         return EvolutionResponse
                 .builder().evolution_chain(branchEvolution).next_evolution(branchEvolution).build();
+    }
+
+    public EvolutionResponse pokemonNoEvolution(EvolutionDTO evolutionDTO, String language){
+        List<EvolutionChainResponse> noEvolution = new ArrayList<>();
+        noEvolution.add(buildSpecies(evolutionDTO.getChain().getSpecies(), language));
+
+        return EvolutionResponse
+                .builder().evolution_chain(noEvolution).next_evolution(new ArrayList<>()).build();
     }
 
     public String findEvolutionUrl(String name){
