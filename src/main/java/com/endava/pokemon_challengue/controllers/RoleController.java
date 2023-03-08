@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class RoleController {
     private final RoleService roleService;
 
+    private final UserProfileRepository userProfileRepository;
+
     @GetMapping("/pokemon-trainer/{username}/pokemon")
     @ResponseStatus(HttpStatus.OK)
     public SeePokemonFromTrainerDto seePokemonsFromTrainer(@PathVariable String username,

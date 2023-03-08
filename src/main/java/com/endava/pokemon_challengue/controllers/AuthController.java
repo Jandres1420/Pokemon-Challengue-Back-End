@@ -1,6 +1,7 @@
 package com.endava.pokemon_challengue.controllers;
 
 import com.endava.pokemon_challengue.models.UserProfile;
+import com.endava.pokemon_challengue.models.dto.requestBody.LogInDto;
 import com.endava.pokemon_challengue.models.dto.requestBody.SignUpDto;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogInResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogOutResponse;
@@ -30,13 +31,13 @@ public class AuthController {
 
     @PostMapping("/logIn")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<LogInResponse> logInUser(@RequestBody @Valid @NotNull @NotEmpty UserProfile userProfile){
-        return new ResponseEntity<>(authService.logInUser(userProfile), HttpStatus.ACCEPTED);
+    public ResponseEntity<LogInResponse> logInUser(@RequestBody @Valid @NotNull @NotEmpty LogInDto logInDto){
+        return new ResponseEntity<>(authService.logInUser(logInDto), HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/logOut")
-    public ResponseEntity<LogOutResponse> logOutUser(@RequestBody @Valid @NotNull @NotEmpty UserProfile userProfile){
-        return new ResponseEntity<>(authService.logOutUser(userProfile), HttpStatus.ACCEPTED);
+    public ResponseEntity<LogOutResponse> logOutUser(@RequestBody @Valid @NotNull @NotEmpty LogInDto LogInDto){
+        return new ResponseEntity<>(authService.logOutUser(LogInDto), HttpStatus.ACCEPTED);
     }
 }
 

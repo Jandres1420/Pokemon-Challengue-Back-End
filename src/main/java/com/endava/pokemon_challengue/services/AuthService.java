@@ -4,6 +4,8 @@ import com.endava.pokemon_challengue.exceptions.ExceptionGenerator;
 import com.endava.pokemon_challengue.exceptions.ExceptionType;
 import com.endava.pokemon_challengue.models.UserProfile;
 import com.endava.pokemon_challengue.models.Role;
+import com.endava.pokemon_challengue.models.UserProfile;
+import com.endava.pokemon_challengue.models.dto.requestBody.LogInDto;
 import com.endava.pokemon_challengue.models.dto.requestBody.SignUpDto;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogInResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogOutResponse;
@@ -44,7 +46,6 @@ public class AuthService {
                     .password(signUpDto.getPassword())
                     .build();
             userProfileRepository.save(userProfile);
-
             return SignUpResponse.builder()
                     .id(userProfile.getUser_id())
                     .email(signUpDto.getEmail())
@@ -53,11 +54,11 @@ public class AuthService {
         }
         return null;
     }
-    public LogInResponse logInUser(UserProfile userProfile) {
-        Optional<UserProfile> optionalUserEmail = userProfileRepository.findByEmailAndPassword(userProfile.getEmail(), userProfile.getPassword());
+
+    public LogInResponse logInUser(@Valid @NotNull @NotEmpty LogInDto logInDto) {
+        Optional<UserProfile> optionalUserEmail = userProfileRepository.findByEmailAndPassword(logInDto.getEmail(), logInDto.getPassword());
         if(optionalUserEmail.isPresent()){
             UserProfile userProfileFound = optionalUserEmail.get();
-
             if(userProfileFound.getConnect()==null || !userProfileFound.getConnect()) userProfileFound.setConnect(true);
             else if(Boolean.TRUE.equals(userProfileFound.getConnect())){
                 throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The user is already connected");
@@ -73,10 +74,10 @@ public class AuthService {
         }
     }
 
-    public LogOutResponse logOutUser(UserProfile userProfile) {
-        Optional<UserProfile> optionalUser = userProfileRepository.findByEmailAndPassword(userProfile.getEmail(), userProfile.getPassword());
+    public LogOutResponse logOutUser(LogInDto logInDto) {
+        Optional<UserProfile> optionalUser = userProfileRepository.findByEmailAndPassword(logInDto.getEmail(), logInDto.getPassword());
         if(optionalUser.isPresent()){
-            UserProfile userProfileFound = userProfileRepository.findByEmail(userProfile.getEmail());
+            UserProfile userProfileFound = userProfileRepository.findByEmail(logInDto.getEmail());
             if(Boolean.FALSE.equals(userProfileFound.getConnect())){
                 throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "User already disconnected");
             }
@@ -85,7 +86,7 @@ public class AuthService {
             return LogOutResponse.builder()
                     .status("ok")
                     .build();
-        }throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Service unavailable");
+        }throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Wrong credentials");
     }
 
     public void signUpExceptions(Optional<UserProfile> optionalUserEmail, SignUpDto userInfo) {

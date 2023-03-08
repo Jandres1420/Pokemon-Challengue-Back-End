@@ -38,7 +38,7 @@ public class RoleService {
         if (userAsking.isPresent() && userInfo.isPresent()) {
             Set<UserProfile> following = userAsking.get().getFollowing();
 
-            if (userAsking.get().getRole().equals(Role.OAK)) {
+            if (userAsking.get().getRole().equals(Role.OAK) || userAsking.get().getRole().equals(Role.ADMIN)) {
                 return getPokemonFromTrainer(username,quantity,offset,type,sortBy);
             } else if (userAsking.get().getUsername().equals(userInfo.get().getUsername()) || following.contains(userInfo.get())) {
                 return getPokemonFromTrainer(username,quantity,offset,type,sortBy);
@@ -96,13 +96,16 @@ public class RoleService {
             UserProfile userProfile = optionalUserInfo.get();
             if (!userProfile.getConnect())
                 throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User disconnected");
-        }ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, userNotFound);
+        } else{
+            throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, userNotFound);
+        }
     }
 
     public GeneralResponse curePokemonDoctor(Long captureId, String connected) {
         exceptionRole(connected);
         Optional<Capture> optionalCapture = captureRepository.findCaptureByCaptureId(captureId);
-        if(userProfileRepository.findByUsername(connected).get().getRole().equals(Role.DOCTOR)){
+        Optional<UserProfile> userInfo = userProfileRepository.findByUsername(connected);
+        if(userInfo.get().getRole().equals(Role.DOCTOR) || userInfo.get().getRole().equals(Role.ADMIN)){
             if(optionalCapture.isPresent()){
                 Capture capture = optionalCapture.get();
                 capture.setHealth_status(capture.getPokemon().getStat().getHealth());
@@ -123,6 +126,7 @@ public class RoleService {
             if (optionalUserInfo2.isPresent() && optionalUserInfo.isPresent()){
                 UserProfile userProfile = userProfileRepository.findByUsername(connected).get();
                 UserProfile userToFollow = userProfileRepository.findByUsername(trainerToFollow).get();
+                if(userProfile.equals(userToFollow)) throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "User cannot follow himself");
                 if(userProfile.getRole().equals(Role.TRAINER) && userToFollow.getRole().equals(Role.TRAINER)){
                     Set<UserProfile> userProfileSet = userProfile.getFollowing();
                     userProfileSet.add(userToFollow);
