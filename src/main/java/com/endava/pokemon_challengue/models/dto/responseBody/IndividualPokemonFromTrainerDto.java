@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IndividualPokemonFromTrainerDto {
+    private String nickname;
     private String name;
     private int id;
     private List<String> type;
