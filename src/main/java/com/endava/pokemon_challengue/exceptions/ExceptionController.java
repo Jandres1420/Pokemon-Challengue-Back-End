@@ -38,7 +38,7 @@ public class ExceptionController {
         response.setMessage(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-    //cambiar
+
     @ExceptionHandler(InvalidRole.class)
     public ResponseEntity<UnauthorizedResponse> handleInvalidRole(InvalidRole exception,
                                                                   WebRequest request) {

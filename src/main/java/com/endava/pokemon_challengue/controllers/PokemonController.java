@@ -1,5 +1,7 @@
 package com.endava.pokemon_challengue.controllers;
 
+import com.endava.pokemon_challengue.exceptions.ExceptionGenerator;
+import com.endava.pokemon_challengue.exceptions.ExceptionType;
 import com.endava.pokemon_challengue.models.dto.EvolutionDTO;
 import com.endava.pokemon_challengue.models.dto.PokemonDTO;
 import com.endava.pokemon_challengue.models.dto.PokemonSpeciesDTO;
@@ -15,9 +17,15 @@ import com.endava.pokemon_challengue.models.dto.responseBody.EvolutionResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.SinglePokemonDetailsResponse;
 import com.endava.pokemon_challengue.services.PokemonApiService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,40 +44,58 @@ public class PokemonController {
     }
 
     @PostMapping("/pokemon-trainer/{username}/pokemon")
+    @ResponseStatus(HttpStatus.CREATED)
     public CRUDResponse capturePokemon(@PathVariable(name = "username") String username,
-                                       @RequestBody AddPokemonRequest addPokemonRequest) {
+                                       @RequestBody AddPokemonRequest addPokemonRequest,
+                                       @RequestHeader(name = "connected") String connected) {
 
-        String pokemonName = addPokemonRequest.getName();
-        int pokemonId = addPokemonRequest.getId();
-        String pokemonNickname = addPokemonRequest.getNickname();
+        if (connected.equals(username)){
+            String pokemonName = addPokemonRequest.getName();
+            String pokemonNickname = addPokemonRequest.getNickname();
 
+            if (pokemonNickname=="" || pokemonNickname==null){
+                throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The nickname is mandatory");
+            }else{
+                PokemonDTO pokemonDTO = getPokemonDTO(pokemonName);
+                PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(pokemonName);
+                List<AbilityDTO> abilities = getAbilitiesDTO(pokemonDTO);
 
-        PokemonDTO pokemonDTO = getPokemonDTO(pokemonName);
-        PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(pokemonName);
-        List<AbilityDTO> abilities = getAbilitiesDTO(pokemonDTO);
-
-        return  pokemonApiService.pokemonCapture(username,
-                pokemonName,
-                pokemonId,
-                pokemonNickname,
-                pokemonDTO,
-                pokemonSpeciesDTO,
-                abilities);
+                return  pokemonApiService.pokemonCapture(username,
+                        pokemonName,
+                        pokemonNickname,
+                        pokemonDTO,
+                        pokemonSpeciesDTO,
+                        abilities);
+            }
+        }else throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "You are not allowed to this Pokedex");
     }
 
     @PutMapping("/pokemon-trainer/{username}/pokemon")
+    @ResponseStatus(HttpStatus.OK)
     public CRUDResponse updatePokemon(@PathVariable(name = "username") String username,
-                                      @RequestBody UpdatePokemonRequest updatePokemonRequest) {
-        Long captureId = updatePokemonRequest.getId();
-        String newNickname = updatePokemonRequest.getNickname();
-        return pokemonApiService.updatePokemon(captureId, newNickname, username);
+                                      @RequestBody UpdatePokemonRequest updatePokemonRequest,
+                                      @RequestHeader(name = "connected") String connected) {
+
+        if (connected.equals(username)) {
+            String pokemonNickname = updatePokemonRequest.getNickname();
+            if (pokemonNickname=="" || pokemonNickname==null){
+                throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The nickname is mandatory");
+            }else {
+                Long captureId = updatePokemonRequest.getId();
+                String newNickname = updatePokemonRequest.getNickname();
+                return pokemonApiService.updatePokemon(captureId, newNickname, username);
+            }
+        }else throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "You are not allowed to this Pokedex");
     }
 
     @DeleteMapping("/pokemon-trainer/{username}/pokemon")
     public CRUDResponse releasePokemon(@PathVariable(name = "username") String username,
-                                       @RequestBody DeletePokemonRequest deletePokemonRequest) {
+                                       @RequestBody DeletePokemonRequest deletePokemonRequest,
+                                       @RequestHeader(name = "connected") String connected) {
 
-        return pokemonApiService.releasePokemon(deletePokemonRequest.getId(), username);
+        if (connected.equals(username)) {
+            return pokemonApiService.releasePokemon(deletePokemonRequest.getId(), username);
+        }else throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "You are not allowed to this Pokedex");
     }
 
     @GetMapping("/pokemon")
@@ -83,10 +109,10 @@ public class PokemonController {
 
     @GetMapping("/{language}/pokemon")
     public SinglePokemonDetailsResponse getPokemonDetails(@PathVariable(name = "language") String language,
-                                                          @RequestParam String name) {
+                                                          @RequestParam String value) {
 
-        PokemonDTO pokemonDTO = getPokemonDTO(name);
-        PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(name);
+        PokemonDTO pokemonDTO = getPokemonDTO(value);
+        PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(value);
         List<AbilityDTO> abilities = getAbilitiesDTO(pokemonDTO);
 
         return pokemonApiService.pokemonDetails(pokemonDTO, pokemonSpeciesDTO, abilities, language);
@@ -102,9 +128,12 @@ public class PokemonController {
             PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(name);
             evolutionUrl = pokemonSpeciesDTO.getEvolution_chain().getUrl();
         }
+
         EvolutionDTO evolutionDTO = restTemplate.getForObject(evolutionUrl, EvolutionDTO.class);
 
-        if(evolutionDTO.getChain().getEvolves_to().size() == 1) {
+        if(evolutionDTO.getChain().getEvolves_to().size() == 0) {
+            return pokemonApiService.pokemonNoEvolution(evolutionDTO, language);
+        } else if (evolutionDTO.getChain().getEvolves_to().size() == 1) {
             return pokemonApiService.pokemonSequenceEvolution(evolutionDTO, language, name);
         }else{
             return pokemonApiService.pokemonBranchEvolution(evolutionDTO, language);

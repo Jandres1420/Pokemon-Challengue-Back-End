@@ -17,7 +17,7 @@ import com.endava.pokemon_challengue.models.dto.responseBody.SinglePokemonDetail
 import com.endava.pokemon_challengue.models.dto.stat.StatResponseDTO;
 import com.endava.pokemon_challengue.repositories.CaptureRepository;
 import com.endava.pokemon_challengue.repositories.PokemonRepository;
-import com.endava.pokemon_challengue.repositories.UserRepository;
+import com.endava.pokemon_challengue.repositories.UserProfileRepository;
 import com.endava.pokemon_challengue.services.methods.AbilityGetter;
 import com.endava.pokemon_challengue.services.methods.DescriptionGetter;
 import com.endava.pokemon_challengue.services.methods.PokemonGetter;
@@ -31,7 +31,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class PokemonApiService {
     private final PokemonRepository pokemonRepository;
-    private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
     private final CaptureRepository captureRepository;
 
     private final PokemonGetter pokemonGetter;
@@ -64,21 +64,20 @@ public class PokemonApiService {
 
     public CRUDResponse pokemonCapture(String username,
                                        String pokemonName,
-                                       int pokemonId,
                                        String pokemonNickname,
                                        PokemonDTO pokemonDTO,
                                        PokemonSpeciesDTO pokemonSpeciesDTO,
                                        List<AbilityDTO> abilitiesDTO) {
 
-        if(!pokemonRepository.findPokemonByNameOrId(pokemonId, pokemonName).isPresent()) {
+        if(!pokemonRepository.findPokemonByName(pokemonName).isPresent()) {
             addPokemonDB(pokemonDTO, pokemonSpeciesDTO, abilitiesDTO);
         }
 
-        if(userRepository.findByUsername(username).isPresent()){
-            if(userRepository.findByUsername(username).get().getConnect().booleanValue()){
+        if(userProfileRepository.findByUsername(username).isPresent()){
+            if(userProfileRepository.findByUsername(username).get().getConnect().booleanValue()){
                 Capture capture = Capture.builder()
                         .pokemon(pokemonRepository.findPokemonByName(pokemonName).get())
-                        .user(userRepository.findByUsername(username).get())
+                        .user(userProfileRepository.findByUsername(username).get())
                         .health_status(pokemonDTO.getStats().get(0).getBase_stat())
                         .nickname(pokemonNickname)
                         .build();
@@ -91,8 +90,9 @@ public class PokemonApiService {
             }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User disconnected");
         }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "This user does not exist");
     }
+
     public CRUDResponse releasePokemon(Long captureId, String username){
-        Optional<UserInfo> userInfo = userRepository.findByUsername(username);
+        Optional<UserProfile> userInfo = userProfileRepository.findByUsername(username);
 
         if(userInfo.isPresent()){
             int userId = userInfo.get().getUser_id();
@@ -115,7 +115,7 @@ public class PokemonApiService {
     }
 
     public CRUDResponse updatePokemon(Long captureId, String newNickname, String username){
-        Optional<UserInfo> userInfo = userRepository.findByUsername(username);
+        Optional<UserProfile> userInfo = userProfileRepository.findByUsername(username);
 
         if(userInfo.isPresent()) {
             int userId = userInfo.get().getUser_id();
@@ -216,13 +216,13 @@ public class PokemonApiService {
         sequenceEvolution.add(buildSpecies(evolutionDTO.getChain().getSpecies(), language));
 
         while(exit>0){
-            sequenceEvolution.add(buildSpecies(chain.getSpecies(), language));
-            chain = chain.getEvolves_to().get(0);
-
             if(chain.getEvolves_to().size() == 0){
                 sequenceEvolution.add(buildSpecies(chain.getSpecies(), language));
                 exit--;
+                break;
             }
+            sequenceEvolution.add(buildSpecies(chain.getSpecies(), language));
+            chain = chain.getEvolves_to().get(0);
         }
 
         List<EvolutionChainResponse> nextEvolution = new ArrayList<>();
@@ -249,6 +249,14 @@ public class PokemonApiService {
 
         return EvolutionResponse
                 .builder().evolution_chain(branchEvolution).next_evolution(branchEvolution).build();
+    }
+
+    public EvolutionResponse pokemonNoEvolution(EvolutionDTO evolutionDTO, String language){
+        List<EvolutionChainResponse> noEvolution = new ArrayList<>();
+        noEvolution.add(buildSpecies(evolutionDTO.getChain().getSpecies(), language));
+
+        return EvolutionResponse
+                .builder().evolution_chain(noEvolution).next_evolution(new ArrayList<>()).build();
     }
 
     public String findEvolutionUrl(String name){
