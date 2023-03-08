@@ -36,18 +36,17 @@ public class RoleService {
         Optional<UserInfo> userAsking = userRepository.findByUsername(usernameAsking);
         Optional<UserInfo> userInfo = userRepository.findByUsername(username);
 
-
         if (userAsking.isPresent() && userInfo.isPresent()) {
+            Set<UserInfo> following = userAsking.get().getFollowing();
+
             if (userAsking.get().getRole().equals(Role.OAK)) {
                 return getPokemonFromTrainer(username,quantity,offset,type,sortBy);
-            } else if (userAsking.get().getUsername().equals(userInfo.get().getUsername())) {
+            } else if (userAsking.get().getUsername().equals(userInfo.get().getUsername()) || following.contains(userInfo.get())) {
                 return getPokemonFromTrainer(username,quantity,offset,type,sortBy);
             } else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "You are not following this Trainer");
 
         } throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The Trainer you are looking for does not exist");
     }
-
-
 
     public SeePokemonFromTrainerDto getPokemonFromTrainer(String username,
                                                           int quantity,
@@ -73,6 +72,7 @@ public class RoleService {
 
                 pokemonsFromTrainer.add(IndividualPokemonFromTrainerDto
                         .builder()
+                        .nickname(captureList.get(i).getNickname())
                         .name(captureList.get(i).getPokemon().getName())
                         .id(captureList.get(i).getPokemon().getPokemon_id())
                         .type(types)
@@ -81,6 +81,7 @@ public class RoleService {
 
             return SeePokemonFromTrainerDto
                     .builder()
+                    .username(username)
                     .index(offset)
                     .quantity(quantity)
                     .result(filterType(type, sortBy(sortBy, pokemonsFromTrainer)))
@@ -109,13 +110,11 @@ public class RoleService {
                 captureRepository.save(capture);
                 return GeneralResponse.builder()
                         .responseCode("Ok")
-                        .responseMessage("Yo have cured the " +capture.getPokemon().getName() + " of "+ capture.getUser().getUsername())
+                        .responseMessage("You have cured the " +capture.getPokemon().getName() + " of "+ capture.getUser().getUsername())
                         .build();
             }throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "Pokemon not found");}
         throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "You have not provided adequate credentials to access this resource");
     }
-
-  
 
     public GeneralResponse followAndUnfollowTrainer(String trainerToFollow, FollowRequest followRequest, String trainer) {
         exceptionRole(trainer);
@@ -183,9 +182,6 @@ public class RoleService {
             throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User " +name+ " not found");
         }
     }
-
-
-    
 
     public Collection<IndividualPokemonFromTrainerDto> sortBy(String sortBy,
                                                               Collection<IndividualPokemonFromTrainerDto> pokemonsFromTrainer) {

@@ -12,6 +12,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SeePokemonFromTrainerDto {
+    private String username;
     private int quantity;
     private int index;
     private Collection<IndividualPokemonFromTrainerDto> result;
