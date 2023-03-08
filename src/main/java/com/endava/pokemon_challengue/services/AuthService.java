@@ -93,7 +93,7 @@ public class AuthService {
         if (userInfo.getEmail() == null || userInfo.getUsername() == null) {
             throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Fields email or username or role not null");
         } else if (optionalUserEmail.isPresent()) {
-            throw ExceptionGenerator.getException(ExceptionType.DUPLICATE_VALUE, "Email already in use or Username already in use");
+            throw ExceptionGenerator.getException(ExceptionType.DUPLICATE_VALUE, "Email/username not available");
         } else if (!EmailValidator.getInstance().isValid(userInfo.getEmail())) {
             throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Enter a valid email");
         }

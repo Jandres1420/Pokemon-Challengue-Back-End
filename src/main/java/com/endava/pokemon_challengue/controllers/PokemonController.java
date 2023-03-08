@@ -2,6 +2,7 @@ package com.endava.pokemon_challengue.controllers;
 
 import com.endava.pokemon_challengue.exceptions.ExceptionGenerator;
 import com.endava.pokemon_challengue.exceptions.ExceptionType;
+import com.endava.pokemon_challengue.exceptions.RestTemplateException;
 import com.endava.pokemon_challengue.models.dto.EvolutionDTO;
 import com.endava.pokemon_challengue.models.dto.PokemonDTO;
 import com.endava.pokemon_challengue.models.dto.PokemonSpeciesDTO;
@@ -19,16 +20,10 @@ import com.endava.pokemon_challengue.services.PokemonApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("/pokedex")
 @RestController
@@ -40,6 +35,7 @@ public class PokemonController {
     @Autowired
     public PokemonController(RestTemplate restTemplate, PokemonApiService pokemonApiService) {
         this.restTemplate = restTemplate;
+        restTemplate.setErrorHandler(RestTemplateException.builder().build());
         this.pokemonApiService = pokemonApiService;
     }
 
@@ -50,7 +46,7 @@ public class PokemonController {
                                        @RequestHeader(name = "connected") String connected) {
 
         if (connected.equals(username)){
-            String pokemonName = addPokemonRequest.getName();
+            String pokemonName = addPokemonRequest.getName().toLowerCase();
             String pokemonNickname = addPokemonRequest.getNickname();
 
             if (pokemonNickname=="" || pokemonNickname==null){
@@ -111,8 +107,8 @@ public class PokemonController {
     public SinglePokemonDetailsResponse getPokemonDetails(@PathVariable(name = "language") String language,
                                                           @RequestParam String value) {
 
-        PokemonDTO pokemonDTO = getPokemonDTO(value);
-        PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(value);
+        PokemonDTO pokemonDTO = getPokemonDTO(value.toLowerCase());
+        PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(value.toLowerCase());
         List<AbilityDTO> abilities = getAbilitiesDTO(pokemonDTO);
 
         return pokemonApiService.pokemonDetails(pokemonDTO, pokemonSpeciesDTO, abilities, language);
@@ -122,10 +118,10 @@ public class PokemonController {
     public EvolutionResponse getPokemonEvolution(@PathVariable(name = "language") String language,
                                                  @RequestParam String name) {
 
-        String evolutionUrl = pokemonApiService.findEvolutionUrl(name);
+        String evolutionUrl = pokemonApiService.findEvolutionUrl(name.toLowerCase());
 
         if(evolutionUrl.equals("")){
-            PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(name);
+            PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(name.toLowerCase());
             evolutionUrl = pokemonSpeciesDTO.getEvolution_chain().getUrl();
         }
 
@@ -134,7 +130,7 @@ public class PokemonController {
         if(evolutionDTO.getChain().getEvolves_to().size() == 0) {
             return pokemonApiService.pokemonNoEvolution(evolutionDTO, language);
         } else if (evolutionDTO.getChain().getEvolves_to().size() == 1) {
-            return pokemonApiService.pokemonSequenceEvolution(evolutionDTO, language, name);
+            return pokemonApiService.pokemonSequenceEvolution(evolutionDTO, language, name.toLowerCase());
         }else{
             return pokemonApiService.pokemonBranchEvolution(evolutionDTO, language);
         }
@@ -156,7 +152,7 @@ public class PokemonController {
 
         for(int i=0;i<abilitiesSize;i++){
             String urlAbility = pokemonDTO.getAbilities().get(i).getAbility().getUrl();
-                abilities.add(restTemplate.getForObject(urlAbility, AbilityDTO.class));
+                abilities.add(restTemplate.getForObject(urlAbility.toLowerCase(), AbilityDTO.class));
         }
         return abilities;
     }
