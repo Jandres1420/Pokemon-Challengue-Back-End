@@ -6,7 +6,6 @@ import lombok.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLInsert;
 
 
 import javax.persistence.*;
@@ -23,7 +22,7 @@ import java.util.Set;
 @EqualsAndHashCode(exclude = "following")
 @Entity
 @Table(name = "_user")
-public class UserInfo {
+public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int user_id;
@@ -54,20 +53,20 @@ public class UserInfo {
             joinColumns={@JoinColumn(name="father")},
             inverseJoinColumns={@JoinColumn(name="child")})
     @JsonBackReference
-    private Set<UserInfo> followers = new HashSet<>();
+    private Set<UserProfile> followers = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 
     @JoinTable(name="User_Relationship",
             joinColumns={@JoinColumn(name="child")},
             inverseJoinColumns={@JoinColumn(name="father")})
-     private Set<UserInfo> following = new HashSet<>();
+     private Set<UserProfile> following = new HashSet<>();
 
-    public void addFollower(UserInfo userInfo){
-        this.following.add(userInfo);
+    public void addFollower(UserProfile userProfile){
+        this.following.add(userProfile);
     }
 
-    public Set<UserInfo> getFollowing(){
+    public Set<UserProfile> getFollowing(){
         return this.following;
     }
 }

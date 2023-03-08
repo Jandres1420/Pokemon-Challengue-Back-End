@@ -17,7 +17,7 @@ import com.endava.pokemon_challengue.models.dto.responseBody.SinglePokemonDetail
 import com.endava.pokemon_challengue.models.dto.stat.StatResponseDTO;
 import com.endava.pokemon_challengue.repositories.CaptureRepository;
 import com.endava.pokemon_challengue.repositories.PokemonRepository;
-import com.endava.pokemon_challengue.repositories.UserRepository;
+import com.endava.pokemon_challengue.repositories.UserProfileRepository;
 import com.endava.pokemon_challengue.services.methods.AbilityGetter;
 import com.endava.pokemon_challengue.services.methods.DescriptionGetter;
 import com.endava.pokemon_challengue.services.methods.PokemonGetter;
@@ -31,7 +31,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class PokemonApiService {
     private final PokemonRepository pokemonRepository;
-    private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
     private final CaptureRepository captureRepository;
 
     private final PokemonGetter pokemonGetter;
@@ -74,11 +74,11 @@ public class PokemonApiService {
             addPokemonDB(pokemonDTO, pokemonSpeciesDTO, abilitiesDTO);
         }
 
-        if(userRepository.findByUsername(username).isPresent()){
-            if(userRepository.findByUsername(username).get().getConnect().booleanValue()){
+        if(userProfileRepository.findByUsername(username).isPresent()){
+            if(userProfileRepository.findByUsername(username).get().getConnect().booleanValue()){
                 Capture capture = Capture.builder()
                         .pokemon(pokemonRepository.findPokemonByName(pokemonName).get())
-                        .user(userRepository.findByUsername(username).get())
+                        .user(userProfileRepository.findByUsername(username).get())
                         .health_status(pokemonDTO.getStats().get(0).getBase_stat())
                         .nickname(pokemonNickname)
                         .build();
@@ -92,7 +92,7 @@ public class PokemonApiService {
         }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "This user does not exist");
     }
     public CRUDResponse releasePokemon(Long captureId, String username){
-        Optional<UserInfo> userInfo = userRepository.findByUsername(username);
+        Optional<UserProfile> userInfo = userProfileRepository.findByUsername(username);
 
         if(userInfo.isPresent()){
             int userId = userInfo.get().getUser_id();
@@ -115,7 +115,7 @@ public class PokemonApiService {
     }
 
     public CRUDResponse updatePokemon(Long captureId, String newNickname, String username){
-        Optional<UserInfo> userInfo = userRepository.findByUsername(username);
+        Optional<UserProfile> userInfo = userProfileRepository.findByUsername(username);
 
         if(userInfo.isPresent()) {
             int userId = userInfo.get().getUser_id();

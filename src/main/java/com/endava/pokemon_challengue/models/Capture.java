@@ -18,9 +18,9 @@ public class Capture {
     private String nickname;
     private int health_status;
 
-    @ManyToOne(targetEntity = UserInfo.class)
+    @ManyToOne(targetEntity = UserProfile.class)
     @JoinColumn(name = "user_id")
-    private UserInfo user;
+    private UserProfile user;
 
     @ManyToOne(targetEntity = Pokemon.class)
     @JoinColumn(name = "pokemon_id")
