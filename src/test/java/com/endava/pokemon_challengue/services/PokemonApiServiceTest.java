@@ -9,7 +9,7 @@ import com.endava.pokemon_challengue.models.dto.PokemonDTO;
 import com.endava.pokemon_challengue.models.dto.PokemonSpeciesDTO;
 import com.endava.pokemon_challengue.repositories.CaptureRepository;
 import com.endava.pokemon_challengue.repositories.PokemonRepository;
-import com.endava.pokemon_challengue.repositories.UserRepository;
+import com.endava.pokemon_challengue.repositories.UserProfileRepository;
 import com.endava.pokemon_challengue.services.methods.AbilityGetter;
 import com.endava.pokemon_challengue.services.methods.DescriptionGetter;
 import com.endava.pokemon_challengue.services.methods.PokemonGetter;
@@ -36,7 +36,7 @@ class PokemonApiServiceTest {
     @Mock
     PokemonRepository pokemonRepository;
     @Mock
-    UserRepository userRepository;
+    UserProfileRepository userProfileRepository;
     @Mock
     CaptureRepository captureRepository;
     @Mock

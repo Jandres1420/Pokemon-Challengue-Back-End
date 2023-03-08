@@ -4,7 +4,7 @@ import com.endava.pokemon_challengue.models.dto.requestBody.AdminRoleChange;
 import com.endava.pokemon_challengue.models.dto.requestBody.FollowRequest;
 import com.endava.pokemon_challengue.models.dto.responseBody.GeneralResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.SeePokemonFromTrainerDto;
-import com.endava.pokemon_challengue.repositories.UserRepository;
+import com.endava.pokemon_challengue.repositories.UserProfileRepository;
 import com.endava.pokemon_challengue.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/pokedex")
 public class RoleController {
     private final RoleService roleService;
-    private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
 
     @GetMapping("/pokemon-trainer/{username}/pokemon")
     @ResponseStatus(HttpStatus.OK)
