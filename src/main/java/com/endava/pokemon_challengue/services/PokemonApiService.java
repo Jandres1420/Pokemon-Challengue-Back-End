@@ -270,7 +270,6 @@ public class PokemonApiService {
 
     public EvolutionChainResponse buildSpecies(SpeciesDTO speciesDTO, String language){
         String name = speciesDTO.getName();
-
         return EvolutionChainResponse
                 .builder()
                 .name(name)

@@ -9,20 +9,12 @@ import com.endava.pokemon_challengue.models.dto.image.OtherDTO;
 import com.endava.pokemon_challengue.models.dto.image.SpritesDTO;
 import com.endava.pokemon_challengue.models.dto.type.TypeDTO;
 import com.endava.pokemon_challengue.models.dto.type.TypesDTO;
-import com.endava.pokemon_challengue.services.PokemonApiService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.ArrayList;
-import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PokemonGetterTest {
@@ -31,7 +23,7 @@ class PokemonGetterTest {
     PokemonGetter pokemonGetter;
 
     @Test
-    void getPokemon() {
+    void Given_PokemonDTOAndPokemonSpeciesDTO_When_GetPokemon_Then_ReturnPokemon() {
         ArrayList<TypesDTO> types = new ArrayList<>();
         types.add(TypesDTO.builder().type(TypeDTO.builder().name("electric").build()).build());
 

@@ -1,4 +1,4 @@
-package com.endava.pokemon_challengue.controllers;
+package com.endava.pokemon_challengue.repositories.restTemplate;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

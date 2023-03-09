@@ -73,7 +73,7 @@ class PokemonApiServiceTest {
     PokemonApiService pokemonApiService;
 
     @Test
-    void addPokemonDB() {
+    void Given_AllArguments_When_AddPokemonDB_Then_CheckPokemonWasAddedCorrectly() {
 
         PokemonDTO pokemonDTO = new PokemonDTO();
         PokemonSpeciesDTO pokemonSpeciesDTO = new PokemonSpeciesDTO();
@@ -93,7 +93,7 @@ class PokemonApiServiceTest {
     }
 
     @Test
-    void buildSpecies() {
+    void Given_SpeciesAndLanguage_When_BuildSpecies_Then_ReturnSpeciesSuccessfully() {
         SpeciesDTO species = SpeciesDTO.builder().name("pikachu").build();
 
         EvolutionChainResponse evolutionChainResponse = pokemonApiService.buildSpecies(species,"en");
@@ -102,7 +102,7 @@ class PokemonApiServiceTest {
     }
 
     @Test
-    void pokemonNoEvolution() {
+    void Given_EvolutionDTOAndLanguage_When_PokemonNoEvolution_Then_ReturnEvolutionChainAndNextEvolution() {
         List<EvolvesToDTO> evolves = new ArrayList<>();
         evolves.add(EvolvesToDTO.builder().build());
         EvolutionDTO evolutionDTO = EvolutionDTO.builder()
@@ -135,7 +135,7 @@ class PokemonApiServiceTest {
     }
 
     @Test
-    void pokemonBranchEvolution() {
+    void Given_EvolutionDTOAndLanguage_When_PokemonBranchEvolution_Then_ReturnEvolutionChainAndNextEvolution() {
         List<EvolvesToDTO> evolves = new ArrayList<>();
 
         evolves.add(EvolvesToDTO.builder()
@@ -157,7 +157,7 @@ class PokemonApiServiceTest {
     }
 
     @Test
-    void pokemonSequenceEvolution() {
+    void Given_EvolutionDTOAndLanguage_When_PokemonSequenceEvolution_Then_ReturnEvolutionChainAndNextEvolution() {
         List<EvolvesToDTO> evolves = new ArrayList<>();
         List<EvolvesToDTO> evolves2 = new ArrayList<>();
 

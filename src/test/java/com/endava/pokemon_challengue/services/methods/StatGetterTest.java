@@ -9,11 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class StatGetterTest {
@@ -22,7 +19,7 @@ class StatGetterTest {
     StatGetter statGetter;
 
     @Test
-    void getStat() {
+    void Given_PokemonDTO_When_GetStat_Then_ReturnStatt() {
         List<StatsDTO> stats = new ArrayList<>();
 
         stats.add(StatsDTO.builder().base_stat(1).stat(StatDTO.builder().name("health").build()).build());
@@ -45,6 +42,5 @@ class StatGetterTest {
         Assertions.assertEquals(stat.getSpecialAttack(),4);
         Assertions.assertEquals(stat.getSpecialDefense(),5);
         Assertions.assertEquals(stat.getSpeed(),6);
-
     }
 }

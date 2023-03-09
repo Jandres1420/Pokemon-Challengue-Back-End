@@ -43,4 +43,70 @@ class AbilityGetterTest {
         Assertions.assertEquals(ability.getN_spanish(),"Habilidad 1");
         Assertions.assertEquals(ability.getD_spanish(),"Efecto 1");
     }
+
+    @Test
+    void Given_LanguageIsEnglish_When_PokemonSpeciesExists_Then_ReturnDescriptionAndNameInEnglish() {
+        List<NameDTO> names = new ArrayList<>();
+        List<EffectDTO> effects = new ArrayList<>();
+
+        names.add(NameDTO.builder()
+                .name("Ability 1").language(LanguageDTO.builder().name("en").build())
+                .build());
+
+        effects.add(EffectDTO.builder().effect("Effect 1").language(LanguageDTO.builder().name("en").build()).build());
+
+        AbilityDTO abilityDTO = AbilityDTO.builder()
+                .names(names)
+                .effect_entries(effects)
+                .build();
+
+        Ability ability = abilityGetter.getAbility(abilityDTO);
+
+        Assertions.assertEquals(ability.getN_english(),"Ability 1");
+        Assertions.assertEquals(ability.getD_english(),"Effect 1");
+    }
+
+    @Test
+    void Given_LanguageIsGerman_When_PokemonSpeciesExists_Then_ReturnDescriptionAndNameInGerman() {
+        List<NameDTO> names = new ArrayList<>();
+        List<EffectDTO> effects = new ArrayList<>();
+
+        names.add(NameDTO.builder()
+                .name("Abilität 1").language(LanguageDTO.builder().name("de").build())
+                .build());
+
+        effects.add(EffectDTO.builder().effect("Effëct 1").language(LanguageDTO.builder().name("de").build()).build());
+
+        AbilityDTO abilityDTO = AbilityDTO.builder()
+                .names(names)
+                .effect_entries(effects)
+                .build();
+
+        Ability ability = abilityGetter.getAbility(abilityDTO);
+
+        Assertions.assertEquals(ability.getN_german(),"Abilität 1");
+        Assertions.assertEquals(ability.getD_german(),"Effëct 1");
+    }
+
+    @Test
+    void Given_LanguageIsJapanese_When_PokemonSpeciesExists_Then_ReturnDescriptionAndNameInJapanese() {
+        List<NameDTO> names = new ArrayList<>();
+        List<EffectDTO> effects = new ArrayList<>();
+
+        names.add(NameDTO.builder()
+                .name("japanese 1").language(LanguageDTO.builder().name("ja").build())
+                .build());
+
+        effects.add(EffectDTO.builder().effect("japanese 2").language(LanguageDTO.builder().name("ja").build()).build());
+
+        AbilityDTO abilityDTO = AbilityDTO.builder()
+                .names(names)
+                .effect_entries(effects)
+                .build();
+
+        Ability ability = abilityGetter.getAbility(abilityDTO);
+
+        Assertions.assertEquals(ability.getN_japanese(),"japanese 1");
+        Assertions.assertEquals(ability.getD_japanese(),"japanese 2");
+    }
 }

@@ -3,18 +3,14 @@ package com.endava.pokemon_challengue.services.methods;
 import com.endava.pokemon_challengue.models.Description;
 import com.endava.pokemon_challengue.models.dto.PokemonSpeciesDTO;
 import com.endava.pokemon_challengue.models.dto.description.FlavorTextDTO;
-import com.endava.pokemon_challengue.models.dto.evolution.EvolutionUrlDTO;
 import com.endava.pokemon_challengue.models.dto.language.LanguageDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class DescriptionGetterTest {
