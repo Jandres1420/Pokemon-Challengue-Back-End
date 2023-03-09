@@ -6,10 +6,10 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Builder
 @NoArgsConstructor
 @Service
 public class DescriptionGetter {
+
     public Description getDescription(PokemonSpeciesDTO pokemonSpeciesDTO) {
         int counter = 0;
         int size = pokemonSpeciesDTO.getFlavor_text_entries().size();
@@ -33,30 +33,16 @@ public class DescriptionGetter {
                     .replace("\n", " ")
                     .replace("\r", " ");
 
-            if (language.equals("en") && englishDes.isEmpty()) {
-                englishDes = description;
-            }
-            if (language.equals("es") && spanishDes.isEmpty()) {
-                spanishDes = description;
-            }
-            if (language.equals("ja") && japaneseDes.isEmpty()) {
-                japaneseDes = description;
-            }
-            if (language.equals("de") && germanDes.isEmpty()) {
-                germanDes = description;
-            }
+            if (language.equals("en") && englishDes.isEmpty()) englishDes = description;
+            if (language.equals("es") && spanishDes.isEmpty()) spanishDes = description;
+            if (language.equals("ja") && japaneseDes.isEmpty()) japaneseDes = description;
+            if (language.equals("de") && germanDes.isEmpty()) germanDes = description;
             counter++;
         }
 
-        if (spanishDes.isEmpty()) {
-            spanishDes = englishDes;
-        }
-        if (japaneseDes.isEmpty()) {
-            japaneseDes = englishDes;
-        }
-        if (germanDes.isEmpty()) {
-            germanDes = englishDes;
-        }
+        if (spanishDes.isEmpty()) spanishDes = englishDes;
+        if (japaneseDes.isEmpty()) japaneseDes = englishDes;
+        if (germanDes.isEmpty()) germanDes = englishDes;
 
         return Description.builder()
                 .d_english(englishDes)
@@ -65,5 +51,4 @@ public class DescriptionGetter {
                 .d_spanish(spanishDes)
                 .build();
     }
-
 }

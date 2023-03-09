@@ -10,11 +10,5 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class RestTemplate {
-
     private final org.springframework.web.client.RestTemplate restExternalApi;
-
-    public Object getResponseObject(String url){
-        return restExternalApi.getForObject(url, Object.class);
-    }
-
 }
