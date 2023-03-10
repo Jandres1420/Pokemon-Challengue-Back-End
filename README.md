@@ -66,4 +66,9 @@ When exporting go to the corresponding collection file, and try the end points
 
 ![](/img/testing.png)
 
+## Link for SwaggerAPI
+
+http://localhost:8080/swagger-ui.html
+
+
 
