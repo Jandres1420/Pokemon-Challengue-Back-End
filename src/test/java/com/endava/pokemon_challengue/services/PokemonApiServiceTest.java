@@ -36,10 +36,6 @@ class PokemonApiServiceTest {
     @Mock
     PokemonRepository pokemonRepository;
     @Mock
-    UserProfileRepository userProfileRepository;
-    @Mock
-    CaptureRepository captureRepository;
-    @Mock
     PokemonGetter pokemonGetter;
     @Mock
     StatGetter statGetter;

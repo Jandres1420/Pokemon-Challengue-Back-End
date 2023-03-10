@@ -60,9 +60,7 @@ public class AuthService {
         if(optionalUserEmail.isPresent()){
             UserProfile userProfileFound = optionalUserEmail.get();
             if(userProfileFound.getConnect()==null || !userProfileFound.getConnect()) userProfileFound.setConnect(true);
-            else if(Boolean.TRUE.equals(userProfileFound.getConnect())){
-                throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The user is already connected");
-            }
+            else if(Boolean.TRUE.equals(userProfileFound.getConnect())) throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The user is already connected");
             userProfileRepository.save(userProfileFound);
             return LogInResponse.builder()
                     .id(userProfileFound.getUser_id())
@@ -77,9 +75,9 @@ public class AuthService {
     public LogOutResponse logOutUser(LogInDto logInDto) {
         Optional<UserProfile> optionalUser = userProfileRepository.findByEmailAndPassword(logInDto.getEmail(), logInDto.getPassword());
         if(optionalUser.isPresent()){
-            UserProfile userProfileFound = userProfileRepository.findByEmail(logInDto.getEmail());
+            UserProfile userProfileFound = optionalUser.get();
             if(Boolean.FALSE.equals(userProfileFound.getConnect())){
-                throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "User already disconnected");
+                throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User already disconnected");
             }
             userProfileFound.setConnect(false);
             userProfileRepository.save(userProfileFound);
