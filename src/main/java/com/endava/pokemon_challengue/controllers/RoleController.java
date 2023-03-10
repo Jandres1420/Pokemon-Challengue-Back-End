@@ -4,7 +4,6 @@ import com.endava.pokemon_challengue.models.dto.requestBody.AdminRoleChange;
 import com.endava.pokemon_challengue.models.dto.requestBody.FollowRequest;
 import com.endava.pokemon_challengue.models.dto.responseBody.GeneralResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.SeePokemonFromTrainerDto;
-import com.endava.pokemon_challengue.repositories.UserProfileRepository;
 import com.endava.pokemon_challengue.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

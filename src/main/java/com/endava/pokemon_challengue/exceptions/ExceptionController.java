@@ -1,18 +1,17 @@
 package com.endava.pokemon_challengue.exceptions;
 
-import com.endava.pokemon_challengue.exceptions.CustomException.*;
-import com.endava.pokemon_challengue.exceptions.Response.UnauthorizedResponse;
-import org.aspectj.weaver.ast.Not;
+import com.endava.pokemon_challengue.exceptions.custom.*;
+import com.endava.pokemon_challengue.exceptions.response.UnauthorizedResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.WebRequest;
 
 @RestController
 @ControllerAdvice
 public class ExceptionController {
+
     @ExceptionHandler(DuplicateValue.class)
     public ResponseEntity<ExceptionResponse> handleDuplicateEntityException(DuplicateValue exception) {
         ExceptionResponse response = new ExceptionResponse();

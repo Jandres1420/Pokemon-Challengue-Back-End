@@ -1,4 +1,4 @@
-package com.endava.pokemon_challengue.exceptions.Response;
+package com.endava.pokemon_challengue.exceptions.response;
 
 import lombok.Data;
 

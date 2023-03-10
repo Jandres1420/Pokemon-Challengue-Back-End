@@ -1,7 +1,7 @@
 package com.endava.pokemon_challengue.controllers;
 
-import com.endava.pokemon_challengue.exceptions.CustomException.InvalidRole;
-import com.endava.pokemon_challengue.exceptions.CustomException.InvalidValue;
+import com.endava.pokemon_challengue.exceptions.custom.InvalidRole;
+import com.endava.pokemon_challengue.exceptions.custom.InvalidValue;
 import com.endava.pokemon_challengue.models.dto.AbilityDTO;
 import com.endava.pokemon_challengue.models.dto.PokemonDTO;
 import com.endava.pokemon_challengue.models.dto.PokemonSpeciesDTO;

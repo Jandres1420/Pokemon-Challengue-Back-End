@@ -3,6 +3,9 @@ package com.endava.pokemon_challengue.services.methods;
 import com.endava.pokemon_challengue.models.Pokemon;
 import com.endava.pokemon_challengue.models.dto.PokemonDTO;
 import com.endava.pokemon_challengue.models.dto.PokemonSpeciesDTO;
+import com.endava.pokemon_challengue.models.dto.dashboard.PokemonResponseDTO;
+import com.endava.pokemon_challengue.models.dto.dashboard.ResultDTO;
+import com.endava.pokemon_challengue.models.dto.dashboard.ResultsDTO;
 import com.endava.pokemon_challengue.models.dto.evolution.EvolutionUrlDTO;
 import com.endava.pokemon_challengue.models.dto.image.DreamWorldDTO;
 import com.endava.pokemon_challengue.models.dto.image.OtherDTO;
@@ -15,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class PokemonGetterTest {
@@ -49,4 +53,19 @@ class PokemonGetterTest {
 
         Assertions.assertEquals(pokemon.getPokemon_id(), 25);
     }
+
+    @Test
+    void Given_PokemonResponseDTO_When_GetPokemon_Then_ReturnPokemon() {
+        PokemonResponseDTO pokemonResponseDTO = PokemonResponseDTO.builder()
+                .name("pikachu")
+                .id(25)
+                .types(List.of("electric","normal"))
+                .img_path("x")
+                .build();
+        ResultDTO resultDTO = ResultDTO.builder().name("Results").build();
+        ResultsDTO resultsDTO = ResultsDTO.builder().results(List.of(resultDTO)).build();
+        Assertions.assertEquals("pikachu",pokemonResponseDTO.getName());
+        Assertions.assertEquals("Results",resultsDTO.getResults().get(0).getName());
+    }
+
 }
