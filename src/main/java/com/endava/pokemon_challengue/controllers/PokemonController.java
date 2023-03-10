@@ -49,7 +49,7 @@ public class PokemonController {
             String pokemonName = addPokemonRequest.getName().toLowerCase();
             String pokemonNickname = addPokemonRequest.getNickname();
 
-            if (pokemonNickname.equals("") || pokemonNickname==null){
+            if (pokemonNickname == "" || pokemonNickname==null){
                 throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The nickname is mandatory");
             }else{
                 PokemonDTO pokemonDTO = getPokemonDTO(pokemonName);
@@ -74,7 +74,7 @@ public class PokemonController {
 
         if (connected.equals(username)) {
             String pokemonNickname = updatePokemonRequest.getNickname();
-            if (pokemonNickname.equals("") || pokemonNickname==null){
+            if (pokemonNickname == "" || pokemonNickname==null){
                 throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The nickname is mandatory");
             }else {
                 Long captureId = updatePokemonRequest.getId();
