@@ -10,28 +10,25 @@
 - [Unit tests: indicate the code coverage achieved](#test)
 
 ## Tools
+<img src="img/javaImg.png" width="100" height="100"/><img src="img/spring-boot-logo.png" width="150" height="100"/>
 
-![](/img/javaImg.png=250x250)
-![](/img/spring-boot-logo.png=250x250)
-![](/img/mavenImg.png=250x250)
-![](/img/postgresImg.png=250x250)
+<img src="img/mavenImg.png" width="170" height="100"/><img src="img/postgresImg.png" width="150" height="150"/>
+
 - JPA
 - Lombok
 - Swagger
 - Hibernate
 
-### waiting for response (Libraries)
-
 
 ## Instructions.
 
-- Use Jdk 11 
-- Have installed maven
+- Use JDK 11 
+- Install Maven
 - PostgreSQL installed
 
 ### First Step
 
-Create a database on postSQL named pokemon  
+Create a database on PostgreSQL named pokemon  
 ![](/img/creatingDatabase.png)
 
 Then in this database create a Schema called local
@@ -39,7 +36,7 @@ Then in this database create a Schema called local
 ![](/img/creatingSchema.png)
 
 ### Second step
-Use on the cloned repository the command in the terminal.
+On the cloned repository use the command in the terminal.
 
 ```bash
 mvn clean install
@@ -49,12 +46,12 @@ Then go to the class pokemonChallengueApplication.java and run the application
 
 ![](/img/spring-boot-aplication.png)
 
-Yo should see that the application has created all the tables and their relations
+You should see that the application has created all the tables and the relations with each other
 
 ![](/img/created_tables.png)
 ### Third step
 
-Downloading and importing insomnia file 
+Downloading and importing Insomnia file 
 
 ![](/img/insomnia_import.png)
 
@@ -64,6 +61,8 @@ When exporting go to the corresponding collection file, and try the end points
 
 
 ## Test
+
+### Unit test coverage achieved: 78%
 
 ![](/img/testing.png)
 
