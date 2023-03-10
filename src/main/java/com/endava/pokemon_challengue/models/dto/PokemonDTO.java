@@ -6,11 +6,13 @@ import com.endava.pokemon_challengue.models.dto.image.SpritesDTO;
 import com.endava.pokemon_challengue.models.dto.stat.StatsDTO;
 import com.endava.pokemon_challengue.models.dto.type.TypesDTO;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class PokemonDTO {

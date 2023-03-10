@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 public class AbilityGetter {
 
     public Ability getAbility(AbilityDTO abilityDTO) {
-        //Get Ability Description
         int descriptionCounter = 0;
         int descriptionsSize = abilityDTO.getEffect_entries().size();
 
@@ -26,7 +25,6 @@ public class AbilityGetter {
                     .getLanguage()
                     .getName();
 
-
             String description = abilityDTO
                     .getEffect_entries()
                     .get(descriptionCounter)
@@ -34,32 +32,17 @@ public class AbilityGetter {
                     .replace("\n"," ")
                     .replace("\r"," ");
 
-            if(language.equals("en") && englishDes.isEmpty()){
-                englishDes = description;
-            }
-            if (language.equals("es") && spanishDes.isEmpty()) {
-                spanishDes = description;
-            }
-            if (language.equals("ja") && japaneseDes.isEmpty()) {
-                japaneseDes = description;
-            }
-            if (language.equals("de") && germanDes.isEmpty()){
-                germanDes = description;
-            }
+            if(language.equals("en") && englishDes.isEmpty()) englishDes = description;
+            if (language.equals("es") && spanishDes.isEmpty()) spanishDes = description;
+            if (language.equals("ja") && japaneseDes.isEmpty()) japaneseDes = description;
+            if (language.equals("de") && germanDes.isEmpty()) germanDes = description;
             descriptionCounter++;
         }
 
-        if(spanishDes.isEmpty()){
-            spanishDes = englishDes;
-        }
-        if (japaneseDes.isEmpty()) {
-            japaneseDes = englishDes;
-        }
-        if (germanDes.isEmpty()) {
-            germanDes = englishDes;
-        }
+        if(spanishDes.isEmpty()) spanishDes = englishDes;
+        if (japaneseDes.isEmpty()) japaneseDes = englishDes;
+        if (germanDes.isEmpty()) germanDes = englishDes;
 
-        //Get Ability Name
         int nameCounter = 0;
         int namesSize = abilityDTO.getNames().size();
 
@@ -82,30 +65,16 @@ public class AbilityGetter {
                     .replace("\n"," ")
                     .replace("\r"," ");
 
-            if(language.equals("en") && englishName.isEmpty()){
-                englishName = name;
-            }
-            if (language.equals("es") && spanishName.isEmpty()) {
-                spanishName = name;
-            }
-            if (language.equals("ja") && japaneseName.isEmpty()) {
-                japaneseName = name;
-            }
-            if (language.equals("de") && germanName.isEmpty()){
-                germanName = name;
-            }
+            if(language.equals("en") && englishName.isEmpty()) englishName = name;
+            if (language.equals("es") && spanishName.isEmpty()) spanishName = name;
+            if (language.equals("ja") && japaneseName.isEmpty()) japaneseName = name;
+            if (language.equals("de") && germanName.isEmpty()) germanName = name;
             nameCounter++;
         }
 
-        if(spanishName.isEmpty()){
-            spanishName = englishName;
-        }
-        if (japaneseName.isEmpty()) {
-            japaneseName = englishName;
-        }
-        if (germanName.isEmpty()) {
-            germanName = englishName;
-        }
+        if(spanishName.isEmpty()) spanishName = englishName;
+        if (japaneseName.isEmpty()) japaneseName = englishName;
+        if (germanName.isEmpty()) germanName = englishName;
 
         return Ability.builder()
                 .ability_id(abilityDTO.getId())

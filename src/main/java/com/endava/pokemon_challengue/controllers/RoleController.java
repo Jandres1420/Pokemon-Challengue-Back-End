@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping(path = "/pokedex")
 public class RoleController {
-    private final RoleService roleService;
 
-    private final UserProfileRepository userProfileRepository;
+    private final RoleService roleService;
 
     @GetMapping("/pokemon-trainer/{username}/pokemon")
     @ResponseStatus(HttpStatus.OK)
@@ -33,7 +32,7 @@ public class RoleController {
     @PostMapping("/pokemon/cure/{captureId}")
     @ResponseStatus(HttpStatus.OK)
     public GeneralResponse curePokemonDoctor(@PathVariable Long captureId,
-                                               @RequestHeader(value = "connected") String connected){
+                                             @RequestHeader(value = "connected") String connected){
         return roleService.curePokemonDoctor(captureId,connected);
     }
 
@@ -49,7 +48,7 @@ public class RoleController {
     @PostMapping("/admin/changeRole")
     @ResponseStatus(HttpStatus.OK)
     public GeneralResponse administrateProfiles(@RequestBody AdminRoleChange adminRoleChange,
-                            @RequestHeader(value = "connected") String connected){
+                                                @RequestHeader(value = "connected") String connected){
 
         return roleService.administrateProfiles(adminRoleChange, connected);
     }

@@ -2,10 +2,12 @@ package com.endava.pokemon_challengue.models.dto.type;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class TypesDTO {
