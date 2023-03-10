@@ -6,14 +6,18 @@
 
 **Table of Contents**
 - [Tools and libraries](#tools)
-- [Instructions to run the application.](#Instructions to run the application.)
-- [Unit tests: indicate the code coverage achieved.](#agregar-un-usuario-a-la-base-de-datos)
+- [Instructions to run the application](#Instructions to run the application)
+- [Unit tests: indicate the code coverage achieved](#Unit test)
 
 ## Tools
 
 <img class=mobile-image src="img/javaImg.png" /><img class=mobile-image src="img/spring-boot-logo.png" />
 <img class=mobile-image src="img/mavenImg.png" /><img class=mobile-image src="img/postgresImg.png" />
 
+- JPA
+- Lombok
+- Swagger
+- Hibernate
 
 ### waiting for response (Libraries)
 
@@ -54,8 +58,11 @@ Downloading and importing insomnia file
 ![](/img/insomnia_import.png)
 
 When exporting go to the corresponding collection file, and try the end points
+
 ![](/img/imported_file.png)
 
+
+## Unit test
 <style>
   .img {
     display: inline-block;
