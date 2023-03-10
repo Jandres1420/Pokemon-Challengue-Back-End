@@ -11,20 +11,10 @@
 
 ## Tools
 
-<img class=mobile-image src="img/javaImg.png" /><img class=mobile-image src="img/spring-boot-logo.png" />
-<img class=mobile-image src="img/mavenImg.png" /><img class=mobile-image src="img/postgresImg.png" />
-<style>
-  .img {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-  }
-  img.mobile-image {
-    width: 49%;
-    display: inline-block;
-  }
-</style>
-
+![](/img/javaImg.png=250x250)
+![](/img/spring-boot-logo.png=250x250)
+![](/img/mavenImg.png=250x250)
+![](/img/postgresImg.png=250x250)
 - JPA
 - Lombok
 - Swagger
