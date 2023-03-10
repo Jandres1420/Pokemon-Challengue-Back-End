@@ -4,7 +4,6 @@ import com.endava.pokemon_challengue.exceptions.ExceptionGenerator;
 import com.endava.pokemon_challengue.exceptions.ExceptionType;
 import com.endava.pokemon_challengue.models.UserProfile;
 import com.endava.pokemon_challengue.models.Role;
-import com.endava.pokemon_challengue.models.UserProfile;
 import com.endava.pokemon_challengue.models.dto.requestBody.LogInDto;
 import com.endava.pokemon_challengue.models.dto.requestBody.SignUpDto;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogInResponse;
@@ -33,7 +32,9 @@ public class AuthService {
     }
 
     public SignUpResponse signUp(@Valid @NotNull @NotEmpty SignUpDto signUpDto) {
-        Optional<UserProfile> optionalUserEmail = userProfileRepository.findUserByEmailAndUsername(signUpDto.getEmail(), signUpDto.getUsername());
+        Optional<UserProfile> optionalUserEmail = userProfileRepository.findUserByEmailAndUsername(
+                signUpDto.getEmail(),
+                signUpDto.getUsername());
         signUpExceptions(optionalUserEmail, signUpDto);
         if(!optionalUserEmail.isPresent()){
             UserProfile userProfile = UserProfile.builder()
@@ -56,11 +57,15 @@ public class AuthService {
     }
 
     public LogInResponse logInUser(@Valid @NotNull @NotEmpty LogInDto logInDto) {
-        Optional<UserProfile> optionalUserEmail = userProfileRepository.findByEmailAndPassword(logInDto.getEmail(), logInDto.getPassword());
+        Optional<UserProfile> optionalUserEmail = userProfileRepository.findByEmailAndPassword(logInDto.getEmail(),
+                logInDto.getPassword());
+
         if(optionalUserEmail.isPresent()){
             UserProfile userProfileFound = optionalUserEmail.get();
             if(userProfileFound.getConnect()==null || !userProfileFound.getConnect()) userProfileFound.setConnect(true);
-            else if(Boolean.TRUE.equals(userProfileFound.getConnect())) throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The user is already connected");
+            else if(Boolean.TRUE.equals(userProfileFound
+                    .getConnect())) throw ExceptionGenerator.getException(
+                            ExceptionType.INVALID_VALUE, "The user is already connected");
             userProfileRepository.save(userProfileFound);
             return LogInResponse.builder()
                     .id(userProfileFound.getUser_id())
@@ -73,7 +78,9 @@ public class AuthService {
     }
 
     public LogOutResponse logOutUser(LogInDto logInDto) {
-        Optional<UserProfile> optionalUser = userProfileRepository.findByEmailAndPassword(logInDto.getEmail(), logInDto.getPassword());
+        Optional<UserProfile> optionalUser = userProfileRepository.findByEmailAndPassword(logInDto.getEmail(),
+                logInDto.getPassword());
+
         if(optionalUser.isPresent()){
             UserProfile userProfileFound = optionalUser.get();
             if(Boolean.FALSE.equals(userProfileFound.getConnect())){
@@ -89,7 +96,9 @@ public class AuthService {
 
     public void signUpExceptions(Optional<UserProfile> optionalUserEmail, SignUpDto userInfo) {
         if (userInfo.getEmail() == null || userInfo.getUsername() == null) {
-            throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED, "Fields email or username or role not null");
+            throw ExceptionGenerator.getException(ExceptionType.PARAMS_REQUIRED,
+                    "Fields email or username or role not null");
+
         } else if (optionalUserEmail.isPresent()) {
             throw ExceptionGenerator.getException(ExceptionType.DUPLICATE_VALUE, "Email/username not available");
         } else if (!EmailValidator.getInstance().isValid(userInfo.getEmail())) {

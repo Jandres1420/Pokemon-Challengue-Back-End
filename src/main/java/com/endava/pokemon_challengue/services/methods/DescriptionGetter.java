@@ -2,7 +2,6 @@ package com.endava.pokemon_challengue.services.methods;
 
 import com.endava.pokemon_challengue.models.Description;
 import com.endava.pokemon_challengue.models.dto.PokemonSpeciesDTO;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 

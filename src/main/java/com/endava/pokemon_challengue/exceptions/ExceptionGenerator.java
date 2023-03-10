@@ -1,6 +1,6 @@
 package com.endava.pokemon_challengue.exceptions;
 
-import com.endava.pokemon_challengue.exceptions.CustomException.*;
+import com.endava.pokemon_challengue.exceptions.custom.*;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,8 +1,8 @@
 package com.endava.pokemon_challengue.services;
 
-import com.endava.pokemon_challengue.exceptions.CustomException.DuplicateValue;
-import com.endava.pokemon_challengue.exceptions.CustomException.InvalidValue;
-import com.endava.pokemon_challengue.exceptions.CustomException.ParamsRequired;
+import com.endava.pokemon_challengue.exceptions.custom.DuplicateValue;
+import com.endava.pokemon_challengue.exceptions.custom.InvalidValue;
+import com.endava.pokemon_challengue.exceptions.custom.ParamsRequired;
 import com.endava.pokemon_challengue.models.UserProfile;
 import com.endava.pokemon_challengue.models.dto.requestBody.LogInDto;
 import com.endava.pokemon_challengue.models.dto.requestBody.SignUpDto;
@@ -10,7 +10,6 @@ import com.endava.pokemon_challengue.models.dto.responseBody.LogInResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogOutResponse;
 import com.endava.pokemon_challengue.repositories.UserProfileRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -28,16 +27,12 @@ class AuthServiceTest {
 
     @Captor
     ArgumentCaptor<UserProfile> userProfileArgumentCaptor;
+
     @Mock
     UserProfileRepository userProfileRepository;
 
     @InjectMocks
     AuthService authService;
-
-    @BeforeAll
-    static void beforeAll() {
-
-    }
 
     @Test
     void Given_SignUpDto_When_SignUp_Then_CheckingItRegisterAPerson() {
@@ -119,7 +114,7 @@ class AuthServiceTest {
                     .thenReturn(Optional.of(UserProfile.builder().email("andres@endava.com").username("andres").build()));
             authService.signUp(SignUpDto.builder().email("andres@endava.com").username("andres").build());
         });
-        Assertions.assertEquals("Email already in use or Username already in use",exceptionRepeatedEmail.getMessage());
+        Assertions.assertEquals("Email/username not available",exceptionRepeatedEmail.getMessage());
     }
 
     @Test

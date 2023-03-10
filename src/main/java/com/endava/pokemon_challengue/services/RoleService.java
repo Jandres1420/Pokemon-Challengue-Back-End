@@ -9,7 +9,6 @@ import com.endava.pokemon_challengue.models.dto.responseBody.GeneralResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.IndividualPokemonFromTrainerDto;
 import com.endava.pokemon_challengue.models.dto.responseBody.SeePokemonFromTrainerDto;
 import com.endava.pokemon_challengue.repositories.CaptureRepository;
-import com.endava.pokemon_challengue.repositories.PokemonRepository;
 import com.endava.pokemon_challengue.repositories.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,9 +41,11 @@ public class RoleService {
                 return getPokemonFromTrainer(username,quantity,offset,type,sortBy);
             } else if (userAsking.get().getUsername().equals(userInfo.get().getUsername()) || following.contains(userInfo.get())) {
                 return getPokemonFromTrainer(username,quantity,offset,type,sortBy);
-            } else throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE, "You don't follow this pokémon trainer");
+            } else throw ExceptionGenerator.getException(ExceptionType.INVALID_ROLE,
+                    "You don't follow this pokémon trainer");
 
-        } throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The Trainer you are looking for does not exist");
+        } throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE,
+                "The Trainer you are looking for does not exist");
     }
 
     public SeePokemonFromTrainerDto getPokemonFromTrainer(String username,

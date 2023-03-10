@@ -32,7 +32,8 @@ public class AuthController {
             @ApiResponse(
                     responseCode = "200",
                     description = "The user was correctly register",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = SignUpDto.class))}),
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SignUpDto.class))}),
 
             @ApiResponse(
                     responseCode = "400",
