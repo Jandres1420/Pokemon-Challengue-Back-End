@@ -1,6 +1,5 @@
 package com.endava.pokemon_challengue.controllers;
 
-import com.endava.pokemon_challengue.models.UserProfile;
 import com.endava.pokemon_challengue.models.dto.requestBody.LogInDto;
 import com.endava.pokemon_challengue.models.dto.requestBody.SignUpDto;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogInResponse;
@@ -28,16 +27,23 @@ public class AuthController {
 
     public AuthController(AuthService authService){this.authService = authService;}
 
-
     @Operation(summary = "Get a book by its id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "The user was correctly register",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = SignUpDto.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The user was correctly register",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = SignUpDto.class))}),
+
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid id supplied",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "Book not found",
+
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Book not found",
                     content = @Content) })
+
     @PostMapping("/signUp")
     public ResponseEntity<SignUpResponse> signUpUser(@RequestBody @Valid @NotNull @NotEmpty SignUpDto signUpDto){
         return new ResponseEntity<>(authService.signUp(signUpDto), HttpStatus.CREATED);

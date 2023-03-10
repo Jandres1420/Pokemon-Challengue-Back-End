@@ -73,7 +73,8 @@ public class PokemonApiService {
             addPokemonDB(pokemonDTO, pokemonSpeciesDTO, abilitiesDTO);
         }
 
-        if(userProfileRepository.findByUsername(username).isPresent()){
+        Optional<UserProfile> userProfile = userProfileRepository.findByUsername(username);
+        if(userProfile.isPresent()){
             if(userProfileRepository.findByUsername(username).get().getConnect().booleanValue()){
                 Capture capture = Capture.builder()
                         .pokemon(pokemonRepository.findPokemonByName(pokemonName).get())
@@ -82,13 +83,12 @@ public class PokemonApiService {
                         .nickname(pokemonNickname)
                         .build();
                 captureRepository.save(capture);
-
                 return CRUDResponse.builder()
                         .responseCode("Ok")
                         .responseMessage("Pokemon "+pokemonName+" added to "+ username)
                         .build();
-            }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User disconnected");
-        }else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "This user does not exist");
+            } else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "User disconnected");
+        } else throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "This user does not exist");
     }
 
     public CRUDResponse releasePokemon(Long captureId, String username){
@@ -96,7 +96,7 @@ public class PokemonApiService {
 
         if(userInfo.isPresent()){
             int userId = userInfo.get().getUser_id();
-            Optional<Capture> capture = captureRepository.findCaptureByIdAndUsername(captureId, userId);
+            Optional<Capture> capture = captureRepository.findCaptureByCaptureIdAndUserId(captureId, userId);
             if(capture.isPresent()){
                 String pokemonNickname = capture.get().getNickname();
                 captureRepository.deleteById(captureId);
@@ -119,7 +119,7 @@ public class PokemonApiService {
 
         if(userInfo.isPresent()) {
             int userId = userInfo.get().getUser_id();
-            Optional<Capture> capture = captureRepository.findCaptureByIdAndUsername(captureId, userId);
+            Optional<Capture> capture = captureRepository.findCaptureByCaptureIdAndUserId(captureId, userId);
             if (capture.isPresent()) {
                 String oldNickname = capture.get().getNickname();
                 Capture updatedCapture = capture.get();
@@ -270,7 +270,6 @@ public class PokemonApiService {
 
     public EvolutionChainResponse buildSpecies(SpeciesDTO speciesDTO, String language){
         String name = speciesDTO.getName();
-
         return EvolutionChainResponse
                 .builder()
                 .name(name)
