@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AdminRoleChange {
 
-    private String action;
     private String role;
     private String username;
 }
