@@ -226,9 +226,13 @@ public class PokemonApiService {
         }
 
         List<EvolutionChainResponse> nextEvolution = new ArrayList<>();
+        boolean found = false;
 
         for(int i=0; i<sequenceEvolution.size()-1;i++){
             if(name.equals(sequenceEvolution.get(i).getName())){
+                found = true;
+            }
+            if(found){
                 nextEvolution.add(sequenceEvolution.get(i+1));
             }
         }
@@ -239,16 +243,20 @@ public class PokemonApiService {
 
     public EvolutionResponse pokemonBranchEvolution(EvolutionDTO evolutionDTO, String language){
         List<EvolutionChainResponse> branchEvolution = new ArrayList<>();
+
         int evolutionSize = evolutionDTO.getChain().getEvolves_to().size();
 
         branchEvolution.add(buildSpecies(evolutionDTO.getChain().getSpecies(), language));
+
         for(int i = 0; i < evolutionSize; i++){
             SpeciesDTO species = evolutionDTO.getChain().getEvolves_to().get(i).getSpecies();
             branchEvolution.add(i+1, buildSpecies(species,language));
         }
 
+        List<EvolutionChainResponse> nextEvolution = new ArrayList<>(branchEvolution);
+
         return EvolutionResponse
-                .builder().evolution_chain(branchEvolution).next_evolution(branchEvolution).build();
+                .builder().evolution_chain(branchEvolution).next_evolution(nextEvolution).build();
     }
 
     public EvolutionResponse pokemonNoEvolution(EvolutionDTO evolutionDTO, String language, PokemonDTO pokemonDTO){

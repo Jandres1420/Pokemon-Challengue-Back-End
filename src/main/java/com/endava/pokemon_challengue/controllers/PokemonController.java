@@ -139,19 +139,33 @@ public class PokemonController {
             return pokemonApiService.pokemonNoEvolution(evolutionDTO, language,getPokemonDTO(name));
         } else if (evolutionDTO.getChain().getEvolves_to().size() == 1) {
             EvolutionResponse evolutionResponse =pokemonApiService.pokemonSequenceEvolution(evolutionDTO, language, name.toLowerCase());
+
             for(int i = 0 ; i< evolutionResponse.getEvolution_chain().size(); i++){
                 PokemonDTO pokemonDTO = getPokemonDTO(evolutionResponse.getEvolution_chain().get(i).getName());
                 String img_url = pokemonDTO.getSprites().getOther().getDream_world().getFront_default();
                 evolutionResponse.getEvolution_chain().get(i).setImg_url(img_url);
             }
             return evolutionResponse;
+
         }else{
             EvolutionResponse evolutionResponse = pokemonApiService.pokemonBranchEvolution(evolutionDTO, language);
-            for(int i = 0 ; i< evolutionResponse.getEvolution_chain().size(); i++){
+
+            for(int i = 0 ; i < evolutionResponse.getEvolution_chain().size(); i++){
                 PokemonDTO pokemonDTO = getPokemonDTO(evolutionResponse.getEvolution_chain().get(i).getName());
                 String img_url = pokemonDTO.getSprites().getOther().getDream_world().getFront_default();
                 evolutionResponse.getEvolution_chain().get(i).setImg_url(img_url);
             }
+
+            System.out.println(evolutionResponse);
+
+            evolutionResponse.getNext_evolution().remove(0);
+
+            for(int i = 0 ; i < evolutionResponse.getNext_evolution().size(); i++){
+                if(evolutionResponse.getNext_evolution().get(i).getName().equals(name)){
+                    evolutionResponse.getNext_evolution().remove(i);
+                }
+            }
+
             return evolutionResponse;
         }
     }
