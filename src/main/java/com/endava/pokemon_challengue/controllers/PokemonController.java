@@ -16,6 +16,7 @@ import com.endava.pokemon_challengue.models.dto.responseBody.CRUDResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.DashboardResponseDTO;
 import com.endava.pokemon_challengue.models.dto.responseBody.EvolutionResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.SinglePokemonDetailsResponse;
+import com.endava.pokemon_challengue.models.dto.generalType.PokemonTypesDTO;
 import com.endava.pokemon_challengue.services.PokemonApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -102,6 +103,13 @@ public class PokemonController {
                 .results(getDashboardResults(quantity, offset))
                 .build();
     }
+    @GetMapping("/type")
+    public PokemonTypesDTO getLanguageType(@RequestParam String pokemonType) {
+
+        PokemonTypesDTO pokemonTypesDTO = getPokemonTypesDTO(pokemonType);
+
+        return pokemonTypesDTO;
+    }
 
     @GetMapping("/{language}/pokemon")
     public SinglePokemonDetailsResponse getPokemonDetails(@PathVariable(name = "language") String language,
@@ -128,11 +136,23 @@ public class PokemonController {
         EvolutionDTO evolutionDTO = restTemplate.getForObject(evolutionUrl, EvolutionDTO.class);
 
         if(evolutionDTO.getChain().getEvolves_to().size() == 0) {
-            return pokemonApiService.pokemonNoEvolution(evolutionDTO, language);
+            return pokemonApiService.pokemonNoEvolution(evolutionDTO, language,getPokemonDTO(name));
         } else if (evolutionDTO.getChain().getEvolves_to().size() == 1) {
-            return pokemonApiService.pokemonSequenceEvolution(evolutionDTO, language, name.toLowerCase());
+            EvolutionResponse evolutionResponse =pokemonApiService.pokemonSequenceEvolution(evolutionDTO, language, name.toLowerCase());
+            for(int i = 0 ; i< evolutionResponse.getEvolution_chain().size(); i++){
+                PokemonDTO pokemonDTO = getPokemonDTO(evolutionResponse.getEvolution_chain().get(i).getName());
+                String img_url = pokemonDTO.getSprites().getOther().getDream_world().getFront_default();
+                evolutionResponse.getEvolution_chain().get(i).setImg_url(img_url);
+            }
+            return evolutionResponse;
         }else{
-            return pokemonApiService.pokemonBranchEvolution(evolutionDTO, language);
+            EvolutionResponse evolutionResponse = pokemonApiService.pokemonBranchEvolution(evolutionDTO, language);
+            for(int i = 0 ; i< evolutionResponse.getEvolution_chain().size(); i++){
+                PokemonDTO pokemonDTO = getPokemonDTO(evolutionResponse.getEvolution_chain().get(i).getName());
+                String img_url = pokemonDTO.getSprites().getOther().getDream_world().getFront_default();
+                evolutionResponse.getEvolution_chain().get(i).setImg_url(img_url);
+            }
+            return evolutionResponse;
         }
     }
 
@@ -144,7 +164,13 @@ public class PokemonController {
     public PokemonSpeciesDTO getPokemonSpeciesDTO(String pokemonName){
         String urlSpecies = "https://pokeapi.co/api/v2/pokemon-species/"+pokemonName;
         return restTemplate.getForObject(urlSpecies, PokemonSpeciesDTO.class);
+
     }
+    public PokemonTypesDTO getPokemonTypesDTO(String pokemonType){
+        String urlSpecies = "https://pokeapi.co/api/v2/type/"+pokemonType;
+        return restTemplate.getForObject(urlSpecies, PokemonTypesDTO.class);
+    }
+
 
     public List<AbilityDTO> getAbilitiesDTO(PokemonDTO pokemonDTO){
         int abilitiesSize = pokemonDTO.getAbilities().size();

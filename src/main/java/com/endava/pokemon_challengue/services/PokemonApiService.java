@@ -251,10 +251,9 @@ public class PokemonApiService {
                 .builder().evolution_chain(branchEvolution).next_evolution(branchEvolution).build();
     }
 
-    public EvolutionResponse pokemonNoEvolution(EvolutionDTO evolutionDTO, String language){
+    public EvolutionResponse pokemonNoEvolution(EvolutionDTO evolutionDTO, String language, PokemonDTO pokemonDTO){
         List<EvolutionChainResponse> noEvolution = new ArrayList<>();
         noEvolution.add(buildSpecies(evolutionDTO.getChain().getSpecies(), language));
-
         return EvolutionResponse
                 .builder().evolution_chain(noEvolution).next_evolution(new ArrayList<>()).build();
     }

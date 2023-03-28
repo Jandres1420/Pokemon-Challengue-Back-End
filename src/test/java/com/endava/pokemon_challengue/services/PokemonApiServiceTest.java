@@ -112,7 +112,7 @@ class PokemonApiServiceTest {
                                 .name("ditto").build())
                         .build()).build();
 
-        EvolutionResponse evolutionResponse = pokemonApiService.pokemonNoEvolution(evolutionDTO, "de");
+        EvolutionResponse evolutionResponse = pokemonApiService.pokemonNoEvolution(evolutionDTO, "de",null);
         Assertions.assertEquals(evolutionResponse.getEvolution_chain().get(0).getName(),"ditto");
         Assertions.assertEquals(evolutionResponse.getEvolution_chain().get(0).getDetailed_url(),"/pokedex/de/pokemon/ditto");
     }
@@ -178,7 +178,7 @@ class PokemonApiServiceTest {
                         .build())
                 .build();
 
-        EvolutionResponse evolutionResponse = pokemonApiService.pokemonSequenceEvolution(evolutionDTO, "en", "pichu");
+        EvolutionResponse evolutionResponse = pokemonApiService.pokemonSequenceEvolution(evolutionDTO, "en", "pichu",null);
 
         Assertions.assertEquals(evolutionResponse.getEvolution_chain().get(0).getName(), "pichu");
         Assertions.assertEquals(evolutionResponse.getEvolution_chain().get(1).getName(), "pikachu");
