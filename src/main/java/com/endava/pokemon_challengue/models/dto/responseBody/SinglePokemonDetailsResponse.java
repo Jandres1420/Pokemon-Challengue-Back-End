@@ -21,5 +21,7 @@ public class SinglePokemonDetailsResponse {
     private String img_path;
     private String description;
     private StatResponseDTO stats;
+
+    private List<String> typesInLanguage;
     private List<AbilityResponseDTO> abilities;
 }

@@ -9,6 +9,7 @@ import com.endava.pokemon_challengue.models.dto.PokemonSpeciesDTO;
 import com.endava.pokemon_challengue.models.dto.AbilityDTO;
 import com.endava.pokemon_challengue.models.dto.dashboard.PokemonResponseDTO;
 import com.endava.pokemon_challengue.models.dto.dashboard.ResultsDTO;
+import com.endava.pokemon_challengue.models.dto.generalType.TypesNameDTO;
 import com.endava.pokemon_challengue.models.dto.requestBody.AddPokemonRequest;
 import com.endava.pokemon_challengue.models.dto.requestBody.DeletePokemonRequest;
 import com.endava.pokemon_challengue.models.dto.requestBody.UpdatePokemonRequest;
@@ -25,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestMapping("/pokedex")
 @RestController
@@ -103,13 +105,6 @@ public class PokemonController {
                 .results(getDashboardResults(quantity, offset))
                 .build();
     }
-    @GetMapping("/type")
-    public PokemonTypesDTO getLanguageType(@RequestParam String pokemonType) {
-
-        PokemonTypesDTO pokemonTypesDTO = getPokemonTypesDTO(pokemonType);
-
-        return pokemonTypesDTO;
-    }
 
     @GetMapping("/{language}/pokemon")
     public SinglePokemonDetailsResponse getPokemonDetails(@PathVariable(name = "language") String language,
@@ -118,10 +113,23 @@ public class PokemonController {
         PokemonDTO pokemonDTO = getPokemonDTO(value.toLowerCase());
         PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(value.toLowerCase());
         List<AbilityDTO> abilities = getAbilitiesDTO(pokemonDTO);
-
-        return pokemonApiService.pokemonDetails(pokemonDTO, pokemonSpeciesDTO, abilities, language);
+        SinglePokemonDetailsResponse singlePokemonDetailsResponse = pokemonApiService.pokemonDetails(pokemonDTO, pokemonSpeciesDTO, abilities, language);
+        List<String> listOfLanguage = new ArrayList<>();
+        for(String u : singlePokemonDetailsResponse.getType()){
+            listOfLanguage.add(typeInLanguage(u,language));
+        }
+        singlePokemonDetailsResponse.setTypesInLanguage(listOfLanguage);
+        return singlePokemonDetailsResponse;
     }
 
+    public String typeInLanguage(String type, String language){
+        PokemonTypesDTO pokemonTypesDTO = getPokemonTypesDTO(type);
+        List<TypesNameDTO> filterPokemon = pokemonTypesDTO.getNames()
+                .stream()
+                .filter(p -> p.getLanguage().getName().contains(language))
+                .collect(Collectors.toList());
+        return filterPokemon.get(0).getName();
+    }
     @GetMapping("/{language}/pokemon/evolution-chain")
     public EvolutionResponse getPokemonEvolution(@PathVariable(name = "language") String language,
                                                  @RequestParam String name) {
