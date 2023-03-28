@@ -98,12 +98,14 @@ public class PokemonController {
     }
 
     @GetMapping("/pokemon")
-    public DashboardResponseDTO getDashboard(@RequestParam int quantity, @RequestParam int offset) {
-        return DashboardResponseDTO
+    public DashboardResponseDTO getDashboard(@RequestParam int quantity, @RequestParam int offset,
+                                             @RequestParam String language) {
+        DashboardResponseDTO dashboardResponseDTO = DashboardResponseDTO
                 .builder()
                 .quantity(quantity)
-                .results(getDashboardResults(quantity, offset))
+                .results(getDashboardResults(quantity, offset, language))
                 .build();
+        return dashboardResponseDTO;
     }
 
     @GetMapping("/{language}/pokemon")
@@ -163,9 +165,6 @@ public class PokemonController {
                 String img_url = pokemonDTO.getSprites().getOther().getDream_world().getFront_default();
                 evolutionResponse.getEvolution_chain().get(i).setImg_url(img_url);
             }
-
-            System.out.println(evolutionResponse);
-
             evolutionResponse.getNext_evolution().remove(0);
 
             for(int i = 0 ; i < evolutionResponse.getNext_evolution().size(); i++){
@@ -205,17 +204,21 @@ public class PokemonController {
         return abilities;
     }
 
-    public List<PokemonResponseDTO> getDashboardResults(int quantity, int offset){
+    public List<PokemonResponseDTO> getDashboardResults(int quantity, int offset, String language){
         String pokemonDashboardUrl = "https://pokeapi.co/api/v2/pokemon?limit="+quantity+"&offset="+offset;
         ResultsDTO resultsDTO = restTemplate.getForObject(pokemonDashboardUrl, ResultsDTO.class);
         List<PokemonResponseDTO> pokemons = new ArrayList<>();
 
-        for(int i=0;i<resultsDTO.getResults().size();i++){
+        for(int i=0;i<resultsDTO.getResults().size();i++) {
             PokemonDTO pokemonDTO = getPokemonDTO(resultsDTO.getResults().get(i).getName());
             List<String> types = new ArrayList<>();
 
-            for(int w=0; w<pokemonDTO.getTypes().size();w++){
+            for (int w = 0; w < pokemonDTO.getTypes().size(); w++) {
                 types.add(pokemonDTO.getTypes().get(w).getType().getName());
+            }
+            List<String> typesOfLanguage = new ArrayList<>();
+            for(String u : types){
+                typesOfLanguage.add(typeInLanguage(u,language));
             }
             pokemons.add(PokemonResponseDTO
                     .builder()
@@ -223,6 +226,7 @@ public class PokemonController {
                     .name(pokemonDTO.getName())
                     .img_path(pokemonDTO.getSprites().getOther().getDream_world().getFront_default())
                     .types(types)
+                    .typesInLanguage(typesOfLanguage)
                     .build());
         }
         return pokemons;
