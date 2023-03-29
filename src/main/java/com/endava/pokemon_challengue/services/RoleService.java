@@ -80,6 +80,7 @@ public class RoleService {
                         .name(captureList.get(i).getPokemon().getName())
                         .id(captureList.get(i).getPokemon().getPokemon_id())
                         .types(types)
+                        .img_path(captureList.get(i).getPokemon().getImg_path())
                         .build());
             }
 
