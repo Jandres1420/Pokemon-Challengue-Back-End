@@ -3,6 +3,7 @@ package com.endava.pokemon_challengue.services;
 import com.endava.pokemon_challengue.exceptions.ExceptionGenerator;
 import com.endava.pokemon_challengue.exceptions.ExceptionType;
 import com.endava.pokemon_challengue.models.*;
+import com.endava.pokemon_challengue.models.dto.generalType.PokemonTypesDTO;
 import com.endava.pokemon_challengue.models.dto.requestBody.AdminRoleChange;
 import com.endava.pokemon_challengue.models.dto.requestBody.FollowRequest;
 import com.endava.pokemon_challengue.models.dto.responseBody.GeneralResponse;
@@ -12,6 +13,8 @@ import com.endava.pokemon_challengue.repositories.CaptureRepository;
 import com.endava.pokemon_challengue.repositories.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 public class RoleService {
     private final UserProfileRepository userProfileRepository;
     private final CaptureRepository captureRepository;
+
 
     private static  String userNotFound = "User not found";
 

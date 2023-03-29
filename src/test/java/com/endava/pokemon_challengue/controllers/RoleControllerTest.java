@@ -29,7 +29,7 @@ class RoleControllerTest {
         when(roleServiceMock.seePokemonFromTrainer("gabriel", 1, 0, "gabriel", "", ""))
                 .thenReturn(SeePokemonFromTrainerDto.builder().username("gabriel").build());
 
-        SeePokemonFromTrainerDto seePokemonFromTrainerDto = roleController.seePokemonsFromTrainer("gabriel", 1, 0, "gabriel", "", "");
+        SeePokemonFromTrainerDto seePokemonFromTrainerDto = roleController.seePokemonsFromTrainer("gabriel", 1, 0, "gabriel", "", "","");
 
         Assertions.assertEquals(seePokemonFromTrainerDto.getUsername(),"gabriel");
     }

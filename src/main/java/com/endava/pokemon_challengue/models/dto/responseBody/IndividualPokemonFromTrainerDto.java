@@ -15,4 +15,6 @@ public class IndividualPokemonFromTrainerDto {
     private String name;
     private int id;
     private List<String> type;
+
+    private List<String> typeLanguage;
 }
