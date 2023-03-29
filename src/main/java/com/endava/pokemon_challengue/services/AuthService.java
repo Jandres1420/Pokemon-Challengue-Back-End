@@ -74,6 +74,7 @@ public class AuthService {
                     .name(userProfileFound.getName())
                     .last_name(userProfileFound.getLastName())
                     .password(userProfileFound.getPassword())
+                    .role(userProfileFound.getRole())
                     .build();
         }else{
             throw ExceptionGenerator.getException(ExceptionType.INVALID_VALUE, "The credentials are incorrect");
