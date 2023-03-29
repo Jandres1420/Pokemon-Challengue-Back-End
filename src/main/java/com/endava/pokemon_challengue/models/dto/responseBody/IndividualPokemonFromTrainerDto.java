@@ -14,7 +14,7 @@ public class IndividualPokemonFromTrainerDto {
     private String nickname;
     private String name;
     private int id;
-    private List<String> type;
-
-    private List<String> typeLanguage;
+    private List<String> types;
+    private List<String> typesInLanguage;
+    private String img_path;
 }

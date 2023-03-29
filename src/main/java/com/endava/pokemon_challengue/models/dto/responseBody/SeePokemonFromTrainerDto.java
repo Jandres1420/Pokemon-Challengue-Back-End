@@ -17,5 +17,5 @@ public class SeePokemonFromTrainerDto {
     private int index;
 
     private String language;
-    private Collection<IndividualPokemonFromTrainerDto> result;
+    private Collection<IndividualPokemonFromTrainerDto> results;
 }

@@ -36,12 +36,12 @@ public class RoleController {
 
         SeePokemonFromTrainerDto seePokemonFromTrainerDto = roleService.seePokemonFromTrainer(username,quantity,offset,connected,type,sortBy);
         seePokemonFromTrainerDto.setLanguage(language);
-        for(IndividualPokemonFromTrainerDto individualPokemonFromTrainerDto : seePokemonFromTrainerDto.getResult()){
+        for(IndividualPokemonFromTrainerDto individualPokemonFromTrainerDto : seePokemonFromTrainerDto.getResults()){
             List<String> languageType = new ArrayList<>();
-            for(String lanType : individualPokemonFromTrainerDto.getType()){
+            for(String lanType : individualPokemonFromTrainerDto.getTypes()){
                 languageType.add(typeInLanguage(lanType,language));
             }
-            individualPokemonFromTrainerDto.setTypeLanguage(languageType);
+            individualPokemonFromTrainerDto.setTypesInLanguage(languageType);
         }
         return seePokemonFromTrainerDto;
     }

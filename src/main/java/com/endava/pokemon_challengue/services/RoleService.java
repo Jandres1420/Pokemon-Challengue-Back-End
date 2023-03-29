@@ -79,7 +79,7 @@ public class RoleService {
                         .nickname(captureList.get(i).getNickname())
                         .name(captureList.get(i).getPokemon().getName())
                         .id(captureList.get(i).getPokemon().getPokemon_id())
-                        .type(types)
+                        .types(types)
                         .build());
             }
 
@@ -88,7 +88,7 @@ public class RoleService {
                     .username(username)
                     .index(offset)
                     .quantity(quantity)
-                    .result(filterType(type, sortBy(sortBy, pokemonsFromTrainer)))
+                    .results(filterType(type, sortBy(sortBy, pokemonsFromTrainer)))
                     .build();
         }
         return null;
@@ -214,7 +214,7 @@ public class RoleService {
         if(!type.equals("default value")){
             return pokemonsFromTrainer
                     .stream()
-                    .filter(p -> p.getType().contains(type))
+                    .filter(p -> p.getTypes().contains(type))
                     .collect(Collectors.toList());
         }
         return pokemonsFromTrainer;
