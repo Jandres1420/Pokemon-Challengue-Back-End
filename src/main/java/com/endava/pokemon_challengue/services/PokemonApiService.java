@@ -199,7 +199,7 @@ public class PokemonApiService {
         return SinglePokemonDetailsResponse.builder()
                 .name(pokemon.getName())
                 .id(pokemon.getPokemon_id())
-                .type(types)
+                .types(types)
                 .language(language)
                 .img_path(pokemon.getImg_path())
                 .description(descriptionText)

@@ -13,10 +13,7 @@ import com.endava.pokemon_challengue.models.dto.generalType.TypesNameDTO;
 import com.endava.pokemon_challengue.models.dto.requestBody.AddPokemonRequest;
 import com.endava.pokemon_challengue.models.dto.requestBody.DeletePokemonRequest;
 import com.endava.pokemon_challengue.models.dto.requestBody.UpdatePokemonRequest;
-import com.endava.pokemon_challengue.models.dto.responseBody.CRUDResponse;
-import com.endava.pokemon_challengue.models.dto.responseBody.DashboardResponseDTO;
-import com.endava.pokemon_challengue.models.dto.responseBody.EvolutionResponse;
-import com.endava.pokemon_challengue.models.dto.responseBody.SinglePokemonDetailsResponse;
+import com.endava.pokemon_challengue.models.dto.responseBody.*;
 import com.endava.pokemon_challengue.models.dto.generalType.PokemonTypesDTO;
 import com.endava.pokemon_challengue.services.PokemonApiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,19 +106,27 @@ public class PokemonController {
     }
 
     @GetMapping("/{language}/pokemon")
-    public SinglePokemonDetailsResponse getPokemonDetails(@PathVariable(name = "language") String language,
+    public DetailsResponseDTO getPokemonDetails(@PathVariable(name = "language") String language,
                                                           @RequestParam String value) {
+
+        List<SinglePokemonDetailsResponse> singlePokemonDetailsResponses = new ArrayList<>();
 
         PokemonDTO pokemonDTO = getPokemonDTO(value.toLowerCase());
         PokemonSpeciesDTO pokemonSpeciesDTO = getPokemonSpeciesDTO(value.toLowerCase());
         List<AbilityDTO> abilities = getAbilitiesDTO(pokemonDTO);
         SinglePokemonDetailsResponse singlePokemonDetailsResponse = pokemonApiService.pokemonDetails(pokemonDTO, pokemonSpeciesDTO, abilities, language);
         List<String> listOfLanguage = new ArrayList<>();
-        for(String u : singlePokemonDetailsResponse.getType()){
+        for(String u : singlePokemonDetailsResponse.getTypes()){
             listOfLanguage.add(typeInLanguage(u,language));
         }
         singlePokemonDetailsResponse.setTypesInLanguage(listOfLanguage);
-        return singlePokemonDetailsResponse;
+        singlePokemonDetailsResponses.add(singlePokemonDetailsResponse);
+
+        return DetailsResponseDTO
+                .builder()
+                .quantity(1)
+                .results(singlePokemonDetailsResponses)
+                .build();
     }
 
     public String typeInLanguage(String type, String language){

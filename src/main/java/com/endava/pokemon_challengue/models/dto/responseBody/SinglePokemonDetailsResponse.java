@@ -16,7 +16,7 @@ import java.util.List;
 public class SinglePokemonDetailsResponse {
     private String name;
     private int id;
-    private List<String> type;
+    private List<String> types;
     private String language;
     private String img_path;
     private String description;
