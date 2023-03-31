@@ -39,7 +39,7 @@ public class AuthService {
         if(!optionalUserEmail.isPresent()){
             UserProfile userProfile = UserProfile.builder()
                     .name(signUpDto.getName())
-                    .lastName(signUpDto.getLastname())
+                    .questionAnswer(signUpDto.getQuestionAnswer())
                     .role(Role.TRAINER)
                     .connect(false)
                     .email(signUpDto.getEmail())
