@@ -36,6 +36,7 @@ public class RoleController {
 
         SeePokemonFromTrainerDto seePokemonFromTrainerDto = roleService.seePokemonFromTrainer(username,quantity,offset,connected,type,sortBy);
         seePokemonFromTrainerDto.setLanguage(language);
+        System.out.println("estoy aca ");
         for(IndividualPokemonFromTrainerDto individualPokemonFromTrainerDto : seePokemonFromTrainerDto.getResults()){
             List<String> languageType = new ArrayList<>();
             for(String lanType : individualPokemonFromTrainerDto.getTypes()){

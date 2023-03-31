@@ -62,28 +62,25 @@ public class RoleService {
         if (foundUser.isPresent()) {
             List<Capture> captureList = foundUser.get().getCaptures();
             Collection<IndividualPokemonFromTrainerDto> pokemonsFromTrainer = new ArrayList<>();
-            for (int i = offset; i < quantity; i++) {
-                if (i == captureList.size()) {
-                    break;
-                }
-
-                ArrayList<String> types = new ArrayList<>(Arrays.asList(captureList
-                        .get(i)
+            int end = Math.min(offset + quantity, captureList.size());
+            for (int i = offset; i < end; i++) {
+                Capture capture = captureList.get(i);
+                ArrayList<String> types = new ArrayList<>(Arrays.asList(capture
                         .getPokemon()
                         .getType()
                         .replaceAll("\\s+","")
                         .split(",")));
 
-                pokemonsFromTrainer.add(IndividualPokemonFromTrainerDto
+                IndividualPokemonFromTrainerDto pokemon = IndividualPokemonFromTrainerDto
                         .builder()
-                        .nickname(captureList.get(i).getNickname())
-                        .name(captureList.get(i).getPokemon().getName())
-                        .id(captureList.get(i).getPokemon().getPokemon_id())
+                        .nickname(capture.getNickname())
+                        .name(capture.getPokemon().getName())
+                        .id(capture.getPokemon().getPokemon_id())
                         .types(types)
-                        .img_path(captureList.get(i).getPokemon().getImg_path())
-                        .build());
+                        .img_path(capture.getPokemon().getImg_path())
+                        .build();
+                pokemonsFromTrainer.add(pokemon);
             }
-
             return SeePokemonFromTrainerDto
                     .builder()
                     .username(username)
