@@ -12,7 +12,7 @@ public interface UserProfileRepository extends JpaRepository<UserProfile,Long> {
     Optional<UserProfile> findUserByEmailAndUsername(String email, String username);
 
     @Query("SELECT u FROM UserProfile u WHERE u.email =?1")
-    UserProfile findByEmail(String email);
+    Optional<UserProfile> findByEmail(String email);
 
     @Query("SELECT u FROM UserProfile u WHERE u.email =?1 AND u.password=?2")
     Optional<UserProfile> findByEmailAndPassword(String email, String password);
