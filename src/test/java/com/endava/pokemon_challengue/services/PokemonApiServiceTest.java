@@ -178,7 +178,7 @@ class PokemonApiServiceTest {
                         .build())
                 .build();
 
-        EvolutionResponse evolutionResponse = pokemonApiService.pokemonSequenceEvolution(evolutionDTO, "en", "pichu",null);
+        EvolutionResponse evolutionResponse = pokemonApiService.pokemonSequenceEvolution(evolutionDTO, "en", "pichu");
 
         Assertions.assertEquals(evolutionResponse.getEvolution_chain().get(0).getName(), "pichu");
         Assertions.assertEquals(evolutionResponse.getEvolution_chain().get(1).getName(), "pikachu");

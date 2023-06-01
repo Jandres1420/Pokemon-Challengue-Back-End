@@ -41,25 +41,6 @@ class RoleServiceTest {
     @InjectMocks
     AuthService authService;
 
-
-    @Test
-    void Given_SomeCaptures_When_GetPokemonFromTrainer_Then_Paginated() {
-        Pokemon pokemon = Pokemon.builder().pokemon_id(63).name("Abra").type("psychic")
-                .stat(Stat.builder().attack(20).defense(40).specialAttack(60).specialDefense(10)
-                        .build()).build();
-        Pokemon pokemon2 = Pokemon.builder().pokemon_id(25).name("pikachu").type("electric")
-                .stat(Stat.builder().attack(35).defense(34).specialAttack(60).specialDefense(10)
-                        .build()).build();
-        List<Capture> captureList = List.of(Capture.builder().pokemon(pokemon).build(),
-                Capture.builder().nickname("pikachu andres").pokemon(pokemon2).build());
-
-        UserProfile connected = UserProfile.builder().role(Role.TRAINER).connect(true).password("andres").email("andres@endava.com").captures(captureList).username("andres").build();
-        when(userProfileRepository.findByUsername("andres")).thenReturn(Optional.of(connected));
-        SeePokemonFromTrainerDto seePokemonFromTrainerDto = roleService.getPokemonFromTrainer(connected.getUsername(),3,0,"electric","name");
-        List<IndividualPokemonFromTrainerDto> strings =  new ArrayList<>(seePokemonFromTrainerDto.getResult());
-        Assertions.assertEquals("pikachu andres",strings.get(0).getNickname());
-
-    }
     @Test
     void seePokemonFromTrainer() {
         Pokemon pokemon = Pokemon.builder().pokemon_id(63).name("Abra").type("psychic")
@@ -186,19 +167,16 @@ class RoleServiceTest {
                 .nickname("Mew Andres")
                 .name("Mew")
                 .id(151)
-                .type(List.of("psychic"))
                 .build();
         IndividualPokemonFromTrainerDto individualPokemonFromTrainerDto2 = IndividualPokemonFromTrainerDto.builder()
                 .nickname("arbok Andres")
                 .name("Arbok")
                 .id(24)
-                .type(List.of("poison"))
                 .build();
         IndividualPokemonFromTrainerDto individualPokemonFromTrainerDto3 = IndividualPokemonFromTrainerDto.builder()
                 .nickname("Lucario Andres")
                 .name("Lucario")
                 .id(448)
-                .type(List.of("fighting"))
                 .build();
 
         List<IndividualPokemonFromTrainerDto> individualPokemonFromTrainerDtoList =
@@ -215,19 +193,16 @@ class RoleServiceTest {
                 .nickname("Mew Andres")
                 .name("Mew")
                 .id(151)
-                .type(List.of("psychic"))
                 .build();
         IndividualPokemonFromTrainerDto individualPokemonFromTrainerDto2 = IndividualPokemonFromTrainerDto.builder()
                 .nickname("arbok Andres")
                 .name("Arbok")
                 .id(24)
-                .type(List.of("poison"))
                 .build();
         IndividualPokemonFromTrainerDto individualPokemonFromTrainerDto3 = IndividualPokemonFromTrainerDto.builder()
                 .nickname("Lucario Andres")
                 .name("Lucario")
                 .id(448)
-                .type(List.of("fighting"))
                 .build();
 
         List<IndividualPokemonFromTrainerDto> individualPokemonFromTrainerDtoList =
@@ -235,34 +210,5 @@ class RoleServiceTest {
 
         Collection<IndividualPokemonFromTrainerDto> sorted =  roleService.sortBy(sortBy,individualPokemonFromTrainerDtoList);
         Assertions.assertNotEquals(sorted, individualPokemonFromTrainerDtoList);
-    }
-
-    @Test
-    void filterType() {
-        String filterBy = "psychic";
-        IndividualPokemonFromTrainerDto individualPokemonFromTrainerDto = IndividualPokemonFromTrainerDto.builder()
-                .nickname("Mew Andres")
-                .name("Mew")
-                .id(151)
-                .type(List.of("psychic"))
-                .build();
-        IndividualPokemonFromTrainerDto individualPokemonFromTrainerDto2 = IndividualPokemonFromTrainerDto.builder()
-                .nickname("Abra Andres")
-                .name("Abra")
-                .id(63)
-                .type(List.of("psychic"))
-                .build();
-        IndividualPokemonFromTrainerDto individualPokemonFromTrainerDto3 = IndividualPokemonFromTrainerDto.builder()
-                .nickname("Lucario Andres")
-                .name("Lucario")
-                .id(448)
-                .type(List.of("fighting"))
-                .build();
-
-        List<IndividualPokemonFromTrainerDto> individualPokemonFromTrainerDtoList =
-                List.of(individualPokemonFromTrainerDto,individualPokemonFromTrainerDto2,individualPokemonFromTrainerDto3);
-
-        Collection<IndividualPokemonFromTrainerDto> filterCollection =  roleService.filterType(filterBy,individualPokemonFromTrainerDtoList);
-        Assertions.assertEquals(filterCollection, List.of(individualPokemonFromTrainerDto,individualPokemonFromTrainerDto2));
     }
 }
