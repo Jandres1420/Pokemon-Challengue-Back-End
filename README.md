@@ -1,6 +1,6 @@
-# Pokemon back end challengue
+# Pokelab Back-End
 
-# Develop by:
+# Developed by:
 - Gabriel Nieves
 - Andrés Pico
 
