@@ -40,8 +40,7 @@ class AuthServiceTest {
                 .email("gabriel@endava.com")
                 .username("gabriel")
                 .password("gabriel")
-                .name("gabriel")
-                .lastname("gabriel")
+                .name("gabriel nieves")
                 .build();
         UserProfile profile = UserProfile.builder().email("gabriel@endava.com").build();
         authService.signUp(signUpDto);

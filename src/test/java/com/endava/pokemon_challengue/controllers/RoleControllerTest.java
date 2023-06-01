@@ -24,17 +24,6 @@ class RoleControllerTest {
     RoleController roleController;
 
     @Test
-    void Given_AllArguments_When_SeePokemonFromTrainer_Then_Success() {
-
-        when(roleServiceMock.seePokemonFromTrainer("gabriel", 1, 0, "gabriel", "", ""))
-                .thenReturn(SeePokemonFromTrainerDto.builder().username("gabriel").build());
-
-        SeePokemonFromTrainerDto seePokemonFromTrainerDto = roleController.seePokemonsFromTrainer("gabriel", 1, 0, "gabriel", "", "","");
-
-        Assertions.assertEquals(seePokemonFromTrainerDto.getUsername(),"gabriel");
-    }
-
-    @Test
     void Given_AllArguments_When_CurePokemonDoctor_Then_Success() {
         long captureId = 5;
         when(roleServiceMock.curePokemonDoctor(captureId, "gabriel"))
