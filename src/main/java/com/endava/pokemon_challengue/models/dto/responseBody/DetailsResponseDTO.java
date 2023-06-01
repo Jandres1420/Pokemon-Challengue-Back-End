@@ -1,4 +1,6 @@
 package com.endava.pokemon_challengue.models.dto.responseBody;
+
+import com.endava.pokemon_challengue.models.dto.dashboard.PokemonResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class IndividualPokemonFromTrainerDto {
-    private String nickname;
-    private String name;
-    private int id;
-    private List<String> types;
-    private List<String> typesInLanguage;
-    private String img_path;
+public class DetailsResponseDTO {
+    private int quantity;
+    private List<SinglePokemonDetailsResponse> results;
 }

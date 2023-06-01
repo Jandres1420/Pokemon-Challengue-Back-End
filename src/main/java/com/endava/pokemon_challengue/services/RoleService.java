@@ -3,6 +3,7 @@ package com.endava.pokemon_challengue.services;
 import com.endava.pokemon_challengue.exceptions.ExceptionGenerator;
 import com.endava.pokemon_challengue.exceptions.ExceptionType;
 import com.endava.pokemon_challengue.models.*;
+import com.endava.pokemon_challengue.models.dto.generalType.PokemonTypesDTO;
 import com.endava.pokemon_challengue.models.dto.requestBody.AdminRoleChange;
 import com.endava.pokemon_challengue.models.dto.requestBody.FollowRequest;
 import com.endava.pokemon_challengue.models.dto.responseBody.GeneralResponse;
@@ -12,6 +13,8 @@ import com.endava.pokemon_challengue.repositories.CaptureRepository;
 import com.endava.pokemon_challengue.repositories.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 public class RoleService {
     private final UserProfileRepository userProfileRepository;
     private final CaptureRepository captureRepository;
+
 
     private static  String userNotFound = "User not found";
 
@@ -58,33 +62,31 @@ public class RoleService {
         if (foundUser.isPresent()) {
             List<Capture> captureList = foundUser.get().getCaptures();
             Collection<IndividualPokemonFromTrainerDto> pokemonsFromTrainer = new ArrayList<>();
-            for (int i = offset; i < quantity; i++) {
-                if (i == captureList.size()) {
-                    break;
-                }
-
-                ArrayList<String> types = new ArrayList<>(Arrays.asList(captureList
-                        .get(i)
+            int end = Math.min(offset + quantity, captureList.size());
+            for (int i = offset; i < end; i++) {
+                Capture capture = captureList.get(i);
+                ArrayList<String> types = new ArrayList<>(Arrays.asList(capture
                         .getPokemon()
                         .getType()
                         .replaceAll("\\s+","")
                         .split(",")));
 
-                pokemonsFromTrainer.add(IndividualPokemonFromTrainerDto
+                IndividualPokemonFromTrainerDto pokemon = IndividualPokemonFromTrainerDto
                         .builder()
-                        .nickname(captureList.get(i).getNickname())
-                        .name(captureList.get(i).getPokemon().getName())
-                        .id(captureList.get(i).getPokemon().getPokemon_id())
-                        .type(types)
-                        .build());
+                        .nickname(capture.getNickname())
+                        .name(capture.getPokemon().getName())
+                        .id(capture.getPokemon().getPokemon_id())
+                        .types(types)
+                        .img_path(capture.getPokemon().getImg_path())
+                        .build();
+                pokemonsFromTrainer.add(pokemon);
             }
-
             return SeePokemonFromTrainerDto
                     .builder()
                     .username(username)
                     .index(offset)
                     .quantity(quantity)
-                    .result(filterType(type, sortBy(sortBy, pokemonsFromTrainer)))
+                    .results(filterType(type, sortBy(sortBy, pokemonsFromTrainer)))
                     .build();
         }
         return null;
@@ -210,7 +212,7 @@ public class RoleService {
         if(!type.equals("default value")){
             return pokemonsFromTrainer
                     .stream()
-                    .filter(p -> p.getType().contains(type))
+                    .filter(p -> p.getTypes().contains(type))
                     .collect(Collectors.toList());
         }
         return pokemonsFromTrainer;

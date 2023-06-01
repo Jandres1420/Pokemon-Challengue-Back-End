@@ -15,5 +15,6 @@ public class PokemonResponseDTO {
     private String name;
     private int id;
     private List<String> types;
+    private List<String> typesInLanguage;
     private String img_path;
 }

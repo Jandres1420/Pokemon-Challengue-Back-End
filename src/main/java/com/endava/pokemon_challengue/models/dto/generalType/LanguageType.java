@@ -1,4 +1,4 @@
-package com.endava.pokemon_challengue.models.dto.responseBody;
+package com.endava.pokemon_challengue.models.dto.generalType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EvolutionChainResponse {
+public class LanguageType {
     private String name;
-    private String detailed_url;
-
-    private String img_url;
+    private String url;
 }

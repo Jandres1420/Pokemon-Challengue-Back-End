@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SignUpDto {
+public class RecoveryDTO {
     private String email;
-    private String username;
-    private String password;
-    private String name;
     private String questionAnswer;
+    private String newPassword;
 }

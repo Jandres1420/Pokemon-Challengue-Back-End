@@ -1,7 +1,9 @@
 package com.endava.pokemon_challengue.controllers;
 
+import com.endava.pokemon_challengue.models.dto.ForgotPassword.ForgotPasswordDTO;
 import com.endava.pokemon_challengue.models.dto.requestBody.LogInDto;
 import com.endava.pokemon_challengue.models.dto.requestBody.SignUpDto;
+import com.endava.pokemon_challengue.models.dto.responseBody.ForgotPasswordResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogInResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.LogOutResponse;
 import com.endava.pokemon_challengue.models.dto.responseBody.SignUpResponse;
@@ -54,6 +56,12 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<LogInResponse> logInUser(@RequestBody @Valid @NotNull @NotEmpty LogInDto logInDto){
         return new ResponseEntity<>(authService.logInUser(logInDto), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/forgotPassword")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<ForgotPasswordResponse> forgotPassword(@RequestBody @Valid @NotNull @NotEmpty ForgotPasswordDTO forgotPasswordDTO){
+        return new ResponseEntity<>(authService.forgotPassword(forgotPasswordDTO), HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/logOut")

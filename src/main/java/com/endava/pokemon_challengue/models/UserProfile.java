@@ -40,6 +40,10 @@ public class UserProfile {
 
     @NotEmpty
     @NotNull
+    private String questionAnswer;
+
+    @NotEmpty
+    @NotNull
     private String password;
 
     private Role role;
