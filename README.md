@@ -23,10 +23,9 @@
 ## Instructions.
 
 Make sure to have installed the following before continuing:
-- JDK 11 
+- <a href="https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html">JDK 11<a>
 - <a href="https://www.postgresql.org/download/">PostgreSQL<a> (including pgAdmin)
-- Install Maven
-- PostgreSQL installed
+- <a href="https://maven.apache.org/download.cgi">Maven<a> and add the respective environment variables
 
 ### First Step
 Clone the <a href="https://github.com/Jandres1420/Pokemon-Challengue-Back-End">Back-End Repository<a>
