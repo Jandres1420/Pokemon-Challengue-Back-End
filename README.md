@@ -39,7 +39,7 @@ Then in this database create a Schema called local
 ![](/img/creatingSchema.png)
 
 ### Third step
-Openb the cloned repository on IntelliJ and write the following command on the terminal:
+Open the cloned repository on IntelliJ, set the previous installed SDK on the program and then write the following command on the terminal:
 
 ```bash
 mvn clean install
