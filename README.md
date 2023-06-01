@@ -22,7 +22,7 @@
 
 Make sure to have installed the following before continuing:
 - <a href="https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html">JDK 11<a>
-- <a href="https://www.postgresql.org/download/">PostgreSQL<a> (including pgAdmin)
+- <a href="https://www.postgresql.org/download/">PostgreSQL 15<a> (including pgAdmin)
 - <a href="https://maven.apache.org/download.cgi">Maven<a> and add the respective environment variables
 
 ### First Step
