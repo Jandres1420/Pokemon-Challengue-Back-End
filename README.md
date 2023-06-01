@@ -29,6 +29,9 @@ Make sure to have installed the following before continuing:
 - PostgreSQL installed
 
 ### First Step
+Clone the <a href="https://github.com/Jandres1420/Pokemon-Challengue-Back-End">Back-End Repository<a>
+
+### Second Step
 
 Create a database on PostgreSQL named pokemon  
 ![](/img/creatingDatabase.png)
