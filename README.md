@@ -38,8 +38,8 @@ Then in this database create a Schema called local
 
 ![](/img/creatingSchema.png)
 
-### Second step
-On the cloned repository use the command in the terminal.
+### Third step
+Openb the cloned repository on IntelliJ and write the following command on the terminal:
 
 ```bash
 mvn clean install
@@ -50,9 +50,9 @@ Then go to the class pokemonChallengueApplication.java and run the application
 ![](/img/spring-boot-aplication.png)
 
 You should see that the application has created all the tables and the relations with each other
-
 ![](/img/created_tables.png)
-### Third step
+  
+### Fourth step
 
 Downloading and importing Insomnia file 
 
