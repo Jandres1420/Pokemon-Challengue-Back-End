@@ -31,8 +31,7 @@ Make sure to have installed the following before continuing:
 Clone the <a href="https://github.com/Jandres1420/Pokemon-Challengue-Back-End">Back-End Repository<a>
 
 ### Second Step
-
-Create a database on PostgreSQL named pokemon  
+Open pgAdmin, set <i>admin</i> as the default password and create a database on PostgreSQL named <i>pokemon</i>
 ![](/img/creatingDatabase.png)
 
 Then in this database create a Schema called local
