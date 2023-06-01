@@ -22,7 +22,9 @@
 
 ## Instructions.
 
-- Use JDK 11 
+Make sure to have installed the following before continuing:
+- JDK 11 
+- <a href="https://www.postgresql.org/download/">PostgreSQL<a> (including pgAdmin)
 - Install Maven
 - PostgreSQL installed
 
