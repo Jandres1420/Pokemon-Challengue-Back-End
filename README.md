@@ -1,8 +1,8 @@
 # Pokelab Back-End
 
 # Developed by:
-- Gabriel Nieves
-- Andrés Pico
+- [Gabriel Cosson](https://github.com/gabrielnievescosson)
+- [Andrés Pico](https://github.com/Jandres1420)
 
 **Table of Contents**
 - [Tools and libraries](#tools)
@@ -16,9 +16,7 @@
 
 - JPA
 - Lombok
-- Swagger
 - Hibernate
-
 
 ## Instructions.
 
@@ -45,33 +43,10 @@ Open the cloned repository on IntelliJ, set the previous installed SDK on the pr
 mvn clean install
 ```
 
-Then go to the class pokemonChallengueApplication.java and run the application
+  ### Fourth Step
+Find the pokemonChallengueApplication.java file and run the application
 
 ![](/img/spring-boot-aplication.png)
 
 You should see that the application has created all the tables and the relations with each other
 ![](/img/created_tables.png)
-  
-### Fourth step
-
-Downloading and importing Insomnia file 
-
-![](/img/insomnia_import.png)
-
-When exporting go to the corresponding collection file, and try the end points
-
-![](/img/imported_file.png)
-
-
-## Test
-
-### Unit test coverage achieved: 78%
-
-![](/img/testing.png)
-
-## Link for SwaggerAPI
-
-http://localhost:8080/swagger-ui.html
-
-
-
