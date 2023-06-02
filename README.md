@@ -9,11 +9,11 @@
 - [Instructions to run the application](#instructions)
 - [Unit tests: indicate the code coverage achieved](#test)
 
-## Tools
-<img src="img/javaImg.png" width="100" height="100"/><img src="img/spring-boot-logo.png" width="150" height="100"/>
-
-<img src="img/mavenImg.png" width="170" height="100"/><img src="img/postgresImg.png" width="150" height="150"/>
-
+## Technologies.
+- Java
+- SpringBoot
+- Maven
+- PostgreSQL
 - JPA
 - Lombok
 - Hibernate
